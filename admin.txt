@@ -1,0 +1,1 @@
+To add model to admin panel, add it to the list of models.This list is used by admin route to pass all models' names and ids to front.
