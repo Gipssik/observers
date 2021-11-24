@@ -41,4 +41,4 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/me/", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(get_current_user)):
-    return await current_user
+    return current_user

@@ -1,10 +1,12 @@
+import re
+
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from database.db import SessionLocal
 from security import security_token, schemas
-from database.crud import get_user_by_username
+from database.crud import get_user_by_username, get_user_by_email
 
 
 def get_db():
@@ -19,6 +21,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+async def get_user_by_username_or_email(db: Session, username: str):
+    return await get_user_by_email(db, email=username)\
+        if re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', username)\
+        else await get_user_by_username(db, username=username)
 
 
 async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme), db: Session = Depends(get_db)):
@@ -43,7 +51,9 @@ async def get_current_user(user_token: str = Depends(security_token.oauth2_schem
         token_data = schemas.TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = await get_user_by_username(db, username=token_data.username)
+
+    user = await get_user_by_username_or_email(db=db, username=username)
+
     if user is None:
         raise credentials_exception
     return user
