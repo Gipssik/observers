@@ -52,7 +52,7 @@ async def get_current_user(user_token: str = Depends(security_token.oauth2_schem
     except JWTError:
         raise credentials_exception
 
-    user = await get_user_by_username_or_email(db=db, username=username)
+    user = await get_user_by_username_or_email(db=db, username=token_data.username)
 
     if user is None:
         raise credentials_exception
