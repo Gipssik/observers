@@ -12,7 +12,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """Creates access token with a given `data` and `expires_delta`.
+
+    Args:
+        `data` (dict): A `dict` where exists a key "sub" with value of username.
+        `expires_delta` (Optional[timedelta], optional): Time of token expiration. Defaults to None.
+
+    Returns:
+        `str`: A Json Web Token.
+    """
+
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta

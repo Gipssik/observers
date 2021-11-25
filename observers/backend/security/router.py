@@ -13,13 +13,18 @@ router = APIRouter(tags=['security'])
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    """
-    Returns a dict with token and its type.
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)) -> dict:
+    """Returns a `dict` with token and its type.
 
-    :param form_data: OAuth2PasswordRequestForm form.
-    :param db: Database connection.
-    :return: A dict with token and its type.
+    Args:
+        `form_data` (OAuth2PasswordRequestForm, optional): `OAuth2PasswordRequestForm` form.
+        `db` (Session, optional): Database connection.
+
+    Raises:
+        `HTTPException`: If incorrect credentials were given.
+
+    Returns:
+        `dict`: A `dict` with token and its type.
     """
 
     user = await authenticate_user(db, form_data.username, form_data.password)

@@ -5,15 +5,16 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from database.db import SessionLocal
+from database import models
 from security import security_token, schemas
 from database.crud import get_user_by_username, get_user_by_email
 
 
 def get_db():
-    """
-    Returns a new database session.
+    """Returns a database `Session`.
 
-    :return: A new database session.
+    Yields:
+        `Iterator[SessionLocal]`: A database connection.
     """
 
     db = SessionLocal()
@@ -23,19 +24,32 @@ def get_db():
         db.close()
 
 
-async def get_user_by_username_or_email(db: Session, username: str):
+async def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
+    """Returns a `User` object if `username` equals User's username or email. Otherwise `None`.
+
+    Returns:
+        `models.User | None`: A `User` object if `username` equals User's username or email. Otherwise `None`.
+    """
+
     return await get_user_by_email(db, email=username)\
         if re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', username)\
         else await get_user_by_username(db, username=username)
 
 
-async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme), db: Session = Depends(get_db)):
-    """
-    Returns a current user if client is logged in. Otherwise, raises error.
+async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
+    """Returns the current user if he passes authentication.
 
-    :param user_token: User jwt as a string.
-    :param db: Database connection.
-    :return: A current user.
+    Args:
+        `user_token` (str, optional): User's token.
+        `db` (Session, optional): Database connection.
+
+    Raises:
+        `HTTPException`: If there's no key `sub` in a given token.
+        `HTTPException`: In case of JWTError.
+        `HTTPException`: If there's no user with this username.
+
+    Returns:
+        models.User: A current user.
     """
 
     credentials_exception = HTTPException(

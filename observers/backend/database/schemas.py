@@ -1,7 +1,12 @@
 import datetime
-from typing import Optional
+from typing import ForwardRef, List, Optional
 
 from pydantic import BaseModel, EmailStr
+
+User = ForwardRef('User')
+Notification = ForwardRef('Notification')
+Question = ForwardRef('Question')
+Comment = ForwardRef('Comment')
 
 
 class RoleBase(BaseModel):
@@ -14,6 +19,7 @@ class RoleCreate(RoleBase):
 
 class Role(RoleBase):
     id: int
+    users: list[User] = []
 
     class Config:
         orm_mode = True
@@ -33,6 +39,8 @@ class User(UserBase):
     id: int
     date_created: datetime.datetime
     profile_image: Optional[str] = None
+    questions: list[Question] = []
+    notifications: list[Notification] = []
 
     class Config:
         orm_mode = True
@@ -65,6 +73,7 @@ class TagCreate(TagBase):
 
 class Tag(TagBase):
     id: int
+    questions: list[Question] = []
 
     class Config:
         orm_mode = True
@@ -84,6 +93,8 @@ class Question(QuestionBase):
     id: int
     date_created: datetime.datetime
     views: int
+    tags: list[TagBase] = []
+    comments: list[Comment] = []
 
     class Config:
         orm_mode = True
@@ -125,3 +136,9 @@ class Article(ArticleBase):
 
     class Config:
         orm_mode = True
+
+
+Role.update_forward_refs()
+User.update_forward_refs()
+Tag.update_forward_refs()
+Question.update_forward_refs()
