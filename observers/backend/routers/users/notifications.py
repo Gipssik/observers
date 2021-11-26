@@ -11,7 +11,7 @@ router = APIRouter(prefix='/notifications', tags=['notifications'])
 
 
 @router.get('/', response_model=list[schemas.Notification])
-async def get_notifications(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.Notification]:
+def get_notifications(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.Notification]:
     """Gets all `Notifications` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -23,11 +23,11 @@ async def get_notifications(skip: Optional[int] = 0, limit: Optional[int] = 100,
         list[models.Notification]: A `list` of all `Notification` objects.
     """
 
-    return await crud.get_objects(cls=models.Notification, db=db, skip=skip, limit=limit)
+    return crud.get_objects(cls=models.Notification, db=db, skip=skip, limit=limit)
 
 
 @router.post('/', response_model=schemas.Notification)
-async def create_notification(notification: schemas.NotificationCreate, db: Session = Depends(get_db)) -> models.Notification:
+def create_notification(notification: schemas.NotificationCreate, db: Session = Depends(get_db)) -> models.Notification:
     """Creates a `Notification` object with a given `notification` schema.
 
     Args:
@@ -38,11 +38,11 @@ async def create_notification(notification: schemas.NotificationCreate, db: Sess
         `models.Notification`: A new `Notification` object.
     """
 
-    return await crud.create_notification(db=db, notification=notification)
+    return crud.create_notification(db=db, notification=notification)
 
 
 @router.get('/{notification_id}/', response_model=schemas.Notification)
-async def get_notification(notification_id: int, db: Session = Depends(get_db)) -> models.Notification:
+def get_notification(notification_id: int, db: Session = Depends(get_db)) -> models.Notification:
     """Gets a `Notification` object from the database by `notification_id` and returns it to the client.
 
     Args:
@@ -53,11 +53,11 @@ async def get_notification(notification_id: int, db: Session = Depends(get_db)) 
         `models.Notification`: A new `Notification` object.
     """
 
-    return await crud.get_object(cls=models.Notification, db=db, object_id=notification_id)
+    return crud.get_object(cls=models.Notification, db=db, object_id=notification_id)
 
 
 @router.delete('/{notification_id}/')
-async def delete_notification(notification_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_notification(notification_id: int, db: Session = Depends(get_db)) -> Response:
     """Deletes a notification by a given `notification_id`.
 
     Args:
@@ -68,5 +68,5 @@ async def delete_notification(notification_id: int, db: Session = Depends(get_db
         `Response`: No content response.
     """
 
-    await crud.delete_object(cls=models.Notification, db=db, object_id=notification_id)
+    crud.delete_object(cls=models.Notification, db=db, object_id=notification_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

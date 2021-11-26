@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.expression import update
 
 from .db import Base
 
@@ -8,7 +10,7 @@ from . import models, schemas
 from security import hashing
 
 
-async def get_object(cls: type, db: Session, object_id: int) -> Base:
+def get_object(cls: type, db: Session, object_id: int) -> Base:
     """Returns a `cls` object by `object_id`.
 
     Args:
@@ -23,18 +25,18 @@ async def get_object(cls: type, db: Session, object_id: int) -> Base:
         `Base`: `Base` model object.
     """
 
-    object_db = db.query(cls).get(object_id)
+    db_object = db.query(cls).get(object_id)
 
-    if not object_db:
+    if not db_object:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f'{cls.__name__.capitalize()} with this id does not exist.'
         )
 
-    return object_db
+    return db_object
 
 
-async def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -> list[Base]:
+def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -> list[Base]:
     """Returns all `Base` objects in range[`skip`:`skip+limit`].
 
     Args:
@@ -50,7 +52,7 @@ async def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -
     return db.query(cls).offset(skip).limit(limit).all()
 
 
-async def delete_object(cls: type, db: Session, object_id: int) -> None:
+def delete_object(cls: type, db: Session, object_id: int) -> None:
     """Deletes object by a given `object_id`.
 
     Args:
@@ -62,14 +64,54 @@ async def delete_object(cls: type, db: Session, object_id: int) -> None:
         `None`
     """
 
-    object_db = await get_object(cls=cls, db=db, object_id=object_id)
+    db_object = get_object(cls=cls, db=db, object_id=object_id)
     
-    db.delete(object_db)
+    db.delete(db_object)
     db.commit()
     return None
 
 
-async def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
+def update_object(cls: type, db: Session, object_id: int, schema_object: BaseModel) -> Base:
+    """Updates `cls` object by given `object_id` and `schema_object`.
+
+    Args:
+        `cls` (type): Type of object model
+        `db` (Session): Database connection.
+        `object_id` (int): Object's id.
+        `schema_object` (BaseModel): Pydantic object schema.
+
+    Returns:
+        `Base`: Updated `cls` object.
+    """
+
+    db_object = get_object(cls=cls, db=db, object_id=object_id)
+    object_schema = schema_object.__class__(**db_object.__dict__)
+
+    update_obj = schema_object.dict(exclude_unset=True)
+    updated_obj = object_schema.copy(update=update_obj)
+
+    db.query(cls).filter_by(id=object_id).update(updated_obj.__dict__)
+    db.commit()
+    db.refresh(db_object)
+
+    return db_object
+
+
+def get_role_by_title(db: Session, title: str) -> models.Role:
+    """Returns `Role` object by a given `title`.
+
+    Args:
+        `db` (Session): Database connection.
+        `title` (str): `Role`' object's title.
+
+    Returns:
+        `models.Role`: A `Role` object.
+    """
+
+    return db.query(models.Role).filter(models.Role.title == title).first()
+
+
+def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
     """Creates a model Role with a given `role` schema.
 
     Args:
@@ -83,7 +125,7 @@ async def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
         `models.Role`: A new `Role`.
     """
 
-    if db.query(models.Role).filter(models.Role.title == role.title).first():
+    if get_role_by_title(db=db, title=role.title):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Role with this title already exists."
@@ -96,7 +138,41 @@ async def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
     return db_role
 
 
-async def create_user(db: Session, user: schemas.UserCreate) -> models.User:
+def update_role(db: Session, role_id: int, role: schemas.RoleUpdate) -> models.Role:
+    """Updates `Role` object by a given `role_id` using `role` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `role_id` (int): `Role` object's id.
+        `role` (schemas.RoleUpdate): Pydantic object's schema.
+
+    Raises:
+        `HTTPException`: If there's a role with the same title.
+
+    Returns:
+        `models.Role`: Updated `Role` object.
+    """
+
+    db_role = get_object(cls=models.Role, db=db, object_id=role_id)
+    role_schema = schemas.RoleUpdate(**db_role.__dict__)
+
+    if (r := get_role_by_title(db=db, title=role.title))\
+        and r.id != role_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Role with this title already exists.'
+        )
+
+    update_data = role.dict(exclude_unset=True)
+    updated_role = role_schema.copy(update=update_data)
+
+    db.query(models.Role).filter_by(id=role_id).update(updated_role.__dict__)
+    db.commit()
+    db.refresh(db_role)
+    return db_role
+
+
+def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     """Creates a User with a given `user` schema.
 
     Args:
@@ -112,15 +188,15 @@ async def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     """
 
     if db.query(models.User).filter(
-        or_(models.User.username == user.username, models.User.email == user.email) ).first():
+        or_(models.User.username == user.username, models.User.email == user.email)).first():
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User with this username or email already exists."
         )
 
-    await get_object(cls=models.Role, db=db, object_id=user.role_id)
+    get_object(cls=models.Role, db=db, object_id=user.role_id)
 
-    hashed_password = await hashing.get_password_hash(user.password)
+    hashed_password = hashing.get_password_hash(user.password)
     db_user = models.User(
         username=user.username,
         email=user.email,
@@ -133,7 +209,7 @@ async def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     return db_user
 
 
-async def get_user_by_username(db: Session, username: str) -> models.User:
+def get_user_by_username(db: Session, username: str) -> models.User:
     """Returns a User by `username`.
 
     Args:
@@ -147,7 +223,7 @@ async def get_user_by_username(db: Session, username: str) -> models.User:
     return db.query(models.User).filter(models.User.username == username).first()
 
 
-async def get_user_by_email(db: Session, email: str) -> models.User:
+def get_user_by_email(db: Session, email: str) -> models.User:
     """Returns a User by `email`.
 
     Args:
@@ -161,7 +237,46 @@ async def get_user_by_email(db: Session, email: str) -> models.User:
     return db.query(models.User).filter(models.User.email == email).first()
 
 
-async def create_notification(db: Session, notification: schemas.NotificationCreate) -> models.Notification:
+def update_user(db: Session, user_id: int, user: schemas.UserCreate) -> models.User:
+    """Updates `User` object by a given `user_id` using `user` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `user_id` (int): `User` object's id.
+        `user` (schemas.UserCreate): Pydantic object's schema.
+
+    Raises:
+        `HTTPException`: If there's a user with the same email.
+
+    Returns:
+        `models.User`: Updated `User` object.
+    """
+
+    db_user = get_object(cls=models.User, db=db, object_id=user_id)
+    user_schema = schemas.UserUpdate(**db_user.__dict__)
+
+    if user.email\
+        and (u := get_user_by_email(db=db, email=user_schema.email))\
+        and u.id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='User with this email already exists.'
+        )
+
+    if user.password:
+        user.password = hashing.get_password_hash(user.password)
+
+    update_data = user.dict(exclude_unset=True)
+    updated_user = user_schema.copy(update=update_data)
+
+    db.query(models.User).filter_by(id=user_id).update(updated_user.__dict__)
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user
+
+
+def create_notification(db: Session, notification: schemas.NotificationCreate) -> models.Notification:
     """Creates a `Notification` with a given schema.
 
     Args:
@@ -176,8 +291,8 @@ async def create_notification(db: Session, notification: schemas.NotificationCre
         models.Notification: A new `Notification` objects.
     """
 
-    await get_object(cls=models.User, db=db, object_id=notification.user_id)
-    await get_object(cls=models.Question, db=db, object_id=notification.question_id)
+    get_object(cls=models.User, db=db, object_id=notification.user_id)
+    get_object(cls=models.Question, db=db, object_id=notification.question_id)
 
     notification_db = models.Notification(
         title=notification.title,
@@ -205,7 +320,7 @@ async def create_question(db: Session, question: schemas.QuestionCreate) -> mode
         `models.Question`: A `Question` object.
     """
     
-    await get_object(cls=models.User, db=db, object_id=question.author_id)
+    get_object(cls=models.User, db=db, object_id=question.author_id)
     
     question_db = models.Question(
         title=question.title,

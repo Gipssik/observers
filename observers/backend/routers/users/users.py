@@ -11,7 +11,7 @@ router = APIRouter(prefix='/users', tags=['users'])
 
 
 @router.get('/', response_model=list[schemas.User])
-async def get_users(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.User]:
+def get_users(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.User]:
     """Gets all `Users` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -23,11 +23,11 @@ async def get_users(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Ses
         `list[models.User]`: A `list` of all `User` objects.
     """
 
-    return await crud.get_objects(cls=models.User, db=db, skip=skip, limit=limit)
+    return crud.get_objects(cls=models.User, db=db, skip=skip, limit=limit)
 
 
 @router.post('/', response_model=schemas.User)
-async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)) -> models.User:
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)) -> models.User:
     """Creates a `User` object with a given `user` schema and returns it to the client.
 
     Args:
@@ -38,11 +38,11 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)) -
         `models.User`: A new `User` object.
     """
 
-    return await crud.create_user(db=db, user=user)
+    return crud.create_user(db=db, user=user)
 
 
 @router.get("/me/", response_model=schemas.User)
-async def read_users_me(current_user: schemas.User = Depends(get_current_user)) -> models.User:
+def read_users_me(current_user: schemas.User = Depends(get_current_user)) -> models.User:
     """Returns a `current_user`.
 
     Args:
@@ -56,7 +56,7 @@ async def read_users_me(current_user: schemas.User = Depends(get_current_user)) 
 
 
 @router.get('/{user_id}/', response_model=schemas.User)
-async def get_user(user_id: int, db: Session = Depends(get_db)) -> models.User:
+def get_user(user_id: int, db: Session = Depends(get_db)) -> models.User:
     """Gets a `User` object from the database by `user_id` and returns it to the client.
 
     Args:
@@ -67,11 +67,11 @@ async def get_user(user_id: int, db: Session = Depends(get_db)) -> models.User:
         `models.User`: A new `User` object.
     """
 
-    return await crud.get_object(cls=models.User, db=db, object_id=user_id)
+    return crud.get_object(cls=models.User, db=db, object_id=user_id)
 
 
 @router.delete('/{user_id}/')
-async def delete_user(user_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_user(user_id: int, db: Session = Depends(get_db)) -> Response:
     """Deletes a user by a given `user_id`.
 
     Args:
@@ -82,5 +82,21 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)) -> Response:
         `Response`: No content response.
     """
 
-    await crud.delete_object(cls=models.User, db=db, object_id=user_id)
+    crud.delete_object(cls=models.User, db=db, object_id=user_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.patch('/{user_id}/', response_model=schemas.User)
+def update_user(user_id: int, user: schemas.UserUpdate, db: Session = Depends(get_db)) -> models.User:
+    """Updates `User` object by given `user_id` and `user` schema and returns it.
+
+    Args:
+        `user_id` (int): `User` object's id.
+        `user` (schemas.UserUpdate): Pydantic user schema.
+        `db` (Session, optional): Database connection.
+
+    Returns:
+        `models.User`: Updated `User` object.
+    """
+
+    return crud.update_user(db=db, user_id=user_id, user=user)

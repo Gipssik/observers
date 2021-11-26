@@ -18,6 +18,9 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False, unique=True)
 
+    def __repr__(self) -> str:
+        return f'Role("{self.title}")'
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -32,6 +35,9 @@ class User(Base):
 
     role = relationship('Role', backref='users')
 
+    def __repr__(self) -> str:
+        return f'User("{self.username}")'
+
 
 class Notification(Base):
     __tablename__ = 'notifications'
@@ -44,6 +50,9 @@ class Notification(Base):
     user = relationship('User', backref='notifications')
     question = relationship('Question', backref='notifications')
 
+    def __repr__(self) -> str:
+        return f'Notification("{self.user.usernmae}", "{self.question.title}")'
+
 
 class Tag(Base):
     __tablename__ = 'tags'
@@ -52,6 +61,9 @@ class Tag(Base):
     title = Column(String, nullable=False, unique=True)
 
     questions = relationship('Question', secondary=tag_question, backref='tags')
+
+    def __repr__(self) -> str:
+        return f'Tag("{self.title}")'
 
 
 class Question(Base):
@@ -65,6 +77,9 @@ class Question(Base):
     author_id = Column(Integer, ForeignKey('users.id'))
 
     author = relationship('User', backref='questions')
+
+    def __repr__(self) -> str:
+        return f'Question("{self.title}", "{self.author.username}")'
 
 
 class Comment(Base):
@@ -81,12 +96,19 @@ class Comment(Base):
     author = relationship('User', backref='comments')
     question = relationship('Question', backref='comments')
 
+    def __repr__(self) -> str:
+        return f'Comment("{self.author.username}", "{self.content[:10]}...")'
+
 
 class Article(Base):
     __tablename__ = 'articles'
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
+    content = Column(String, nullable=False)
     date_created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     likes = Column(Integer, nullable=False, default=0)
     dislikes = Column(Integer, nullable=False, default=0)
+
+    def __repr__(self) -> str:
+        return f'Article("{self.title}")'

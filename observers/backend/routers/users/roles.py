@@ -11,7 +11,7 @@ router = APIRouter(prefix='/roles', tags=['roles'])
 
 
 @router.get('/', response_model=list[schemas.Role])
-async def get_roles(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.Role]:
+def get_roles(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.Role]:
     """Gets all `Roles` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -23,11 +23,11 @@ async def get_roles(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Ses
         `list[models.Role]`: A `list` of all `Role` objects.
     """
 
-    return await crud.get_objects(cls=models.Role, db=db, skip=skip, limit=limit)
+    return crud.get_objects(cls=models.Role, db=db, skip=skip, limit=limit)
 
 
 @router.post('/', response_model=schemas.Role)
-async def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)) -> models.Role:
+def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)) -> models.Role:
     """Creates a `Role` object with a given `role` schema and returns it to the client.
 
     Args:
@@ -38,11 +38,11 @@ async def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)) -
         `models.Role`: A new `Role` object.
     """
 
-    return await crud.create_role(db=db, role=role)
+    return crud.create_role(db=db, role=role)
 
 
 @router.get('/{role_id}/', response_model=schemas.Role)
-async def get_role(role_id: int, db: Session = Depends(get_db)) -> models.Role:
+def get_role(role_id: int, db: Session = Depends(get_db)) -> models.Role:
     """Gets a `Role` object from the database by `role_id` and returns it to the client.
 
     Args:
@@ -53,11 +53,11 @@ async def get_role(role_id: int, db: Session = Depends(get_db)) -> models.Role:
         `models.Role`: A new `Role` object.
     """
 
-    return await crud.get_object(cls=models.Role, db=db, object_id=role_id)
+    return crud.get_object(cls=models.Role, db=db, object_id=role_id)
 
 
 @router.delete('/{role_id}/')
-async def delete_role(role_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_role(role_id: int, db: Session = Depends(get_db)) -> Response:
     """Deletes a role by a given `role_id`.
 
     Args:
@@ -68,5 +68,21 @@ async def delete_role(role_id: int, db: Session = Depends(get_db)) -> Response:
         `Response`: No content response.
     """
 
-    await crud.delete_object(cls=models.Role, db=db, object_id=role_id)
+    crud.delete_object(cls=models.Role, db=db, object_id=role_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.patch('/{role_id}/', response_model=schemas.Role)
+def update_role(role_id: int, role: schemas.RoleUpdate, db: Session = Depends(get_db)) -> schemas.Role:
+    """Updates `Role` object by given `role_id` and `role` schema and returns it.
+
+    Args:
+        `role_id` (int): `Role` object's id.
+        `role` (schemas.RoleUpdate): Pydantic role schema.
+        `db` (Session, optional): Database connection.
+
+    Returns:
+        `schemas.Role`: Updated `Role` object.
+    """
+
+    return crud.update_role(db=db, role_id=role_id, role=role)

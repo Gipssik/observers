@@ -17,6 +17,10 @@ class RoleCreate(RoleBase):
     pass
 
 
+class RoleUpdate(BaseModel):
+    title: Optional[str] = None
+
+
 class Role(RoleBase):
     id: int
     users: list[User] = []
@@ -33,6 +37,12 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    profile_image: Optional[str] = None
 
 
 class User(UserBase):
@@ -56,6 +66,10 @@ class NotificationCreate(NotificationBase):
     pass
 
 
+class NotificationUpdate(BaseModel):
+    title: Optional[str] = None
+
+
 class Notification(NotificationBase):
     id: int
 
@@ -69,6 +83,10 @@ class TagBase(BaseModel):
 
 class TagCreate(TagBase):
     pass
+
+
+class TagUpdate(BaseModel):
+    title: Optional[str] = None
 
 
 class Tag(TagBase):
@@ -86,7 +104,13 @@ class QuestionBase(BaseModel):
 
 
 class QuestionCreate(QuestionBase):
-    pass
+    tags: Optional[list[str]] = None
+
+
+class QuestionUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    tags: Optional[list[str]] = None
 
 
 class Question(QuestionBase):
@@ -110,6 +134,12 @@ class CommentCreate(CommentBase):
     pass
 
 
+class CommentUpdate(BaseModel):
+    content: Optional[str] = None
+    rating: Optional[int] = None
+    is_answer: Optional[bool] = None
+
+
 class Comment(CommentBase):
     id: int
     date_created: datetime.datetime
@@ -122,10 +152,18 @@ class Comment(CommentBase):
 
 class ArticleBase(BaseModel):
     title: str
+    content: str
 
 
 class ArticleCreate(ArticleBase):
     pass
+
+
+class ArticleUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    likes: Optional[int] = None
+    dislikes: Optional[int] = None
 
 
 class Article(ArticleBase):
