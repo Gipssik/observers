@@ -97,18 +97,29 @@ def update_object(cls: type, db: Session, object_id: int, schema_object: BaseMod
     return db_object
 
 
-def get_role_by_title(db: Session, title: str) -> models.Role:
+def get_role_by_title(db: Session, title: str, raise_404: bool = False) -> models.Role:
     """Returns `Role` object by a given `title`.
 
     Args:
         `db` (Session): Database connection.
         `title` (str): `Role`' object's title.
 
+    Raises:
+        `HTTPException`: If role with this title does not exist.
+
     Returns:
         `models.Role`: A `Role` object.
     """
 
-    return db.query(models.Role).filter(models.Role.title == title).first()
+    role = db.query(models.Role).filter(models.Role.title == title).first()
+
+    if raise_404 and not role:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Role with this title does not exist.'
+        )
+
+    return role
 
 
 def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:

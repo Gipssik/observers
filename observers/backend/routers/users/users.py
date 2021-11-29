@@ -55,8 +55,8 @@ def read_users_me(current_user: schemas.User = Depends(get_current_user)) -> mod
     return current_user
 
 
-@router.get('/{user_id}/', response_model=schemas.User)
-def get_user(user_id: int, db: Session = Depends(get_db)) -> models.User:
+@router.get('/{user_key}/', response_model=schemas.User)
+def get_user(user_key: int, db: Session = Depends(get_db)) -> models.User:
     """Gets a `User` object from the database by `user_id` and returns it to the client.
 
     Args:
@@ -67,7 +67,8 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> models.User:
         `models.User`: A new `User` object.
     """
 
-    return crud.get_object(cls=models.User, db=db, object_id=user_id)
+    # TODO: make available to get user by id or email.
+    return crud.get_object(cls=models.User, db=db, object_id=user_key)
 
 
 @router.delete('/{user_id}/')
