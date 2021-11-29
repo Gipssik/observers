@@ -51,7 +51,7 @@ class Notification(Base):
     question = relationship('Question', backref='notifications')
 
     def __repr__(self) -> str:
-        return f'Notification("{self.user.usernmae}", "{self.question.title}")'
+        return f'Notification("{self.user.username}", "{self.question.title}")'
 
 
 class Tag(Base):

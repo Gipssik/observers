@@ -70,3 +70,28 @@ def delete_notification(notification_id: int, db: Session = Depends(get_db)) -> 
 
     crud.delete_object(cls=models.Notification, db=db, object_id=notification_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.patch('/{notification_id}/', response_model=schemas.Notification)
+def update_notification(
+    notification_id: int,
+    notification: schemas.NotificationUpdate,
+    db: Session = Depends(get_db)
+) -> models.Notification:
+    """Updates `Notification` object by given `notification_id` and `notification` schema and returns it.
+
+    Args:
+        `notification_id` (int): `Notification` object's id.
+        `notification` (schemas.UserUpdate): Pydantic notification schema.
+        `db` (Session, optional): Database connection.
+
+    Returns:
+        `models.Notification`: Updated `Notification` object.
+    """
+
+    return crud.update_object(
+        cls=models.Notification,
+        db=db,
+        object_id=notification_id,
+        schema_object=notification
+    )

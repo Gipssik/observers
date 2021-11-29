@@ -127,7 +127,7 @@ def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
 
     if get_role_by_title(db=db, title=role.title):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Role with this title already exists."
         )
 

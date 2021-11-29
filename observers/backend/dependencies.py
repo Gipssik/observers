@@ -24,16 +24,16 @@ def get_db():
         db.close()
 
 
-async def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
+def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
     """Returns a `User` object if `username` equals User's username or email. Otherwise `None`.
 
     Returns:
         `models.User | None`: A `User` object if `username` equals User's username or email. Otherwise `None`.
     """
 
-    return await get_user_by_email(db, email=username)\
+    return get_user_by_email(db, email=username)\
         if re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', username)\
-        else await get_user_by_username(db, username=username)
+        else get_user_by_username(db, username=username)
 
 
 async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
@@ -66,7 +66,7 @@ async def get_current_user(user_token: str = Depends(security_token.oauth2_schem
     except JWTError:
         raise credentials_exception
 
-    user = await get_user_by_username_or_email(db=db, username=token_data.username)
+    user = get_user_by_username_or_email(db=db, username=token_data.username)
 
     if user is None:
         raise credentials_exception

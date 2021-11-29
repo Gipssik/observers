@@ -14,7 +14,7 @@ async def authenticate_user(db: Session, username: str, password: str) -> models
         `models.User` | `bool`: `models.User` object if exists, otherwise `False`.
     """
 
-    user = await get_user_by_username_or_email(db=db, username=username)
+    user = get_user_by_username_or_email(db=db, username=username)
     if not user:
         return False
     if not await hashing.verify_password(password, user.password):
