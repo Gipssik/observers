@@ -24,6 +24,10 @@ def get_db():
         db.close()
 
 
+def isemail(email: str):
+    return re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', email)
+
+
 def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
     """Returns a `User` object if `username` equals User's username or email. Otherwise `None`.
 
@@ -32,7 +36,7 @@ def get_user_by_username_or_email(db: Session, username: str) -> models.User | N
     """
 
     return get_user_by_email(db, email=username)\
-        if re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', username)\
+        if isemail(username)\
         else get_user_by_username(db, username=username)
 
 

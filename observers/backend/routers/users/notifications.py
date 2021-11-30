@@ -52,7 +52,8 @@ def get_notification(notification_id: int, db: Session = Depends(get_db)) -> mod
     Returns:
         `models.Notification`: A new `Notification` object.
     """
-
+    
+    # TODO: Get notifications by user's id
     return crud.get_object(cls=models.Notification, db=db, object_id=notification_id)
 
 

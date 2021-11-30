@@ -103,6 +103,7 @@ def get_role_by_title(db: Session, title: str, raise_404: bool = False) -> model
     Args:
         `db` (Session): Database connection.
         `title` (str): `Role`' object's title.
+        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
 
     Raises:
         `HTTPException`: If role with this title does not exist.
@@ -183,6 +184,41 @@ def update_role(db: Session, role_id: int, role: schemas.RoleUpdate) -> models.R
     return db_role
 
 
+def update_role_by_title(db: Session, role_title: int, role: schemas.RoleUpdate) -> models.Role:
+    """Updates `Role` object by a given `role_title` using `role` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `role_title` (int): `Role` object's title.
+        `role` (schemas.RoleUpdate): Pydantic object's schema.
+
+    Returns:
+        `models.Role`: Updated `Role` object.
+    """
+
+    role_db = get_role_by_title(db=db, title=role_title, raise_404=True)  
+    return update_role(db=db, role_id=role_db.id, role=role)
+
+
+def delete_role_by_title(db: Session, title: str) -> None:
+    """Deletes a `Role` object by a given `title`
+
+    Args:
+        `db` (Session): Database connection.
+        `title` (str): The `title` of role.
+
+    Returns:
+        `None`
+    """
+
+    role = get_role_by_title(db=db, title=title, raise_404=True)
+
+    db.delete(role)
+    db.commit()
+
+    return None
+
+
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     """Creates a User with a given `user` schema.
 
@@ -220,41 +256,65 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     return db_user
 
 
-def get_user_by_username(db: Session, username: str) -> models.User:
+def get_user_by_username(db: Session, username: str, raise_404: bool = False) -> models.User:
     """Returns a User by `username`.
 
     Args:
         `db` (Session): Database connection.
         `username` (str): String value of User's `username`.
+        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
+
+    Raises:
+        `HTTPException`: If user with this username does not exist.
 
     Returns:
         `models.User`: A `User` by `username`.
     """
 
-    return db.query(models.User).filter(models.User.username == username).first()
+    user = db.query(models.User).filter(models.User.username == username).first()
+
+    if raise_404 and not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User with this username does not exist.'
+        )
+
+    return user
 
 
-def get_user_by_email(db: Session, email: str) -> models.User:
+def get_user_by_email(db: Session, email: str, raise_404: bool = False) -> models.User:
     """Returns a User by `email`.
 
     Args:
         `db` (Session): Database connection.
         `email` (str): String value of User's `email`.
+        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
+
+    Raises:
+        `HTTPException`: If user with this email does not exist.
 
     Returns:
         `models.User`: A User by `email`.
     """
 
-    return db.query(models.User).filter(models.User.email == email).first()
+    user = db.query(models.User).filter(models.User.email == email).first()
+
+    if raise_404 and not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User with this email does not exist.'
+        )
+
+    return user
 
 
-def update_user(db: Session, user_id: int, user: schemas.UserCreate) -> models.User:
+def update_user(db: Session, user_id: int, user: schemas.UserUpdate) -> models.User:
     """Updates `User` object by a given `user_id` using `user` schema.
 
     Args:
         `db` (Session): Database connection.
         `user_id` (int): `User` object's id.
-        `user` (schemas.UserCreate): Pydantic object's schema.
+        `user` (schemas.UserUpdate): Pydantic object's schema.
 
     Raises:
         `HTTPException`: If there's a user with the same email.
@@ -285,6 +345,76 @@ def update_user(db: Session, user_id: int, user: schemas.UserCreate) -> models.U
     db.refresh(db_user)
 
     return db_user
+
+
+def update_user_by_username(db: Session, username: str, user: schemas.UserUpdate) -> models.User:
+    """Updates `User` object by a given `username` using `user` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `username` (int): `User` object's username.
+        `user` (schemas.UserUpdate): Pydantic object's schema.
+
+    Returns:
+        `models.User`: Updated `User` object.
+    """
+
+    user_db = get_user_by_username(db=db, username=username, raise_404=True)
+    return update_user(db=db, user_id=user_db.id, user=user)
+
+
+def update_user_by_email(db: Session, email: str, user: schemas.UserUpdate) -> models.User:
+    """Updates `User` object by a given `username` using `user` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `email` (int): `User` object's email.
+        `user` (schemas.UserUpdate): Pydantic object's schema.
+
+    Returns:
+        `models.User`: Updated `User` object.
+    """
+
+    user_db = get_user_by_email(db=db, email=email, raise_404=True)
+    return update_user(db=db, user_id=user_db.id, user=user)
+
+
+def delete_user_by_username(db: Session, username: str) -> None:
+    """Deletes a `User` object by a given `username`
+
+    Args:
+        `db` (Session): Database connection.
+        `username` (str): The `username` of user.
+
+    Returns:
+        `None`
+    """
+
+    user_db = get_user_by_username(db=db, username=username, raise_404=True)
+
+    db.delete(user_db)
+    db.commit()
+
+    return None
+
+
+def delete_user_by_email(db: Session, email: str) -> None:
+    """Deletes a `User` object by a given `email`
+
+    Args:
+        `db` (Session): Database connection.
+        `email` (str): The `email` of user.
+
+    Returns:
+        `None`
+    """
+
+    user_db = get_user_by_email(db=db, email=email, raise_404=True)
+
+    db.delete(user_db)
+    db.commit()
+
+    return None
 
 
 def create_notification(db: Session, notification: schemas.NotificationCreate) -> models.Notification:
