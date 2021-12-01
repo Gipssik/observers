@@ -58,10 +58,10 @@ def read_users_me(current_user: schemas.User = Depends(get_current_user)) -> mod
 
 @router.get('/{user_key}/', response_model=schemas.User)
 def get_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> models.User:
-    """Gets a `User` object from the database by `user_id` and returns it to the client.
+    """Gets a `User` object from the database by `role_key` and returns it to the client.
 
     Args:
-        `user_id` (int): A `User` object id.
+        `role_key` (int): A `User` object id, username or email.
         `db` (Session, optional): Database connection.
 
     Raises:
@@ -88,7 +88,7 @@ def delete_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> Res
     """Deletes a user by a given `user_key`.
 
     Args:
-        `user_id` (int): `User`'s id.
+        `role_key` (int): `User`'s id, username or email.
         `db` (Session, optional): Database connection.
 
     Raises:
@@ -113,10 +113,10 @@ def delete_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> Res
 
 @router.patch('/{user_key}/', response_model=schemas.User)
 def update_user(user_key: Union[int, str], user: schemas.UserUpdate, db: Session = Depends(get_db)) -> models.User:
-    """Updates `User` object by given `user_id` and `user` schema and returns it.
+    """Updates `User` object by given `role_key` and `user` schema and returns it.
 
     Args:
-        `user_id` (int): `User` object's id.
+        `role_key` (int): `User` object's id, username or email.
         `user` (schemas.UserUpdate): Pydantic user schema.
         `db` (Session, optional): Database connection.
 

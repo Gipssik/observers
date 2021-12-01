@@ -446,6 +446,44 @@ def create_notification(db: Session, notification: schemas.NotificationCreate) -
     db.refresh(notification_db)
     return notification_db
 
+
+def get_notifications_by_user_id(db: Session, user_id: int, skip: int, limit: int) -> list[models.Notification]:
+    """Returns notifications by a given `user_id`.
+
+    Args:
+        `db` (Session): Database connection.
+        `user_id` (int): `User` object id.
+        `skip` (int): How many objects to skip.
+        `limit` (int): Maximum amout of objects.
+
+    Raises:
+        `HTTPException`: If there's no user with this `user_id`.
+
+    Returns:
+        `list[models.Notification]`: A list of `Notification` objects.
+    """
+
+    if not get_object(models.User, db=db, object_id=user_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this id does not exist."
+        )
+    
+    return db.query(models.Notification).filter_by(user_id=user_id).offset(skip).limit(limit).all()
+
+
+def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
+    if not get_object(models.User, db=db, object_id=user_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User with this id does not exist."
+        )
+
+    db.query(models.Notification).filter_by(user_id=user_id).delete()
+    db.commit()
+    
+    return None
+
     
 async def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
     """Creates a `Question` object if `User` with a given `user_id` exists.

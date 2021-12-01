@@ -68,10 +68,10 @@ def get_role(role_key: Union[int, str], db: Session = Depends(get_db)) -> models
 
 @router.patch('/{role_key}/', response_model=schemas.Role)
 def update_role(role_key: Union[int, str], role: schemas.RoleUpdate, db: Session = Depends(get_db)) -> schemas.Role:
-    """Updates `Role` object by given `role_id` and `role` schema and returns it.
+    """Updates `Role` object by given `role_key` and `role` schema and returns it.
 
     Args:
-        `role_id` (int): `Role` object's id.
+        `role_key` (int): `Role` object's id or title.
         `role` (schemas.RoleUpdate): Pydantic role schema.
         `db` (Session, optional): Database connection.
         

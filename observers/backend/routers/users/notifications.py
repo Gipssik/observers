@@ -41,35 +41,39 @@ def create_notification(notification: schemas.NotificationCreate, db: Session = 
     return crud.create_notification(db=db, notification=notification)
 
 
-@router.get('/{notification_id}/', response_model=schemas.Notification)
-def get_notification(notification_id: int, db: Session = Depends(get_db)) -> models.Notification:
-    """Gets a `Notification` object from the database by `notification_id` and returns it to the client.
+@router.get('/{user_id}/', response_model=list[schemas.Notification])
+def get_notification(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[models.Notification]:
+    """Gets notifications by a given `user_id` in range[`skip`:`skip+limit`] and returns them to the client.
 
     Args:
-        `notification_id` (int): A `Notification` object id.
+        `user_id` (int): `User` object id.
+        `skip` (int, optional): How many objects to skip. Defaults to 0.
+        `limit` (int, optional): Maximum amount of objects. Defaults to 100.
         `db` (Session, optional): Database connection.
 
     Returns:
-        `models.Notification`: A new `Notification` object.
+        `list[models.Notification]`: A list of `Notification` objects.
     """
     
-    # TODO: Get notifications by user's id
-    return crud.get_object(cls=models.Notification, db=db, object_id=notification_id)
+    return crud.get_notifications_by_user_id(db=db, user_id=user_id, skip=skip, limit=limit)
 
 
-@router.delete('/{notification_id}/')
-def delete_notification(notification_id: int, db: Session = Depends(get_db)) -> Response:
-    """Deletes a notification by a given `notification_id`.
+@router.delete('/{key_id}/')
+def delete_notification(key_id: int, by_user_id: bool = False, db: Session = Depends(get_db)) -> Response:
+    """Deletes a notification(s) by a given `key_id`.
 
     Args:
-        `notification_id` (int): `Notification`'s id.
+        `key_id` (int): `Notification`'s or `User`'s id.
         `db` (Session, optional): Database connection.
 
     Returns:
         `Response`: No content response.
     """
 
-    crud.delete_object(cls=models.Notification, db=db, object_id=notification_id)
+    if by_user_id:
+        crud.delete_notifications_by_user_id(db=db, user_id=key_id)
+    else:
+        crud.delete_object(cls=models.Notification, db=db, object_id=key_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
