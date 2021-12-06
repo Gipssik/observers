@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from fuzzywuzzy import fuzz
 from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -485,7 +486,7 @@ def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
     return None
 
     
-async def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
+def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
     """Creates a `Question` object if `User` with a given `user_id` exists.
 
     Args:
@@ -510,3 +511,32 @@ async def create_question(db: Session, question: schemas.QuestionCreate) -> mode
     db.commit()
     db.refresh(question_db)
     return question_db
+
+
+def get_question_by_title(db: Session, title: str) -> models.Question:
+    """Seeks for fuzzy equal question title to `title`.
+
+    Args:
+        `db` (Session): Database connection.
+        `title` (str): `Question` object's title.
+
+    Raises:
+        `HTTPException`: If there's no fuzzy equal question title.
+
+    Returns:
+        `models.Question`: `Question` object.
+    """
+
+    questions = sorted(
+        [(question, c) for question in db.query(models.Question).all()
+        if (c := fuzz.WRatio(question.title, title)) >= 75],
+        key=lambda x: x[1], reverse=True
+    )
+
+    if not questions:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Question with this title does not exist."
+        )
+    
+    return questions[0][0]
