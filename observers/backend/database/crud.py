@@ -686,3 +686,78 @@ def update_question(db: Session, question_id: int, question: schemas.QuestionUpd
     db.refresh(question_db)
 
     return question_db
+
+
+def create_comment(db: Session, comment: schemas.CommentCreate) -> models.Comment:
+    """Creates a `Comment` model object with a given `comment` schema
+
+    Args:
+        `db` (Session): Database connection.
+        `comment` (schemas.CommentCreate): `Comment` schema.
+
+    Raises:
+        `HTTPException`: If a given user or question with this id does not exist.
+
+    Returns:
+        `models.Comment`: `Comment` object.
+    """
+
+    if not get_object(cls=models.User, db=db, object_id=comment.author_id)\
+        or not get_object(cls=models.Question, db=db, object_id=comment.question_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User or question with this id does not exist.'
+        )
+
+    comment_db = models.Comment(
+        content=comment.content,
+        author_id=comment.author_id,
+        question_id=comment.question_id
+    )
+
+    db.add(comment_db)
+    db.commit()
+
+    return comment_db
+
+
+def get_comments_by_question_id(db: Session, question_id: int) -> list[models.Comment]:
+    """Returns all comments with `question_id`.
+
+    Args:
+        `db` (Session): Database connection.
+        `question_id` (int): `Question` object's id.
+
+    Raises:
+        `HTTPException`: If there's no question with this id.
+
+    Returns:
+        `list[models.Comment]`: List of `Comment` objects.
+    """
+
+    if not (question := get_object(cls=models.Question, db=db, object_id=question_id)):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Question with this id does not exist.'
+        )
+
+    return question.comments
+
+
+def create_article(db: Session, article: schemas.ArticleCreate) -> models.Article:
+    """Creates a model Article with a given `article` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `article` (schemas.ArticleCreate): Article Pydantic model.
+
+    Returns:
+        `models.Article`: A new `Article`.
+    """
+
+    article_db = models.Article(title=article.title, content=article.content)
+
+    db.add(article_db)
+    db.commit()
+
+    return article_db

@@ -114,6 +114,7 @@ class QuestionUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     tags: Optional[list[str]] = None
+    views: Optional[int] = None
 
 
 class Question(QuestionBase):
