@@ -572,6 +572,33 @@ def update_tag(db: Session, tag_id: int, tag: schemas.TagUpdate) -> models.Tag:
     return tag_db
 
 
+def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> None:
+    """Adds `tags` to a given `question_db`.
+
+    Args:
+        `db` (Session): Database connection.
+        `tags` (list[str]): List of tags.
+        `question_db` (models.Question): `Question` object.
+
+    Raises:
+        `HTTPException`: If there was a wrong tag given.
+    """
+
+    for tag in tags:
+        tag = tag.lower()
+        if not tag.isalnum():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Wrong tag title.'
+            )
+
+        if not (tag_db := get_tag_by_title(db=db, title=tag)):
+            tag_db = models.Tag(title=tag)
+            db.add(tag_db)
+
+        question_db.tags.append(tag_db)
+
+
 def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
     """Creates a `Question` object if `User` with a given `user_id` exists.
 
@@ -587,13 +614,17 @@ def create_question(db: Session, question: schemas.QuestionCreate) -> models.Que
     """
     
     get_object(cls=models.User, db=db, object_id=question.author_id)
-    
+
     question_db = models.Question(
         title=question.title,
         content=question.content,
         author_id=question.author_id
     )
+
     db.add(question_db)
+
+    fill_tags(db=db, tags=question.tags, question_db=question_db)
+
     db.commit()
     db.refresh(question_db)
     return question_db
@@ -640,14 +671,18 @@ def update_question(db: Session, question_id: int, question: schemas.QuestionUpd
         `Base`: Updated `Question` object.
     """
 
-    db_question = get_object(cls=models.Question, db=db, object_id=question_id)
-    question_schema = schemas.QuestionUpdate(**db_question.__dict__)
+    question_db = get_object(cls=models.Question, db=db, object_id=question_id)
+    question_schema = schemas.QuestionUpdate(**question_db.__dict__)
 
-    update_question = question.dict(exclude_unset=True)
+    update_question = question.dict(exclude_unset=True, exclude={'tags'})
     updated_question = question_schema.copy(update=update_question, exclude={'tags'})
 
     db.query(models.Question).filter_by(id=question_id).update(updated_question.__dict__)
-    db.commit()
-    db.refresh(db_question)
 
-    return db_question
+    question_db.tags = []
+    fill_tags(db=db, tags=question.tags, question_db=question_db)
+
+    db.commit()
+    db.refresh(question_db)
+
+    return question_db

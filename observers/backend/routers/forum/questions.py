@@ -20,7 +20,8 @@ def create_question(question: schemas.QuestionCreate, db: Session = Depends(get_
         `models.Question`: `Question` object.
     """
 
-    return crud.create_question(db=db, question=question)
+    a = crud.create_question(db=db, question=question)
+    return a
 
 
 @router.get('/', response_model=list[schemas.Question])

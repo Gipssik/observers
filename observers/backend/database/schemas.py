@@ -80,6 +80,9 @@ class Notification(NotificationBase):
 class TagBase(BaseModel):
     title: str
 
+    class Config:
+        orm_mode = True
+
 
 class TagCreate(TagBase):
     pass
