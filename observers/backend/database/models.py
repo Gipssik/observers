@@ -7,8 +7,8 @@ from .db import Base
 
 
 tag_question = Table('tag_question', Base.metadata,
-                     Column('tag_id', ForeignKey('tags.id'), primary_key=True, index=True),
-                     Column('question_id', ForeignKey('questions.id'), primary_key=True, index=True)
+                     Column('tag_id', ForeignKey('tags.id', ondelete='CASCADE'), primary_key=True, index=True),
+                     Column('question_id', ForeignKey('questions.id', ondelete='CASCADE'), primary_key=True, index=True)
 )
 
 
@@ -17,6 +17,8 @@ class Role(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False, unique=True)
+
+    users = relationship('User', backref='role', cascade='all,delete')
 
     def __repr__(self) -> str:
         return f'Role("{self.title}")'
@@ -33,7 +35,9 @@ class User(Base):
     profile_image = Column(String, nullable=False, default='default.jpg')
     role_id = Column(Integer, ForeignKey('roles.id'))
 
-    role = relationship('Role', backref='users')
+    notifications = relationship('Notification', backref='user', cascade='all,delete')
+    questions = relationship('Question', backref='author', cascade='all,delete')
+    comments = relationship('Comment', backref='author', cascade='all,delete')
 
     def __repr__(self) -> str:
         return f'User("{self.username}")'
@@ -46,9 +50,6 @@ class Notification(Base):
     title = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
     question_id = Column(Integer, ForeignKey('questions.id'))
-
-    user = relationship('User', backref='notifications')
-    question = relationship('Question', backref='notifications')
 
     def __repr__(self) -> str:
         return f'Notification("{self.user.username}", "{self.question.title}")'
@@ -76,7 +77,8 @@ class Question(Base):
     views = Column(Integer, nullable=False, default=0)
     author_id = Column(Integer, ForeignKey('users.id'))
 
-    author = relationship('User', backref='questions')
+    notifications = relationship('Notification', backref='question', cascade='all,delete')
+    comments = relationship('Comment', backref='question', cascade='all,delete')
 
     def __repr__(self) -> str:
         return f'Question("{self.title}", "{self.author.username}")'
@@ -92,9 +94,6 @@ class Comment(Base):
     is_answer = Column(Boolean, nullable=False, default=False)
     author_id = Column(Integer, ForeignKey('users.id'))
     question_id = Column(Integer, ForeignKey('questions.id'))
-
-    author = relationship('User', backref='comments')
-    question = relationship('Question', backref='comments')
 
     def __repr__(self) -> str:
         return f'Comment("{self.author.username}", "{self.content[:10]}...")'

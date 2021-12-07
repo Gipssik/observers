@@ -485,6 +485,45 @@ def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
     
     return None
 
+
+def get_tag_by_title(db: Session, title: str, raise_404: bool = False) -> models.Tag:
+    """Gets `Tag` object by a given tag `title`.
+
+    Args:
+        `db` (Session): Database connection.
+        `title` (str): `Tag` object's title.
+        `raise_404` (bool, optional): To raise error 404 if there's no tag with this title or not. Defaults to False.
+
+    Raises:
+        `HTTPException`: If there's no tag with this `title`.
+
+    Returns:
+        `models.Tag`: `Tag` object.
+    """
+
+    tag = db.query(models.Tag).filter_by(title=title).first()
+    
+    if raise_404 and not tag:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Tag with this title does not exist."
+        )
+
+    return tag
+
+
+def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
+    if get_tag_by_title(db=db, title=tag.title):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Tag with this title already exist.'
+        )
+        
+    tag_db = models.Tag(title=tag.title)
+    db.add(tag_db)
+    db.commit()
+    return tag_db
+
     
 def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
     """Creates a `Question` object if `User` with a given `user_id` exists.
@@ -540,3 +579,28 @@ def get_question_by_title(db: Session, title: str) -> models.Question:
         )
     
     return questions[0][0]
+
+
+def update_question(db: Session, question_id: int, question: schemas.QuestionUpdate) -> models.Question:
+    """Updates `Question` object by given `question_id` and `question` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `question_id` (int): Question's id.
+        `question` (schemas.QuestionUpdate): Pydantic question schema.
+
+    Returns:
+        `Base`: Updated `Question` object.
+    """
+
+    db_question = get_object(cls=models.Question, db=db, object_id=question_id)
+    question_schema = schemas.QuestionUpdate(**db_question.__dict__)
+
+    update_question = question.dict(exclude_unset=True)
+    updated_question = question_schema.copy(update=update_question, exclude={'tags'})
+
+    db.query(models.Question).filter_by(id=question_id).update(updated_question.__dict__)
+    db.commit()
+    db.refresh(db_question)
+
+    return db_question

@@ -88,7 +88,7 @@ def delete_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> Res
     """Deletes a user by a given `user_key`.
 
     Args:
-        `role_key` (int): `User`'s id, username or email.
+        `user_key` (int): `User`'s id, username or email.
         `db` (Session, optional): Database connection.
 
     Raises:
