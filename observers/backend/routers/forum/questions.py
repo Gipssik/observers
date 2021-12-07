@@ -17,7 +17,7 @@ def create_question(question: schemas.QuestionCreate, db: Session = Depends(get_
         `db` (Session, optional): Database connection.
 
     Returns:
-        `models.Question`: [description]
+        `models.Question`: `Question` object.
     """
 
     return crud.create_question(db=db, question=question)
@@ -61,7 +61,7 @@ def update_question(question_id: int, question: schemas.QuestionUpdate, db: Sess
     """Updates `Question` object by `question_id`.
 
     Args:
-        `question_key` (int): `Question` object's id.
+        `question_id` (int): `Question` object's id.
         `question` (schemas.QuestionUpdate): `QuestionUpdate` schema.
         `db` (Session, optional): Database connection.
 

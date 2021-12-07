@@ -513,6 +513,19 @@ def get_tag_by_title(db: Session, title: str, raise_404: bool = False) -> models
 
 
 def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
+    """Creates a `Tag` model object with a given `tag` schema
+
+    Args:
+        `db` (Session): Database connection.
+        `tag` (schemas.TagCreate): `Tag` schema.
+
+    Raises:
+        `HTTPException`: If a tag with this title already exists.
+
+    Returns:
+        `models.Tag`: `Tag` object.
+    """
+
     if get_tag_by_title(db=db, title=tag.title):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -524,7 +537,41 @@ def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
     db.commit()
     return tag_db
 
-    
+
+def update_tag(db: Session, tag_id: int, tag: schemas.TagUpdate) -> models.Tag:
+    """Updates `Tag` object by a given `tag_id` using `tag` schema.
+
+    Args:
+        `db` (Session): Database connection.
+        `tag_id` (int): `Tag` object's id.
+        `tag` (schemas.TagUpdate): Pydantic object's schema.
+
+    Raises:
+        `HTTPException`: If there's a tag with the same title.
+
+    Returns:
+        `models.Tag`: Updated `Tag` object.
+    """
+
+    if (t := get_tag_by_title(db=db, title=tag.title)) and t.id != tag_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Tag with this title already exists.'
+        )
+
+    tag_db = get_object(cls=models.Tag, db=db, object_id=tag_id)
+    tag_schema = schemas.TagUpdate(**tag_db.__dict__)
+
+    update_data = tag.dict(exclude_unset=True)
+    updated_tag = tag_schema.copy(update=update_data)
+
+    db.query(models.Tag).filter_by(id=tag_id).update(updated_tag.__dict__)
+    db.commit()
+    db.refresh(tag_db)
+
+    return tag_db
+
+
 def create_question(db: Session, question: schemas.QuestionCreate) -> models.Question:
     """Creates a `Question` object if `User` with a given `user_id` exists.
 
