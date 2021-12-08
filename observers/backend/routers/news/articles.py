@@ -68,3 +68,19 @@ def update_article(article_id: int, article: schemas.ArticleUpdate, db: Session 
     """
 
     return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article)
+
+
+@router.delete('/{article_id}/')
+def delete_tag(article_id: int, db: Session = Depends(get_db)) -> Response:
+    """Deletes a article by a given `article_id`.
+
+    Args:
+        `article_id` (int): `Article`'s id.
+        `db` (Session, optional): Database connection.
+
+    Returns:
+        `Response`: No content response.
+    """
+
+    crud.delete_object(cls=models.Article, db=db, object_id=article_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
