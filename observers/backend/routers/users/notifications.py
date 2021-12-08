@@ -4,14 +4,19 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from database import crud, schemas, models
-from dependencies import get_db
+from dependencies import get_db, get_current_user, raise_403_if_not_admin, raise_403_if_no_access
 
 
 router = APIRouter(prefix='/notifications', tags=['notifications'])
 
 
 @router.get('/', response_model=list[schemas.Notification])
-def get_notifications(skip: Optional[int] = 0, limit: Optional[int] = 100, db: Session = Depends(get_db)) -> list[models.Notification]:
+def get_notifications(
+    skip: Optional[int] = 0,
+    limit: Optional[int] = 100,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> list[models.Notification]:
     """Gets all `Notifications` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -23,11 +28,17 @@ def get_notifications(skip: Optional[int] = 0, limit: Optional[int] = 100, db: S
         list[models.Notification]: A `list` of all `Notification` objects.
     """
 
+    raise_403_if_not_admin(user=current_user)
+
     return crud.get_objects(cls=models.Notification, db=db, skip=skip, limit=limit)
 
 
 @router.post('/', response_model=schemas.Notification)
-def create_notification(notification: schemas.NotificationCreate, db: Session = Depends(get_db)) -> models.Notification:
+def create_notification(
+    notification: schemas.NotificationCreate,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> models.Notification:
     """Creates a `Notification` object with a given `notification` schema.
 
     Args:
@@ -38,11 +49,19 @@ def create_notification(notification: schemas.NotificationCreate, db: Session = 
         `models.Notification`: A new `Notification` object.
     """
 
+    raise_403_if_not_admin(user=current_user)
+
     return crud.create_notification(db=db, notification=notification)
 
 
 @router.get('/{user_id}/', response_model=list[schemas.Notification])
-def get_notification(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[models.Notification]:
+def get_user_notifications(
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> list[models.Notification]:
     """Gets notifications by a given `user_id` in range[`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -55,11 +74,18 @@ def get_notification(user_id: int, skip: int = 0, limit: int = 100, db: Session 
         `list[models.Notification]`: A list of `Notification` objects.
     """
     
+    raise_403_if_no_access(user=current_user, user_id=user_id)
+
     return crud.get_notifications_by_user_id(db=db, user_id=user_id, skip=skip, limit=limit)
 
 
 @router.delete('/{key_id}/')
-def delete_notification(key_id: int, by_user_id: bool = False, db: Session = Depends(get_db)) -> Response:
+def delete_notification(
+    key_id: int,
+    by_user_id: bool = False,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> Response:
     """Deletes a notification(s) by a given `key_id`.
 
     Args:
@@ -70,9 +96,12 @@ def delete_notification(key_id: int, by_user_id: bool = False, db: Session = Dep
         `Response`: No content response.
     """
 
+
     if by_user_id:
+        raise_403_if_no_access(user=current_user, user_id=key_id)
         crud.delete_notifications_by_user_id(db=db, user_id=key_id)
     else:
+        raise_403_if_not_admin(user=current_user)
         crud.delete_object(cls=models.Notification, db=db, object_id=key_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -81,7 +110,8 @@ def delete_notification(key_id: int, by_user_id: bool = False, db: Session = Dep
 def update_notification(
     notification_id: int,
     notification: schemas.NotificationUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
 ) -> models.Notification:
     """Updates `Notification` object by given `notification_id` and `notification` schema and returns it.
 
@@ -93,6 +123,8 @@ def update_notification(
     Returns:
         `models.Notification`: Updated `Notification` object.
     """
+
+    raise_403_if_not_admin(user=current_user)
 
     return crud.update_object(
         cls=models.Notification,

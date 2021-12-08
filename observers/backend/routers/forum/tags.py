@@ -6,6 +6,7 @@ from database import crud, models, schemas
 from dependencies import get_db
 
 router = APIRouter(prefix='/tags', tags=['tags'])
+# TODO: implement authorization in all apis
 
 
 @router.post('/', response_model=schemas.Tag)

@@ -1,4 +1,3 @@
-import re
 from typing import Optional, Union
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
@@ -6,7 +5,7 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from database import crud, schemas, models
-from dependencies import get_current_user, get_db, isemail
+from dependencies import get_current_user, get_db, isemail, raise_403_if_not_admin, raise_403_if_no_access
 
 router = APIRouter(prefix='/users', tags=['users'])
 
@@ -83,57 +82,48 @@ def get_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> models
     )
 
 
-@router.delete('/{user_key}/')
-def delete_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> Response:
-    """Deletes a user by a given `user_key`.
+@router.delete('/{user_id}/')
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> Response:
+    """Deletes a user by a given `user_id`.
 
     Args:
-        `user_key` (int): `User`'s id, username or email.
+        `user_id` (int): `User`'s id.
         `db` (Session, optional): Database connection.
-
-    Raises:
-        `HTTPException`: If an invalid `user_key` was given.
+        `current_user` (schemas.User, optional): A `schemas.User` object of current user.
 
     Returns:
         `Response`: No content response.
     """
-    if isinstance(user_key, int):
-        crud.delete_object(cls=models.User, db=db, object_id=user_key)
-    elif isemail(user_key):
-        crud.delete_user_by_email(db=db, email=user_key)
-    elif user_key.replace('_', '').isalpha():
-        crud.delete_user_by_username(db=db, username=user_key)
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail='Unresolved user_key.'
-        )
+
+    raise_403_if_not_admin(user=current_user)
+
+    crud.delete_object(cls=models.User, db=db, object_id=user_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.patch('/{user_key}/', response_model=schemas.User)
-def update_user(user_key: Union[int, str], user: schemas.UserUpdate, db: Session = Depends(get_db)) -> models.User:
-    """Updates `User` object by given `role_key` and `user` schema and returns it.
+@router.patch('/{user_id}/', response_model=schemas.User)
+def update_user(
+    user_id: int,
+    user: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+) -> models.User:
+    """Updates `User` object by given `user_id` and `user` schema and returns it.
 
     Args:
-        `role_key` (int): `User` object's id, username or email.
+        `user_id` (int): `User` object's id.
         `user` (schemas.UserUpdate): Pydantic user schema.
         `db` (Session, optional): Database connection.
-
-    Raises:
-        `HTTPException`: If an invalid `user_key` was given.
+        `current_user` (schemas.User, optional): A `schemas.User` object of current user.
 
     Returns:
         `models.User`: Updated `User` object.
     """
 
-    if isinstance(user_key, int):
-        return crud.update_user(db=db, user_id=user_key, user=user)
-    elif isemail(user_key):
-        return crud.update_user_by_email(db=db, email=user_key, user=user)
-    elif user_key.replace('_', '').isalpha():
-        return crud.update_user_by_username(db=db, username=user_key, user=user)
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail='Unresolved user_key.'
-    )
+    raise_403_if_no_access(user=current_user, user_id=user_id)
+
+    return crud.update_user(db=db, user_id=user_id, user=user)

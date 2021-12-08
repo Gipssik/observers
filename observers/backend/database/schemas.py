@@ -12,6 +12,9 @@ Comment = ForwardRef('Comment')
 class RoleBase(BaseModel):
     title: str
 
+    class Config:
+        orm_mode = True
+
 
 class RoleCreate(RoleBase):
     pass
@@ -32,11 +35,11 @@ class Role(RoleBase):
 class UserBase(BaseModel):
     username: str
     email: EmailStr
-    role_id: int
 
 
 class UserCreate(UserBase):
     password: str
+    role_id: int
 
 
 class UserUpdate(BaseModel):
@@ -47,6 +50,7 @@ class UserUpdate(BaseModel):
 
 class User(UserBase):
     id: int
+    role: RoleBase
     date_created: datetime.datetime
     profile_image: Optional[str] = None
     questions: list[Question] = []

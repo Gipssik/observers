@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from database.db import SessionLocal
-from database import models
+from database import models, schemas as db_schemas
 from security import security_token, schemas
 from database.crud import get_user_by_username, get_user_by_email
 
@@ -26,6 +26,22 @@ def get_db():
 
 def isemail(email: str):
     return re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', email)
+
+
+def raise_403_if_not_admin(user: db_schemas.User):
+    if user.role.title != 'Admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You are not an admin.'
+        )
+
+
+def raise_403_if_no_access(user: db_schemas.User, user_id: int):
+    if user.role.title != 'Admin' and user.id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You are not that user.'
+        )
 
 
 def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
