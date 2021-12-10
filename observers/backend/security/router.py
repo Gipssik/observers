@@ -12,7 +12,7 @@ from .schemas import Token
 router = APIRouter(tags=['security'])
 
 
-@router.post("/token", response_model=Token)
+@router.post("/api/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)) -> dict:
     """Returns a `dict` with token and its type.
 
