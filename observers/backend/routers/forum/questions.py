@@ -1,15 +1,20 @@
 from typing import Union
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
-from dependencies import get_db
+from dependencies import get_db, get_current_user
+from decorators import raise_403_if_no_access
 
 router = APIRouter(prefix='/questions', tags=['questions'])
 
 
 @router.post('/', response_model=schemas.Question)
-def create_question(question: schemas.QuestionCreate, db: Session = Depends(get_db)) -> models.Question:
+def create_question(
+        question: schemas.QuestionCreate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Question:
     """Creates a `Question` object with a given `QuestionCreate` schema.
 
     Args:
@@ -57,7 +62,12 @@ def get_question(question_key: Union[int, str], db: Session = Depends(get_db)) -
 
 
 @router.patch('/{question_id}/', response_model=schemas.Question)
-def update_question(question_id: int, question: schemas.QuestionUpdate, db: Session = Depends(get_db)) -> models.Question:
+def update_question(
+        question_id: int,
+        question: schemas.QuestionUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Question:
     """Updates `Question` object by `question_id`.
 
     Args:
@@ -69,11 +79,26 @@ def update_question(question_id: int, question: schemas.QuestionUpdate, db: Sess
         `models.Question`: `Question` object.
     """
 
+    if current_user.role.title != 'Admin' and \
+            current_user.id != crud.get_object(cls=models.Question, db=db, object_id=question_id).author.id:
+        if not question.views:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='You did not give the views parameter.'
+            )
+
+        return crud.update_question(
+            db=db, question_id=question_id, question=schemas.QuestionUpdate(views=question.views)
+        )
     return crud.update_question(db=db, question_id=question_id, question=question)
 
 
 @router.delete('/{question_id}/')
-def delete_question(question_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_question(
+        question_id: int,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> Response:
     """Deletes a question by a given `question_id`.
 
     Args:
@@ -86,6 +111,13 @@ def delete_question(question_id: int, db: Session = Depends(get_db)) -> Response
     Returns:
         `Response`: No content response.
     """
+
+    if current_user.role.title != 'Admin' and\
+            current_user.id != crud.get_object(cls=models.Question, db=db, object_id=question_id).author.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You are not the owner of the question.'
+        )
 
     crud.delete_object(cls=models.Question, db=db, object_id=question_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

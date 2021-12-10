@@ -5,7 +5,9 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from database import crud, schemas, models
-from dependencies import get_current_user, get_db, isemail, raise_403_if_not_admin, raise_403_if_no_access
+from dependencies import get_current_user, get_db
+from decorators import raise_403_if_not_admin, raise_403_if_no_access
+from services import isemail
 
 router = APIRouter(prefix='/users', tags=['users'])
 
@@ -83,10 +85,11 @@ def get_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> models
 
 
 @router.delete('/{user_id}/')
+@raise_403_if_no_access
 def delete_user(
-    user_id: int,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        user_id: int,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> Response:
     """Deletes a user by a given `user_id`.
 
@@ -99,18 +102,17 @@ def delete_user(
         `Response`: No content response.
     """
 
-    raise_403_if_not_admin(user=current_user)
-
     crud.delete_object(cls=models.User, db=db, object_id=user_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.patch('/{user_id}/', response_model=schemas.User)
+@raise_403_if_no_access
 def update_user(
-    user_id: int,
-    user: schemas.UserUpdate,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        user_id: int,
+        user: schemas.UserUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> models.User:
     """Updates `User` object by given `user_id` and `user` schema and returns it.
 
@@ -123,7 +125,5 @@ def update_user(
     Returns:
         `models.User`: Updated `User` object.
     """
-
-    raise_403_if_no_access(user=current_user, user_id=user_id)
 
     return crud.update_user(db=db, user_id=user_id, user=user)

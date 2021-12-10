@@ -4,7 +4,7 @@ from database import models
 
 from . import hashing
 
-from dependencies import get_user_by_username_or_email
+from services import get_user_by_username_or_email
 
 
 async def authenticate_user(db: Session, username: str, password: str) -> models.User | bool:

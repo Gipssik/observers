@@ -4,17 +4,19 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from database import crud, schemas, models
-from dependencies import get_db, get_current_user, raise_403_if_not_admin
+from dependencies import get_db, get_current_user
+from decorators import raise_403_if_not_admin
 
 
 router = APIRouter(prefix='/roles', tags=['roles'])
 
 
 @router.post('/', response_model=schemas.Role)
+@raise_403_if_not_admin
 def create_role(
-    role: schemas.RoleCreate,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        role: schemas.RoleCreate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> models.Role:
     """Creates a `Role` object with a given `role` schema and returns it to the client.
 
@@ -27,17 +29,16 @@ def create_role(
         `models.Role`: A new `Role` object.
     """
 
-    raise_403_if_not_admin(user=current_user)
-
     return crud.create_role(db=db, role=role)
 
 
 @router.get('/', response_model=list[schemas.Role])
+@raise_403_if_not_admin
 def get_roles(
-    skip: Optional[int] = 0,
-    limit: Optional[int] = 100,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        skip: Optional[int] = 0,
+        limit: Optional[int] = 100,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> list[models.Role]:
     """Gets all `Roles` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
@@ -51,16 +52,15 @@ def get_roles(
         `list[models.Role]`: A `list` of all `Role` objects.
     """
 
-    raise_403_if_not_admin(user=current_user)
-
     return crud.get_objects(cls=models.Role, db=db, skip=skip, limit=limit)
 
 
 @router.get('/{role_key}/', response_model=schemas.Role)
+@raise_403_if_not_admin
 def get_role(
-    role_key: Union[int, str],
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        role_key: Union[int, str],
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> models.Role:
     """Gets a `Role` object from the database by `role_key` and returns it to the client.
 
@@ -76,8 +76,6 @@ def get_role(
         `models.Role`: A new `Role` object.
     """
 
-    raise_403_if_not_admin(user=current_user)
-
     if isinstance(role_key, int):
         return crud.get_object(cls=models.Role, db=db, object_id=role_key)
     if role_key.isalpha():
@@ -89,11 +87,12 @@ def get_role(
 
 
 @router.patch('/{role_key}/', response_model=schemas.Role)
+@raise_403_if_not_admin
 def update_role(
-    role_key: Union[int, str],
-    role: schemas.RoleUpdate,
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        role_key: Union[int, str],
+        role: schemas.RoleUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> schemas.Role:
     """Updates `Role` object by given `role_key` and `role` schema and returns it.
 
@@ -110,8 +109,6 @@ def update_role(
         `schemas.Role`: Updated `Role` object.
     """
 
-    raise_403_if_not_admin(user=current_user)
-
     if isinstance(role_key, int):
         return crud.update_role(db=db, role_id=role_key, role=role)
     elif role_key.isalpha():
@@ -123,10 +120,11 @@ def update_role(
 
 
 @router.delete('/{role_key}/')
+@raise_403_if_not_admin
 def delete_role(
-    role_key: Union[int, str],
-    db: Session = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_user)
+        role_key: Union[int, str],
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
 ) -> Response:
     """Deletes a role by a given `role_key`.
 
@@ -141,8 +139,6 @@ def delete_role(
     Returns:
         `Response`: No content response.
     """
-
-    raise_403_if_not_admin(user=current_user)
 
     if isinstance(role_key, int):
         crud.delete_object(cls=models.Role, db=db, object_id=role_key)

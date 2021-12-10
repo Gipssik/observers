@@ -3,7 +3,6 @@ from fuzzywuzzy import fuzz
 from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import update
 
 from .db import Base
 
@@ -583,6 +582,9 @@ def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> Non
     Raises:
         `HTTPException`: If there was a wrong tag given.
     """
+
+    if not tags:
+        return
 
     for tag in tags:
         tag = tag.lower()

@@ -3,7 +3,7 @@ from sqlalchemy.orm.session import Session
 
 from database import models
 from database.db import engine, SessionLocal
-from dependencies import isemail
+from services import isemail
 from security import router as security_router
 from security.hashing import get_password_hash
 from routers import router

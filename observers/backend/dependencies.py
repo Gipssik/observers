@@ -1,13 +1,11 @@
-import re
-
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from database.db import SessionLocal
-from database import models, schemas as db_schemas
+from database import models
 from security import security_token, schemas
-from database.crud import get_user_by_username, get_user_by_email
+from services import get_user_by_username_or_email
 
 
 def get_db():
@@ -24,39 +22,8 @@ def get_db():
         db.close()
 
 
-def isemail(email: str):
-    return re.fullmatch(r'^([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+$', email)
-
-
-def raise_403_if_not_admin(user: db_schemas.User):
-    if user.role.title != 'Admin':
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You are not an admin.'
-        )
-
-
-def raise_403_if_no_access(user: db_schemas.User, user_id: int):
-    if user.role.title != 'Admin' and user.id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You are not that user.'
-        )
-
-
-def get_user_by_username_or_email(db: Session, username: str) -> models.User | None:
-    """Returns a `User` object if `username` equals User's username or email. Otherwise `None`.
-
-    Returns:
-        `models.User | None`: A `User` object if `username` equals User's username or email. Otherwise `None`.
-    """
-
-    return get_user_by_email(db, email=username)\
-        if isemail(username)\
-        else get_user_by_username(db, username=username)
-
-
-async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
+async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme),
+                           db: Session = Depends(get_db)) -> models.User:
     """Returns the current user if he passes authentication.
 
     Args:

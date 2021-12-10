@@ -3,14 +3,19 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
-from dependencies import get_db
+from dependencies import get_db, get_current_user
+from decorators import raise_403_if_not_admin
 
 router = APIRouter(prefix='/tags', tags=['tags'])
-# TODO: implement authorization in all apis
 
 
 @router.post('/', response_model=schemas.Tag)
-def create_tag(tag: schemas.TagCreate, db: Session = Depends(get_db)) -> models.Tag:
+@raise_403_if_not_admin
+def create_tag(
+        tag: schemas.TagCreate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Tag:
     """Creates a `Tag` object with a given `TagCreate` schema.
 
     Args:
@@ -58,7 +63,13 @@ def get_tag(tag_key: Union[int, str], db: Session = Depends(get_db)) -> models.T
 
 
 @router.patch('/{tag_id}/', response_model=schemas.Tag)
-def update_tag(tag_id: int, tag: schemas.TagUpdate, db: Session = Depends(get_db)) -> models.Tag:
+@raise_403_if_not_admin
+def update_tag(
+        tag_id: int,
+        tag: schemas.TagUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Tag:
     """Updates `Tag` object by `tag_id`.
 
     Args:
@@ -74,7 +85,12 @@ def update_tag(tag_id: int, tag: schemas.TagUpdate, db: Session = Depends(get_db
 
 
 @router.delete('/{tag_id}/')
-def delete_tag(tag_id: int, db: Session = Depends(get_db)) -> Response:
+@raise_403_if_not_admin
+def delete_tag(
+        tag_id: int,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> Response:
     """Deletes a tag by a given `tag_id`.
 
     Args:

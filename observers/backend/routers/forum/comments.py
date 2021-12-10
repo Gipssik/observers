@@ -2,13 +2,18 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
-from dependencies import get_db
+from decorators import raise_403_if_not_admin
+from dependencies import get_db, get_current_user
 
 router = APIRouter(prefix='/comments', tags=['comments'])
 
 
 @router.post('/', response_model=schemas.Comment)
-def create_comment(comment: schemas.CommentCreate, db: Session = Depends(get_db)) -> models.Comment:
+def create_comment(
+        comment: schemas.CommentCreate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Comment:
     """Creates a `Comment` object with a given `CommentCreate` schema.
 
     Args:
@@ -23,7 +28,13 @@ def create_comment(comment: schemas.CommentCreate, db: Session = Depends(get_db)
 
 
 @router.get('/', response_model=list[schemas.Comment])
-def get_comments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[models.Comment]:
+@raise_403_if_not_admin
+def get_comments(
+        skip: int = 0,
+        limit: int = 100,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> list[models.Comment]:
     """Gets all `Comments` from database in range [`skip`:`skip+limit`] and returns them to the client.
 
     Args:
@@ -54,7 +65,12 @@ def get_comments_by_question(question_id: int, db: Session = Depends(get_db)) ->
 
 
 @router.patch('/{comment_id}/', response_model=schemas.Comment)
-def update_comment(comment_id: int, comment: schemas.CommentUpdate, db: Session = Depends(get_db)) -> models.Comment:
+def update_comment(
+        comment_id: int,
+        comment: schemas.CommentUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Comment:
     """Updates `Comment` object by `comment_id`.
 
     Args:
@@ -65,6 +81,28 @@ def update_comment(comment_id: int, comment: schemas.CommentUpdate, db: Session 
     Returns:
         `models.Comment`: `Comment` object.
     """
+
+    # TODO: Comment update access separation
+    comment_db = crud.get_object(cls=models.Comment, db=db, object_id=comment_id)
+
+    if comment.content and current_user.id == comment_db.author.id:
+        return crud.update_object(
+            cls=models.Comment,
+            db=db,
+            object_id=comment_id,
+            schema_object=schemas.CommentUpdate(content=comment.content)
+        )
+
+    elif comment.rating and\
+            current_user.role.title != 'Admin' and\
+            current_user.id != comment_db.author.id:
+
+        return crud.update_object(
+            cls=models.Comment,
+            db=db,
+            object_id=comment_id,
+            schema_object=schemas.CommentUpdate(rating=comment.rating)
+        )
 
     return crud.update_object(cls=models.Comment, db=db, object_id=comment_id, schema_object=comment)
 
