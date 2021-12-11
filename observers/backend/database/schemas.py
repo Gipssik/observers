@@ -134,12 +134,11 @@ class Question(QuestionBase):
 
 class CommentBase(BaseModel):
     content: str
-    author_id: int
     question_id: int
 
 
 class CommentCreate(CommentBase):
-    pass
+    author_id: Optional[int] = None
 
 
 class CommentUpdate(BaseModel):
@@ -150,6 +149,7 @@ class CommentUpdate(BaseModel):
 
 class Comment(CommentBase):
     id: int
+    author_id: int
     date_created: datetime.datetime
     rating: int
     is_answer: bool

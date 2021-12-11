@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
@@ -24,6 +24,7 @@ def create_comment(
         `models.Comment`: `Comment` object.
     """
 
+    comment.author_id = current_user.id
     return crud.create_comment(db=db, comment=comment)
 
 
@@ -82,21 +83,12 @@ def update_comment(
         `models.Comment`: `Comment` object.
     """
 
-    # TODO: Comment update access separation
+    if current_user.role.title == 'Admin':
+        return crud.update_object(cls=models.Comment, db=db, object_id=comment_id, schema_object=comment)
+
     comment_db = crud.get_object(cls=models.Comment, db=db, object_id=comment_id)
 
-    if comment.content and current_user.id == comment_db.author.id:
-        return crud.update_object(
-            cls=models.Comment,
-            db=db,
-            object_id=comment_id,
-            schema_object=schemas.CommentUpdate(content=comment.content)
-        )
-
-    elif comment.rating and\
-            current_user.role.title != 'Admin' and\
-            current_user.id != comment_db.author.id:
-
+    if comment.rating and current_user.id != comment_db.author.id:
         return crud.update_object(
             cls=models.Comment,
             db=db,
@@ -104,11 +96,29 @@ def update_comment(
             schema_object=schemas.CommentUpdate(rating=comment.rating)
         )
 
-    return crud.update_object(cls=models.Comment, db=db, object_id=comment_id, schema_object=comment)
+    elif comment.content and current_user.id == comment_db.author.id:
+        return crud.update_object(
+            cls=models.Comment,
+            db=db,
+            object_id=comment_id,
+            schema_object=schemas.CommentUpdate(content=comment.content)
+        )
+
+    elif comment.is_answer and current_user.id == comment_db.question.author.id:
+        return crud.update_object(
+            cls=models.Comment,
+            db=db,
+            object_id=comment_id,
+            schema_object=schemas.CommentUpdate(is_answer=comment.is_answer)
+        )
 
 
 @router.delete('/{comment_id}/')
-def delete_question(comment_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_question(
+        comment_id: int,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> Response:
     """Deletes a comment by a given `comment_id`.
 
     Args:
@@ -122,5 +132,12 @@ def delete_question(comment_id: int, db: Session = Depends(get_db)) -> Response:
         `Response`: No content response.
     """
 
-    crud.delete_object(cls=models.Comment, db=db, object_id=comment_id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    if current_user.role.title == 'Admin' or\
+            current_user.id == crud.get_object(cls=models.Comment, db=db, object_id=comment_id).author.id:
+        crud.delete_object(cls=models.Comment, db=db, object_id=comment_id)
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You are not author of comment.'
+        )

@@ -3,13 +3,19 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
-from dependencies import get_db
+from decorators import raise_403_if_not_admin
+from dependencies import get_db, get_current_user
 
 router = APIRouter(prefix='/articles', tags=['articles'])
 
 
 @router.post('/', response_model=schemas.Article)
-def create_article(article: schemas.ArticleCreate, db: Session = Depends(get_db)) -> models.Article:
+@raise_403_if_not_admin
+def create_article(
+        article: schemas.ArticleCreate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Article:
     """Creates an `Article` object with a given `ArticleCreate` schema.
 
     Args:
@@ -55,7 +61,12 @@ def get_article(article_id: int, db: Session = Depends(get_db)) -> models.Articl
 
 
 @router.patch('/{article_id}/', response_model=schemas.Article)
-def update_article(article_id: int, article: schemas.ArticleUpdate, db: Session = Depends(get_db)) -> models.Article:
+def update_article(
+        article_id: int,
+        article: schemas.ArticleUpdate,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Article:
     """Updates `Article` object by `article_id`.
 
     Args:
@@ -67,11 +78,24 @@ def update_article(article_id: int, article: schemas.ArticleUpdate, db: Session 
         `models.Article`: `Article` object.
     """
 
+    if current_user.role.title != 'Admin' and (article.likes or article.dislikes):
+        article_upt = schemas.ArticleUpdate()
+        if article.likes:
+            article_upt.likes = article.likes
+        if article.dislikes:
+            article_upt.dislikes = article.dislikes
+        return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article_upt)
+
     return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article)
 
 
 @router.delete('/{article_id}/')
-def delete_tag(article_id: int, db: Session = Depends(get_db)) -> Response:
+@raise_403_if_not_admin
+def delete_article(
+        article_id: int,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> Response:
     """Deletes a article by a given `article_id`.
 
     Args:
