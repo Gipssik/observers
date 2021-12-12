@@ -444,6 +444,7 @@ def create_notification(db: Session, notification: schemas.NotificationCreate) -
     db.add(notification_db)
     db.commit()
     db.refresh(notification_db)
+    print('created notification')
     return notification_db
 
 
@@ -676,8 +677,8 @@ def update_question(db: Session, question_id: int, question: schemas.QuestionUpd
     question_db = get_object(cls=models.Question, db=db, object_id=question_id)
     question_schema = schemas.QuestionUpdate(**question_db.__dict__)
 
-    update_question = question.dict(exclude_unset=True, exclude={'tags'})
-    updated_question = question_schema.copy(update=update_question, exclude={'tags'})
+    upd_question = question.dict(exclude_unset=True, exclude={'tags'})
+    updated_question = question_schema.copy(update=upd_question, exclude={'tags'})
 
     db.query(models.Question).filter_by(id=question_id).update(updated_question.__dict__)
 
@@ -705,7 +706,7 @@ def create_comment(db: Session, comment: schemas.CommentCreate) -> models.Commen
     """
 
     if not get_object(cls=models.User, db=db, object_id=comment.author_id)\
-        or not get_object(cls=models.Question, db=db, object_id=comment.question_id):
+            or not get_object(cls=models.Question, db=db, object_id=comment.question_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='User or question with this id does not exist.'
@@ -719,6 +720,16 @@ def create_comment(db: Session, comment: schemas.CommentCreate) -> models.Commen
 
     db.add(comment_db)
     db.commit()
+
+    if comment.author_id != comment_db.question.author.id:
+        create_notification(
+            db=db,
+            notification=schemas.NotificationCreate(
+                title=f'User {comment_db.author.username} commented your question: "{comment_db.question.title}".',
+                user_id=comment_db.question.author.id,
+                question_id=comment_db.question_id
+            )
+        )
 
     return comment_db
 
