@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import HTTPException, status
 from fuzzywuzzy import fuzz
 from pydantic import BaseModel
@@ -34,6 +36,30 @@ def get_object(cls: type, db: Session, object_id: int) -> Base:
         )
 
     return db_object
+
+
+def get_object_by_expression(cls: type, db: Session, expression: Any, raise_404: bool = False) -> Base:
+    """Returns `cls` model object filtered by `expression`.
+
+    Args:
+        `cls` (type): Type of the object to get.
+        `db` (Session): Database connection.
+        `expression` (Any): Expression to filter function.
+        `raise_404` (bool): To raise error 404 or not. Defaults to False.
+
+    Returns:
+        `Base`: `Base` model object.
+
+    """
+    obj = db.query(cls).filter(expression).first()
+
+    if raise_404 and not obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'{cls.__name__.capitalize()} with this field does not exist.'
+        )
+
+    return obj
 
 
 def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -> list[Base]:
@@ -97,32 +123,6 @@ def update_object(cls: type, db: Session, object_id: int, schema_object: BaseMod
     return db_object
 
 
-def get_role_by_title(db: Session, title: str, raise_404: bool = False) -> models.Role:
-    """Returns `Role` object by a given `title`.
-
-    Args:
-        `db` (Session): Database connection.
-        `title` (str): `Role`' object's title.
-        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
-
-    Raises:
-        `HTTPException`: If role with this title does not exist.
-
-    Returns:
-        `models.Role`: A `Role` object.
-    """
-
-    role = db.query(models.Role).filter(models.Role.title == title).first()
-
-    if raise_404 and not role:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Role with this title does not exist.'
-        )
-
-    return role
-
-
 def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
     """Creates a model Role with a given `role` schema.
 
@@ -137,7 +137,7 @@ def create_role(db: Session, role: schemas.RoleCreate) -> models.Role:
         `models.Role`: A new `Role`.
     """
 
-    if get_role_by_title(db=db, title=role.title):
+    if get_object_by_expression(cls=models.Role, db=db, expression=(models.Role.title == role.title)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Role with this title already exists."
@@ -165,26 +165,17 @@ def update_role(db: Session, role_id: int, role: schemas.RoleUpdate) -> models.R
         `models.Role`: Updated `Role` object.
     """
 
-    db_role = get_object(cls=models.Role, db=db, object_id=role_id)
-    role_schema = schemas.RoleUpdate(**db_role.__dict__)
-
-    if (r := get_role_by_title(db=db, title=role.title))\
+    if (r := get_object_by_expression(cls=models.Role, db=db, expression=(models.Role.title == role.title)))\
         and r.id != role_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Role with this title already exists.'
         )
 
-    update_data = role.dict(exclude_unset=True)
-    updated_role = role_schema.copy(update=update_data)
-
-    db.query(models.Role).filter_by(id=role_id).update(updated_role.__dict__)
-    db.commit()
-    db.refresh(db_role)
-    return db_role
+    return update_object(cls=models.Role, db=db, object_id=role_id, schema_object=role)
 
 
-def update_role_by_title(db: Session, role_title: int, role: schemas.RoleUpdate) -> models.Role:
+def update_role_by_title(db: Session, role_title: str, role: schemas.RoleUpdate) -> models.Role:
     """Updates `Role` object by a given `role_title` using `role` schema.
 
     Args:
@@ -196,7 +187,8 @@ def update_role_by_title(db: Session, role_title: int, role: schemas.RoleUpdate)
         `models.Role`: Updated `Role` object.
     """
 
-    role_db = get_role_by_title(db=db, title=role_title, raise_404=True)  
+    role_db = \
+        get_object_by_expression(cls=models.Role, db=db, expression=(models.Role.title == role_title), raise_404=True)
     return update_role(db=db, role_id=role_db.id, role=role)
 
 
@@ -211,7 +203,7 @@ def delete_role_by_title(db: Session, title: str) -> None:
         `None`
     """
 
-    role = get_role_by_title(db=db, title=title, raise_404=True)
+    role = get_object_by_expression(cls=models.Role, db=db, expression=(models.Role.title == title), raise_404=True)
 
     db.delete(role)
     db.commit()
@@ -256,58 +248,6 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     return db_user
 
 
-def get_user_by_username(db: Session, username: str, raise_404: bool = False) -> models.User:
-    """Returns a User by `username`.
-
-    Args:
-        `db` (Session): Database connection.
-        `username` (str): String value of User's `username`.
-        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
-
-    Raises:
-        `HTTPException`: If user with this username does not exist.
-
-    Returns:
-        `models.User`: A `User` by `username`.
-    """
-
-    user = db.query(models.User).filter(models.User.username == username).first()
-
-    if raise_404 and not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='User with this username does not exist.'
-        )
-
-    return user
-
-
-def get_user_by_email(db: Session, email: str, raise_404: bool = False) -> models.User:
-    """Returns a User by `email`.
-
-    Args:
-        `db` (Session): Database connection.
-        `email` (str): String value of User's `email`.
-        `raise_404` (bool): To raise error 404 in case that object does not exist or not.
-
-    Raises:
-        `HTTPException`: If user with this email does not exist.
-
-    Returns:
-        `models.User`: A User by `email`.
-    """
-
-    user = db.query(models.User).filter(models.User.email == email).first()
-
-    if raise_404 and not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='User with this email does not exist.'
-        )
-
-    return user
-
-
 def update_user(db: Session, user_id: int, user: schemas.UserUpdate) -> models.User:
     """Updates `User` object by a given `user_id` using `user` schema.
 
@@ -327,7 +267,7 @@ def update_user(db: Session, user_id: int, user: schemas.UserUpdate) -> models.U
     user_schema = schemas.UserUpdate(**db_user.__dict__)
 
     if user.email\
-        and (u := get_user_by_email(db=db, email=user_schema.email))\
+        and (u := get_object_by_expression(cls=models.User, db=db, expression=(models.User.email == user_schema.email)))\
         and u.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -345,76 +285,6 @@ def update_user(db: Session, user_id: int, user: schemas.UserUpdate) -> models.U
     db.refresh(db_user)
 
     return db_user
-
-
-def update_user_by_username(db: Session, username: str, user: schemas.UserUpdate) -> models.User:
-    """Updates `User` object by a given `username` using `user` schema.
-
-    Args:
-        `db` (Session): Database connection.
-        `username` (int): `User` object's username.
-        `user` (schemas.UserUpdate): Pydantic object's schema.
-
-    Returns:
-        `models.User`: Updated `User` object.
-    """
-
-    user_db = get_user_by_username(db=db, username=username, raise_404=True)
-    return update_user(db=db, user_id=user_db.id, user=user)
-
-
-def update_user_by_email(db: Session, email: str, user: schemas.UserUpdate) -> models.User:
-    """Updates `User` object by a given `username` using `user` schema.
-
-    Args:
-        `db` (Session): Database connection.
-        `email` (int): `User` object's email.
-        `user` (schemas.UserUpdate): Pydantic object's schema.
-
-    Returns:
-        `models.User`: Updated `User` object.
-    """
-
-    user_db = get_user_by_email(db=db, email=email, raise_404=True)
-    return update_user(db=db, user_id=user_db.id, user=user)
-
-
-def delete_user_by_username(db: Session, username: str) -> None:
-    """Deletes a `User` object by a given `username`
-
-    Args:
-        `db` (Session): Database connection.
-        `username` (str): The `username` of user.
-
-    Returns:
-        `None`
-    """
-
-    user_db = get_user_by_username(db=db, username=username, raise_404=True)
-
-    db.delete(user_db)
-    db.commit()
-
-    return None
-
-
-def delete_user_by_email(db: Session, email: str) -> None:
-    """Deletes a `User` object by a given `email`
-
-    Args:
-        `db` (Session): Database connection.
-        `email` (str): The `email` of user.
-
-    Returns:
-        `None`
-    """
-
-    user_db = get_user_by_email(db=db, email=email, raise_404=True)
-
-    db.delete(user_db)
-    db.commit()
-
-    return None
 
 
 def create_notification(db: Session, notification: schemas.NotificationCreate) -> models.Notification:
@@ -444,7 +314,6 @@ def create_notification(db: Session, notification: schemas.NotificationCreate) -
     db.add(notification_db)
     db.commit()
     db.refresh(notification_db)
-    print('created notification')
     return notification_db
 
 
@@ -474,6 +343,19 @@ def get_notifications_by_user_id(db: Session, user_id: int, skip: int, limit: in
 
 
 def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
+    """Deletes a `Notification` model objects with a given `user_id`
+
+    Args:
+        `db` (Session): Database connection.
+        `user_id` (int): `User` object's id.
+
+    Raises:
+        `HTTPException`: If a user with this id does not exist.
+
+    Returns:
+        `None`
+    """
+
     if not get_object(models.User, db=db, object_id=user_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -484,32 +366,6 @@ def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
     db.commit()
     
     return None
-
-
-def get_tag_by_title(db: Session, title: str, raise_404: bool = False) -> models.Tag:
-    """Gets `Tag` object by a given tag `title`.
-
-    Args:
-        `db` (Session): Database connection.
-        `title` (str): `Tag` object's title.
-        `raise_404` (bool, optional): To raise error 404 if there's no tag with this title or not. Defaults to False.
-
-    Raises:
-        `HTTPException`: If there's no tag with this `title`.
-
-    Returns:
-        `models.Tag`: `Tag` object.
-    """
-
-    tag = db.query(models.Tag).filter_by(title=title).first()
-    
-    if raise_404 and not tag:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Tag with this title does not exist."
-        )
-
-    return tag
 
 
 def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
@@ -526,7 +382,7 @@ def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
         `models.Tag`: `Tag` object.
     """
 
-    if get_tag_by_title(db=db, title=tag.title):
+    if get_object_by_expression(cls=models.Tag, db=db, expression=(models.Tag.title == tag.title)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Tag with this title already exist.'
@@ -553,23 +409,14 @@ def update_tag(db: Session, tag_id: int, tag: schemas.TagUpdate) -> models.Tag:
         `models.Tag`: Updated `Tag` object.
     """
 
-    if (t := get_tag_by_title(db=db, title=tag.title)) and t.id != tag_id:
+    if (t := get_object_by_expression(cls=models.Tag, db=db, expression=(models.Tag.title == tag.title))) and \
+            t.id != tag_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Tag with this title already exists.'
         )
 
-    tag_db = get_object(cls=models.Tag, db=db, object_id=tag_id)
-    tag_schema = schemas.TagUpdate(**tag_db.__dict__)
-
-    update_data = tag.dict(exclude_unset=True)
-    updated_tag = tag_schema.copy(update=update_data)
-
-    db.query(models.Tag).filter_by(id=tag_id).update(updated_tag.__dict__)
-    db.commit()
-    db.refresh(tag_db)
-
-    return tag_db
+    return update_object(cls=models.Tag, db=db, object_id=tag_id, schema_object=tag)
 
 
 def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> None:
@@ -595,7 +442,7 @@ def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> Non
                 detail='Wrong tag title.'
             )
 
-        if not (tag_db := get_tag_by_title(db=db, title=tag)):
+        if not (tag_db := get_object_by_expression(cls=models.Tag, db=db, expression=(models.Tag.title == tag))):
             tag_db = models.Tag(title=tag)
             db.add(tag_db)
 

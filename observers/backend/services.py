@@ -2,7 +2,7 @@ import re
 
 from sqlalchemy.orm import Session
 
-from database.crud import get_user_by_username, get_user_by_email
+from database.crud import get_object_by_expression
 from database import models
 
 
@@ -17,6 +17,6 @@ def get_user_by_username_or_email(db: Session, username: str) -> models.User | N
         `models.User | None`: A `User` object if `username` equals User's username or email. Otherwise `None`.
     """
 
-    return get_user_by_email(db, email=username) \
+    return get_object_by_expression(cls=models.User, db=db, expression=(models.User.email == username)) \
         if isemail(username) \
-        else get_user_by_username(db, username=username)
+        else get_object_by_expression(cls=models.User, db=db, expression=(models.User.username == username))

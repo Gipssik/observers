@@ -79,7 +79,12 @@ def get_role(
     if isinstance(role_key, int):
         return crud.get_object(cls=models.Role, db=db, object_id=role_key)
     if role_key.isalpha():
-        return crud.get_role_by_title(db=db, title=role_key, raise_404=True)
+        return crud.get_object_by_expression(
+            cls=models.Role,
+            db=db,
+            expression=(models.Role.title == role_key),
+            raise_404=True
+        )
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail='Unresolved type of role_key.'

@@ -59,7 +59,7 @@ def get_tag(tag_key: Union[int, str], db: Session = Depends(get_db)) -> models.T
 
     if isinstance(tag_key, int):
         return crud.get_object(cls=models.Tag, db=db, object_id=tag_key)
-    return crud.get_tag_by_title(db=db, title=tag_key, raise_404=True)
+    return crud.get_object_by_expression(cls=models.Tag, db=db, expression=(models.Tag.title == tag_key), raise_404=True)
 
 
 @router.patch('/{tag_id}/', response_model=schemas.Tag)

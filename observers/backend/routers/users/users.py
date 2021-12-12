@@ -75,9 +75,19 @@ def get_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> models
     if isinstance(user_key, int):
         return crud.get_object(cls=models.User, db=db, object_id=user_key)
     elif isemail(user_key):
-        return crud.get_user_by_email(db=db, email=user_key, raise_404=True)
+        return crud.get_object_by_expression(
+            cls=models.User,
+            db=db,
+            expression=(models.User.email == user_key),
+            raise_404=True
+        )
     elif user_key.replace('_', '').isalnum():
-        return crud.get_user_by_username(db=db, username=user_key, raise_404=True)
+        return crud.get_object_by_expression(
+            cls=models.User,
+            db=db,
+            expression=(models.User.username == user_key),
+            raise_404=True
+        )
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail='Unresolved user_key.'
