@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+
+    .main-header{
+        @apply bg-primaryBg text-primaryTxt w-full p-5;
+    }
+
+    .header-inner{
+        @apply container mx-auto h-full flex items-center justify-between;
+    }
+
+    .header-navlink{
+        @apply transition-all hover:opacity-70 uppercase tracking-wider;
+    }
+
+    .header-button{
+        @apply bg-transparent border-2 border-primaryTxt
+        rounded-md px-6 py-2 transition-all hover:bg-primaryTxt
+        hover:text-primaryBg capitalize;
+    }
+
+}
