@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 
 const Footer: FC = () => {
 	return (
-		<footer className='bg-primaryBg w-full py-5 mt-10 sticky top-full text-primaryTxt text-xl text-center'>
+		<footer className='main-footer'>
 			Made by Gipss
 		</footer>
 	);

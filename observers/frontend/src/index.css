@@ -8,6 +8,11 @@
         @apply bg-primaryBg text-primaryTxt w-full p-5;
     }
 
+    .main-footer{
+        @apply bg-primaryBg w-full py-5 mt-10 sticky
+        top-full text-primaryTxt text-xl text-center;
+    }
+
     .header-inner{
         @apply container mx-auto h-full flex items-center justify-between;
     }
@@ -20,6 +25,56 @@
         @apply bg-transparent border-2 border-primaryTxt
         rounded-md px-6 py-2 transition-all hover:bg-primaryTxt
         hover:text-primaryBg capitalize;
+    }
+
+    .register-form{
+        @apply w-1/3 mx-auto flex flex-col items-center gap-8 mt-8;
+    }
+
+    .register-title{
+        @apply text-5xl text-secondaryTxt text-center mb-3;
+    }
+
+    .field{
+        @apply bg-transparent text-primaryTxt border-2
+        border-secondaryTxt rounded-md w-64 px-4 py-2
+        focus:outline-none focus:border-primaryTxt;
+    }
+
+    .submit-button{
+        @apply w-32 text-center text-primaryBg
+        capitalize rounded-md px-6 py-2 transition-all
+        bg-primaryTxt hover:opacity-70 hover:cursor-pointer;
+    }
+
+    .modal{
+        @apply top-0 bottom-0 right-0 left-0 fixed
+        bg-black bg-opacity-70 items-center
+        transition hidden z-10;
+    }
+
+    .modal.active{
+        @apply flex;
+    }
+
+    .modal-content{
+        @apply p-10 bg-primaryBg mx-auto opacity-100
+        text-primaryTxt text-xl relative;
+    }
+
+    .ex{
+        @apply absolute top-0 right-0 w-[20px] h-[20px]
+        hover:cursor-pointer hover:opacity-70 transition;
+    }
+
+    .ex-1{
+        @apply absolute w-[2px] h-5 bg-primaryTxt
+        rotate-45 translate-x-[10px];
+    }
+
+    .ex-2{
+        @apply absolute w-[2px] h-5 bg-primaryTxt
+        rotate-[-45deg] translate-x-[10px];
     }
 
 }

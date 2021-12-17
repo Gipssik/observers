@@ -2,14 +2,13 @@ import React, {FC} from 'react';
 
 interface SubmitButtonProps{
 	content: string;
-	onClick: () => any;
 }
 
-const SubmitButton: FC<SubmitButtonProps> = ({content, onClick}) => {
+const SubmitButton: FC<SubmitButtonProps> = ({content}) => {
 	return (
-		<div onClick={onClick} className='w-32 text-center text-primaryBg capitalize rounded-md px-6 py-2 transition-all bg-primaryTxt hover:opacity-70 hover:cursor-pointer'>
+		<button type="submit" className="submit-button">
 			{content}
-		</div>
+		</button>
 	);
 };
 
