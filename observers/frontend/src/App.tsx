@@ -2,16 +2,18 @@ import React, {FC} from 'react';
 import Header from "./components/Header/Header";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import RegisterForm from "./components/Register/RegisterForm";
+import Footer from "./components/Footer/Footer";
 
 const App: FC = () => {
 	return (
 		<BrowserRouter>
-			<div className='bg-secondaryBg'>
+			<div className='bg-secondaryBg min-h-full'>
 				<Header />
+				<Routes>
+					<Route path='/register' element={<RegisterForm/>}/>
+				</Routes>
+				<Footer />
 			</div>
-			<Routes>
-				<Route path='/register' element={<RegisterForm/>}/>
-			</Routes>
 		</BrowserRouter>
 	);
 };
