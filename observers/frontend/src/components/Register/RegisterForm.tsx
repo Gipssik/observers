@@ -30,10 +30,10 @@ const RegisterForm: FC = () => {
 				"Passwords need to be the same"
 			)
 		})
+			.required('Required')
 	})
 
 	const registerUser = async () => {
-
 		let username: string | undefined = document.querySelector<HTMLInputElement>('#username')?.value;
 		let email: string | undefined = document.querySelector<HTMLInputElement>('#email')?.value;
 		let password: string | undefined = document.querySelector<HTMLInputElement>('#password')?.value;
@@ -69,7 +69,9 @@ const RegisterForm: FC = () => {
 			{({ errors, touched }) => {
 				return (
 					<div>
-						<Modal visible={modal} setVisible={setModal} children="User with this username or email already exists."/>
+						<Modal visible={modal} setVisible={setModal}>
+							User with this username or email already exists.
+						</Modal>
 						<Form className="register-form">
 							<h1 className="register-title">Registration form</h1>
 							<RegisterFields errors={errors} touched={touched} />

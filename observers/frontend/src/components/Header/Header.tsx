@@ -11,7 +11,7 @@ const Header: FC = () => {
 					<Logo />
 					<Navbar />
 				</div>
-				
+
 				<Buttons />
 			</div>
 		</header>

@@ -1,4 +1,4 @@
-import {Field, FormikErrors, FormikTouched} from 'formik';
+import {Field} from 'formik';
 import React, {FC} from 'react';
 
 interface RegisterFieldProps{
@@ -9,7 +9,7 @@ interface RegisterFieldProps{
 	touched: any;
 }
 
-const RegisterField: FC<RegisterFieldProps> = ({content, type, id, errors, touched}) => {
+const FormField: FC<RegisterFieldProps> = ({content, type, id, errors, touched}) => {
 	return (
 		<div className="flex flex-col gap-2">
 			<label className="text-primaryTxt text-lg" htmlFor={id}>
@@ -25,4 +25,4 @@ const RegisterField: FC<RegisterFieldProps> = ({content, type, id, errors, touch
 	);
 };
 
-export default RegisterField;
+export default FormField;

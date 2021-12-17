@@ -35,6 +35,10 @@
         @apply text-5xl text-secondaryTxt text-center mb-3;
     }
 
+    .form{
+        @apply flex flex-col gap-8;
+    }
+
     .field{
         @apply bg-transparent text-primaryTxt border-2
         border-secondaryTxt rounded-md w-64 px-4 py-2

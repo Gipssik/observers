@@ -14,3 +14,8 @@ export interface INotification{
 	title: string;
 	user_id: number;
 }
+
+export interface IToken{
+	access_token: string;
+	token_type: string;
+}

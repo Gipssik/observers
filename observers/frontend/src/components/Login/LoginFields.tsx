@@ -2,12 +2,12 @@ import React, {FC} from 'react';
 import FormField from "../Fields/FormField";
 import {FormikErrors, FormikTouched} from "formik";
 
-interface RegisterFieldsProps {
+interface LoginFieldsProps {
 	errors: FormikErrors<any>;
 	touched: FormikTouched<any>;
 }
 
-const RegisterFields: FC<RegisterFieldsProps> = ({errors, touched}) => {
+const LoginFields: FC<LoginFieldsProps> = ({errors, touched}) => {
 	return (
 		<div className="form">
 			<FormField
@@ -18,28 +18,14 @@ const RegisterFields: FC<RegisterFieldsProps> = ({errors, touched}) => {
 				touched={touched.username}
 			/>
 			<FormField
-				content="email"
-				type="email"
-				id="email"
-				errors={errors.email}
-				touched={touched.email}
-			/>
-			<FormField
 				content="password"
 				type="password"
 				id="password"
 				errors={errors.password}
 				touched={touched.password}
 			/>
-			<FormField
-				content="check password"
-				type="password"
-				id="checkPassword"
-				errors={errors.checkPassword}
-				touched={touched.checkPassword}
-			/>
 		</div>
 	);
 };
 
-export default RegisterFields;
+export default LoginFields;
