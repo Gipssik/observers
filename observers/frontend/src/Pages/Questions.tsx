@@ -1,8 +1,8 @@
 import React, {FC, useEffect, useState} from 'react';
-import {IQuestion} from "../../types/types";
+import {IQuestion} from "../Types/Types";
 import axios from "axios";
-import Question from "./Question";
-import Options from "./Options";
+import Question from "../components/Questions/Question";
+import Options from "../components/Questions/Options";
 
 const Questions: FC = () => {
 	const [questions, setQuestions] = useState<IQuestion[]>([]);

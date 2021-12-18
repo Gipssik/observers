@@ -1,12 +1,31 @@
-import React, {FC} from 'react';
+import React, {FC, useContext} from 'react';
 import HeaderButton from "../Buttons/HeaderButton";
+import {AuthContext} from "../../Context/Context";
 
 const Buttons: FC = () => {
+	const {isAuth, setIsAuth} = useContext(AuthContext);
+
+	const signOut = () => {
+		localStorage.removeItem('token');
+		setIsAuth(false);
+	}
+
 	return (
-		<div className='flex gap-2'>
-			<HeaderButton content='register' url='/register'/>
-			<HeaderButton content='login' url='/login'/>
+		<div>
+			{
+				isAuth
+				? 	<div className="buttons">
+						<HeaderButton content='account' url='/account'/>
+						<HeaderButton content='sign out' url='/questions' onClick={signOut}/>
+					</div>
+				: 	<div className='buttons'>
+						<HeaderButton content='register' url='/register'/>
+						<HeaderButton content='login' url='/login'/>
+					</div>
+			}
+
 		</div>
+
 	);
 };
 

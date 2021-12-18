@@ -1,24 +1,45 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import Header from "./components/Header/Header";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import RegisterForm from "./components/Register/RegisterForm";
+import {BrowserRouter} from "react-router-dom";
 import Footer from "./components/Footer/Footer";
-import LoginForm from "./components/Login/LoginForm";
-import Questions from "./components/Questions/Questions";
+import {AuthContext} from "./Context/Context";
+import AppRouter from "./components/AppRouter/AppRouter";
+import axios from "axios";
+import {IUser} from "./Types/Types";
 
 const App: FC = () => {
+	const [isAuth, setIsAuth] = useState(false);
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if(token !== null){
+			axios.get<IUser>('http://127.0.0.1:8000/api/accounts/users/me', {
+				headers: {
+					Authorization: token
+				}
+			})
+				.then(response => {
+					setIsAuth(true);
+				})
+				.catch(error => {
+					localStorage.removeItem('token');
+				})
+		}
+	}, [])
+
 	return (
-		<BrowserRouter>
-			<div className='bg-secondaryBg min-h-full'>
-				<Header />
-				<Routes>
-					<Route path='/register' element={<RegisterForm/>}/>
-					<Route path='/login' element={<LoginForm/>}/>
-					<Route path='/questions' element={<Questions/>}/>
-				</Routes>
-				<Footer />
-			</div>
-		</BrowserRouter>
+		<AuthContext.Provider value={{
+			isAuth,
+			setIsAuth
+		}}>
+			<BrowserRouter>
+				<div className='bg-secondaryBg min-h-full'>
+					<Header />
+					<AppRouter />
+					<Footer />
+				</div>
+			</BrowserRouter>
+		</AuthContext.Provider>
 	);
 };
 

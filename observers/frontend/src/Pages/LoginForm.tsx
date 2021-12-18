@@ -1,15 +1,17 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
-import Modal from "../Modal/Modal";
-import SubmitButton from "../Buttons/SubmitButton";
-import LoginFields from "./LoginFields";
+import Modal from "../components/Modal/Modal";
+import SubmitButton from "../components/Buttons/SubmitButton";
+import LoginFields from "../components/Login/LoginFields";
 import axios from "axios";
-import {IToken} from "../../types/types";
-import {useNavigate} from "react-router-dom";
+import {IToken} from "../Types/Types";
+import {NavLink, useNavigate} from "react-router-dom";
+import {AuthContext} from "../Context/Context";
 
 const LoginForm: FC = () => {
 	const [modal, setModal] = useState(false);
+	const {isAuth, setIsAuth} = useContext(AuthContext);
 	const navigate = useNavigate();
 
 	const LoginSchema = Yup.object().shape({
@@ -45,7 +47,8 @@ const LoginForm: FC = () => {
 					+ ` ${response.data.access_token}`;
 
 				localStorage.setItem('token', token);
-				navigate('/');
+				setIsAuth(true);
+				navigate('/questions');
 			})
 			.catch(error => {
 				setModal(true);
@@ -70,8 +73,11 @@ const LoginForm: FC = () => {
 						<Form className="register-form">
 							<h1 className="register-title">Login form</h1>
 							<LoginFields errors={errors} touched={touched} />
-							<div>
+							<div className="flex flex-col items-center gap-3">
 								<SubmitButton content="Login" />
+								<div className="text-sm text-secondaryTxt">
+									Don't have an account? <NavLink className="underline" to='/register'>Register here</NavLink>
+								</div>
 							</div>
 						</Form>
 					</div>

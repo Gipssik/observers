@@ -1,12 +1,12 @@
 import React, {FC, useState} from 'react';
-import SubmitButton from "../Buttons/SubmitButton";
+import SubmitButton from "../components/Buttons/SubmitButton";
 import axios from "axios";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
-import {IUser} from "../../types/types";
-import RegisterFields from "./RegisterFields";
-import {useNavigate} from "react-router-dom";
-import Modal from '../Modal/Modal';
+import {IUser} from "../Types/Types";
+import RegisterFields from "../components/Register/RegisterFields";
+import {NavLink, useNavigate} from "react-router-dom";
+import Modal from '../components/Modal/Modal';
 
 const RegisterForm: FC = () => {
 	const navigate = useNavigate();
@@ -75,8 +75,11 @@ const RegisterForm: FC = () => {
 						<Form className="register-form">
 							<h1 className="register-title">Registration form</h1>
 							<RegisterFields errors={errors} touched={touched} />
-							<div>
+							<div className="flex flex-col items-center gap-3">
 								<SubmitButton content="Submit" />
+								<div className="text-sm text-secondaryTxt">
+									Already have an account? <NavLink className="underline" to='/login'>Log in here</NavLink>
+								</div>
 							</div>
 						</Form>
 					</div>

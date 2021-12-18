@@ -10,7 +10,7 @@ from jose import jwt
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY') or secrets.token_hex(64)
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
 

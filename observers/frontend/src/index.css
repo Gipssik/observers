@@ -31,9 +31,13 @@
         focus:outline-none placeholder:text-secondaryTxt placeholder:opacity-70;
     }
 
+    .buttons{
+        @apply flex gap-2;
+    }
+
     .header-button{
         @apply bg-transparent border-2 border-primaryTxt
-        rounded-md px-6 py-2 transition-all hover:bg-primaryTxt
+        rounded-md px-6 py-1 transition-all hover:bg-primaryTxt
         hover:text-primaryBg capitalize;
     }
 
