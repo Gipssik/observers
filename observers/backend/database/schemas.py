@@ -107,11 +107,11 @@ class Tag(TagBase):
 class QuestionBase(BaseModel):
     title: str
     content: str
-    author_id: int
 
 
 class QuestionCreate(QuestionBase):
     tags: Optional[list[str]] = None
+    author_id: Optional[int] = None
 
 
 class QuestionUpdate(BaseModel):
@@ -123,6 +123,7 @@ class QuestionUpdate(BaseModel):
 
 class Question(QuestionBase):
     id: int
+    author_id: int
     date_created: datetime.datetime
     views: int
     tags: list[TagBase] = []

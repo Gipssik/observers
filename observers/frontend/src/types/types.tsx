@@ -5,6 +5,7 @@ export interface IUser{
 	date_created: string;
 	notifications: INotification[];
 	profile_image: string;
+	questions: IQuestion[];
 	// TODO: Finish User schema.
 }
 
@@ -18,4 +19,13 @@ export interface INotification{
 export interface IToken{
 	access_token: string;
 	token_type: string;
+}
+
+export interface IQuestion{
+	id: number
+	title: string;
+	content: string;
+	author_id: number;
+	date_created: string;
+	views: number;
 }

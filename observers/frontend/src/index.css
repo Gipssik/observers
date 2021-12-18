@@ -40,7 +40,7 @@
     }
 
     .field{
-        @apply bg-transparent text-primaryTxt border-2
+        @apply bg-primaryBg text-primaryTxt border-2
         border-secondaryTxt rounded-md w-64 px-4 py-2
         focus:outline-none focus:border-primaryTxt;
     }
@@ -79,6 +79,28 @@
     .ex-2{
         @apply absolute w-[2px] h-5 bg-primaryTxt
         rotate-[-45deg] translate-x-[10px];
+    }
+
+    .questions-container{
+        @apply container w-3/5 mx-auto mt-8 flex
+        flex-col gap-4;
+    }
+
+    .question-container{
+        @apply relative w-full p-5 overflow-hidden
+        border-2 bg-primaryBg border-secondaryTxt
+        rounded-md text-primaryTxt transition
+        hover:cursor-pointer hover:border-primaryTxt
+        hover:bg-opacity-80;
+    }
+
+    .question-title{
+        @apply text-primaryTxt text-2xl font-bold
+        group-hover:underline;
+    }
+    
+    .question-views{
+        @apply absolute right-0 top-0 m-5;
     }
 
 }

@@ -25,6 +25,9 @@ def create_question(
         `models.Question`: `Question` object.
     """
 
+    if question.author_id is None:
+        question.author_id = current_user.id
+
     return crud.create_question(db=db, question=question)
 
 

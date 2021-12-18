@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import RegisterForm from "./components/Register/RegisterForm";
 import Footer from "./components/Footer/Footer";
 import LoginForm from "./components/Login/LoginForm";
+import Questions from "./components/Questions/Questions";
 
 const App: FC = () => {
 	return (
@@ -13,6 +14,7 @@ const App: FC = () => {
 				<Routes>
 					<Route path='/register' element={<RegisterForm/>}/>
 					<Route path='/login' element={<LoginForm/>}/>
+					<Route path='/questions' element={<Questions/>}/>
 				</Routes>
 				<Footer />
 			</div>
