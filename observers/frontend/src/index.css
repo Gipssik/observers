@@ -21,6 +21,16 @@
         @apply transition-all hover:opacity-70 uppercase tracking-wider;
     }
 
+    .search-field-container{
+        @apply w-full mr-4;
+    }
+
+    .search-field{
+        @apply w-full bg-transparent border-2 border-secondaryTxt
+        text-primaryTxt rounded-md px-3 py-0.5 focus:border-primaryTxt
+        focus:outline-none placeholder:text-secondaryTxt placeholder:opacity-70;
+    }
+
     .header-button{
         @apply bg-transparent border-2 border-primaryTxt
         rounded-md px-6 py-2 transition-all hover:bg-primaryTxt
@@ -28,21 +38,33 @@
     }
 
     .register-form{
-        @apply w-1/3 mx-auto flex flex-col items-center gap-8 mt-8;
+        @apply w-3/5 mx-auto flex flex-col items-center gap-8 mt-8;
     }
 
     .register-title{
-        @apply text-5xl text-secondaryTxt text-center mb-3;
+        @apply text-5xl text-primaryTxt text-center mb-3;
     }
 
     .form{
-        @apply flex flex-col gap-8;
+        @apply flex flex-col gap-4 w-full;
+    }
+
+    .form-field{
+        @apply flex flex-col gap-2 w-full items-center;
+    }
+
+    .field-container{
+        @apply relative w-full flex justify-center items-center;
     }
 
     .field{
-        @apply bg-primaryBg text-primaryTxt border-2
-        border-secondaryTxt rounded-md w-64 px-4 py-2
+        @apply w-64 bg-primaryBg text-primaryTxt border-2
+        border-secondaryTxt rounded-md px-4 py-2
         focus:outline-none focus:border-primaryTxt;
+    }
+
+    .field-error{
+        @apply absolute text-red-500 text-sm ml-4;
     }
 
     .submit-button{
@@ -87,7 +109,7 @@
     }
 
     .question-container{
-        @apply relative w-full p-5 overflow-hidden
+        @apply relative w-full p-5 pl-10 overflow-hidden
         border-2 bg-primaryBg border-secondaryTxt
         rounded-md text-primaryTxt transition
         hover:cursor-pointer hover:border-primaryTxt
@@ -101,6 +123,10 @@
     
     .question-views{
         @apply absolute right-0 top-0 m-5;
+    }
+
+    .options-container{
+        @apply flex;
     }
 
 }

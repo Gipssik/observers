@@ -11,14 +11,16 @@ interface RegisterFieldProps{
 
 const FormField: FC<RegisterFieldProps> = ({content, type, id, errors, touched}) => {
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="form-field">
 			<label className="text-primaryTxt text-lg" htmlFor={id}>
 				{content.charAt(0).toUpperCase() + content.slice(1)}:
 			</label>
-			<div>
+			<div className="options-container">
 				<Field name={id} id={id} type={type} className="field"/>
 				{errors && touched ? (
-					<div className="absolute text-red-500 text-sm">{errors}</div>
+					<div className="flex items-center">
+						<span className="field-error">{errors}</span>
+					</div>
 				) : null}
 			</div>
 		</div>
