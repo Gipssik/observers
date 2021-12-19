@@ -1,16 +1,22 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import SubmitButton from "../components/Buttons/SubmitButton";
-import axios from "axios";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import {IUser} from "../Types/Types";
 import RegisterFields from "../components/Register/RegisterFields";
-import {NavLink, useNavigate} from "react-router-dom";
+import {Navigate, NavLink, useNavigate} from "react-router-dom";
 import Modal from '../components/Modal/Modal';
+import {AuthContext} from "../Context/Context";
+import {instance} from "../Instance";
 
 const RegisterForm: FC = () => {
 	const navigate = useNavigate();
 	const [modal, setModal] = useState<boolean>(false);
+	const {isAuth} = useContext(AuthContext);
+
+	if(isAuth){
+		return <Navigate to='/account'/>
+	}
 
 	const RegisterSchema = Yup.object().shape({
 		username: Yup.string()
@@ -45,7 +51,7 @@ const RegisterForm: FC = () => {
 			'role_id': 2
 		};
 
-		axios.post<IUser>('http://127.0.0.1:8000/api/accounts/users/', body)
+		instance.post<IUser>('accounts/users/', body)
 			.then(response => {
 				navigate('/login');
 			})

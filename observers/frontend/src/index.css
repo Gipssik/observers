@@ -46,7 +46,7 @@
     }
 
     .register-title{
-        @apply text-5xl text-primaryTxt text-center mb-3;
+        @apply text-5xl text-primaryTxt text-center mb-3 font-bold;
     }
 
     .form{

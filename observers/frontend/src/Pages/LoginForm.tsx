@@ -4,10 +4,10 @@ import {Form, Formik} from "formik";
 import Modal from "../components/Modal/Modal";
 import SubmitButton from "../components/Buttons/SubmitButton";
 import LoginFields from "../components/Login/LoginFields";
-import axios from "axios";
 import {IToken} from "../Types/Types";
-import {NavLink, useNavigate} from "react-router-dom";
+import {Navigate, NavLink, useNavigate} from "react-router-dom";
 import {AuthContext} from "../Context/Context";
+import {instance} from "../Instance";
 
 const LoginForm: FC = () => {
 	const [modal, setModal] = useState(false);
@@ -26,6 +26,10 @@ const LoginForm: FC = () => {
 			.required('Required')
 	});
 
+	if(isAuth){
+		return <Navigate to='/account'/>
+	}
+
 	const loginUser = async () => {
 		let username: any = document.querySelector<HTMLInputElement>('#username')?.value;
 		let password: any = document.querySelector<HTMLInputElement>('#password')?.value;
@@ -39,7 +43,7 @@ const LoginForm: FC = () => {
 		bodyFormData.append('username', body.username);
 		bodyFormData.append('password', body.password);
 
-		axios.post<IToken>('http://127.0.0.1:8000/api/token/', bodyFormData)
+		instance.post<IToken>('token/', bodyFormData)
 			.then(response => {
 				let token =
 					response.data.token_type.charAt(0).toUpperCase()
@@ -47,8 +51,8 @@ const LoginForm: FC = () => {
 					+ ` ${response.data.access_token}`;
 
 				localStorage.setItem('token', token);
-				setIsAuth(true);
 				navigate('/questions');
+				setIsAuth(true);
 			})
 			.catch(error => {
 				setModal(true);

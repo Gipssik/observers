@@ -1,8 +1,8 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
-import axios from "axios";
 import {IUser} from "../Types/Types";
 import {AuthContext} from "../Context/Context";
 import {useNavigate} from "react-router-dom";
+import {instance} from "../Instance";
 
 const Account: FC = () => {
 	const [self, setSelf] = useState<IUser | null>(null);
@@ -16,11 +16,7 @@ const Account: FC = () => {
 
 		const token = localStorage.getItem('token');
 		if(token !== null){
-			axios.get<IUser>('http://127.0.0.1:8000/api/accounts/users/me', {
-				headers: {
-					Authorization: token
-				}
-			})
+			instance.get<IUser>('accounts/users/me')
 				.then(response => {
 					setSelf(response.data);
 				})

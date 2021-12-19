@@ -4,8 +4,8 @@ import {BrowserRouter} from "react-router-dom";
 import Footer from "./components/Footer/Footer";
 import {AuthContext} from "./Context/Context";
 import AppRouter from "./components/AppRouter/AppRouter";
-import axios from "axios";
 import {IUser} from "./Types/Types";
+import {instance} from "./Instance";
 
 const App: FC = () => {
 	const [isAuth, setIsAuth] = useState(false);
@@ -13,11 +13,7 @@ const App: FC = () => {
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 		if(token !== null){
-			axios.get<IUser>('http://127.0.0.1:8000/api/accounts/users/me', {
-				headers: {
-					Authorization: token
-				}
-			})
+			instance.get<IUser>('accounts/users/me')
 				.then(response => {
 					setIsAuth(true);
 				})

@@ -1,14 +1,18 @@
 import React, {FC} from 'react';
+import {useNavigate} from "react-router-dom";
 
 interface QuestionProps{
+	id: number;
 	title: string;
 	content: string;
 	views: number;
 }
 
-const Question: FC<QuestionProps> = ({title, content, views}) => {
+const Question: FC<QuestionProps> = ({id, title, content, views}) => {
+	const navigate = useNavigate();
+
 	return (
-		<div className="question-container group">
+		<div onClick={() => navigate('/questions/' + id)} className="question-container group">
 			<div className="question-title">
 				{title.slice(0, 50)}{title.length > 50 ? '...' : null}
 			</div>
