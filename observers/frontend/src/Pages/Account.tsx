@@ -1,46 +1,46 @@
-import React, {FC, useContext, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {IUser} from "../Types/Types";
-import {AuthContext} from "../Context/Context";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {instance} from "../Instance";
+import Loader from "../components/Loader/Loader";
 
 const Account: FC = () => {
-	const [self, setSelf] = useState<IUser | null>(null);
-	const {isAuth, setIsAuth} = useContext(AuthContext);
+	const [user, setUser] = useState<IUser | null>(null);
+	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const {username} = useParams();
 
 	useEffect(() => {
-		if(!isAuth){
-			navigate('/login');
-		}
-
-		const token = localStorage.getItem('token');
-		if(token !== null){
-			instance.get<IUser>('accounts/users/me')
-				.then(response => {
-					setSelf(response.data);
-				})
-				.catch(error => {
-					localStorage.removeItem('token');
-					setIsAuth(false);
-				})
-		}
+		instance.get<IUser>(`accounts/users/${username}`)
+			.then(response => {
+				setUser(response.data);
+				setLoading(false);
+			})
+			.catch(error => {
+				navigate('/404');
+			});
 	}, []);
 
 	return (
-		<div className="w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10">
-			<div className="border-2 border-primaryTxt">
-				<img
-					src={self?.profile_image === 'default.jpg' ? self?.profile_image : ''}
-					className="w-[100px] h-[100px]"
-					alt="Profile photo"/>
-			</div>
-			<div>
-				<div>Username: {self?.username}</div>
-				<div>Email: {self?.email}</div>
-			</div>
+		<>
+			{
+				loading
+				? 	<Loader/>
+				:	<div className="w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10">
+						<div className="border-2 border-primaryTxt">
+							<img
+								src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : ''}
+								className="w-[100px] h-[100px]"
+								alt="Profile"/>
+						</div>
+						<div>
+							<div>Username: {user?.username}</div>
+							<div>Email: {user?.email}</div>
+						</div>
 
-		</div>
+					</div>
+			}
+		</>
 	);
 };
 

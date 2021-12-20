@@ -84,16 +84,29 @@ def update_question(
 
     if current_user.role.title != 'Admin' and \
             current_user.id != crud.get_object(cls=models.Question, db=db, object_id=question_id).author.id:
-        if not question.views:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='You did not give the views parameter.'
-            )
-
-        return crud.update_question(
-            db=db, question_id=question_id, question=schemas.QuestionUpdate(views=question.views)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='You did not give the views parameter.'
         )
+
     return crud.update_question(db=db, question_id=question_id, question=question)
+
+
+@router.patch('/{question_id}/views/')
+def update_question_views(question_id: int, views: int, db: Session = Depends(get_db)) -> models.Question:
+    """Updates question views by a given `question_id`.
+
+    Args:
+        `question_id` (int):
+        `views` (int):
+        `db` (Session, optional): Database connection.
+
+    Returns:
+        `models.Question`: `Question` object.
+    """
+    return crud.update_question(
+        db=db, question_id=question_id, question=schemas.QuestionUpdate(views=views)
+    )
 
 
 @router.delete('/{question_id}/')

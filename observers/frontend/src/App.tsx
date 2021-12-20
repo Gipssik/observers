@@ -6,33 +6,42 @@ import {AuthContext} from "./Context/Context";
 import AppRouter from "./components/AppRouter/AppRouter";
 import {IUser} from "./Types/Types";
 import {instance} from "./Instance";
+import Loader from "./components/Loader/Loader";
 
 const App: FC = () => {
 	const [isAuth, setIsAuth] = useState(false);
+	const [initialised, setInitialised] = useState(false);
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		if(token !== null){
-			instance.get<IUser>('accounts/users/me')
-				.then(response => {
-					setIsAuth(true);
-				})
-				.catch(error => {
+		instance.get<IUser>('accounts/users/me')
+			.then(response => {
+				setIsAuth(true);
+				setInitialised(true);
+			})
+			.catch(error => {
+				if(localStorage.getItem('token'))
 					localStorage.removeItem('token');
-				})
-		}
-	}, [])
+				setInitialised(true);
+			})
+	}, []);
 
-	return (
+	return(
 		<AuthContext.Provider value={{
 			isAuth,
 			setIsAuth
 		}}>
 			<BrowserRouter>
-				<div className='bg-secondaryBg min-h-full'>
-					<Header />
-					<AppRouter />
-					<Footer />
+				<div className="app-container">
+					{
+						initialised
+						?	<>
+								<Header />
+								<AppRouter />
+								<Footer />
+							</>
+						: <Loader/>
+					}
+
 				</div>
 			</BrowserRouter>
 		</AuthContext.Provider>

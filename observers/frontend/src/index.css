@@ -4,6 +4,14 @@
 
 @layer components{
 
+    .app-container{
+        @apply bg-secondaryBg min-h-full;
+    }
+
+    .loader{
+        @apply absolute left-1/2 top-1/2;
+    }
+
     .main-header{
         @apply bg-primaryBg text-primaryTxt w-full p-5;
     }
