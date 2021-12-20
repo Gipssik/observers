@@ -2,49 +2,42 @@ import React, {FC, useEffect, useState} from 'react';
 import Header from "./components/Header/Header";
 import {BrowserRouter} from "react-router-dom";
 import Footer from "./components/Footer/Footer";
-import {AuthContext} from "./Context/Context";
+import {AuthContext} from "./context/context";
 import AppRouter from "./components/AppRouter/AppRouter";
-import {IUser} from "./Types/Types";
-import {instance} from "./Instance";
 import Loader from "./components/Loader/Loader";
+import {useTypedSelector} from "./hooks/useTypesSelector";
+import {useDispatch} from "react-redux";
+import {fetchUser} from "./store/action-creators/user";
 
 const App: FC = () => {
-	const [isAuth, setIsAuth] = useState(false);
-	const [initialised, setInitialised] = useState(false);
+	const {user, loading, error} = useTypedSelector(state => state.user);
+	const {authenticated} = useTypedSelector(state => state.auth);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		instance.get<IUser>('accounts/users/me')
-			.then(response => {
-				setIsAuth(true);
-				setInitialised(true);
-			})
-			.catch(error => {
-				if(localStorage.getItem('token'))
-					localStorage.removeItem('token');
-				setInitialised(true);
-			})
+		dispatch(fetchUser());
+
+		if(error && localStorage.getItem('token')){
+			localStorage.removeItem('token');
+		}
+		console.log('Use effect');
 	}, []);
 
 	return(
-		<AuthContext.Provider value={{
-			isAuth,
-			setIsAuth
-		}}>
-			<BrowserRouter>
-				<div className="app-container">
-					{
-						initialised
-						?	<>
-								<Header />
-								<AppRouter />
-								<Footer />
-							</>
-						: <Loader/>
-					}
+		<BrowserRouter>
+			<div className="app-container">
+				{
+					loading
+					?	<Loader />
+					: 	<>
+							<Header />
+							<AppRouter />
+							<Footer />
+						</>
+				}
 
-				</div>
-			</BrowserRouter>
-		</AuthContext.Provider>
+			</div>
+		</BrowserRouter>
 	);
 };
 

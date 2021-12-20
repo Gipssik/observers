@@ -1,12 +1,12 @@
-import RegisterForm from "../Pages/RegisterForm";
+import RegisterForm from "../pages/RegisterForm";
 import React from "react";
-import LoginForm from "../Pages/LoginForm";
-import Page404 from "../Pages/Page404";
+import LoginForm from "../pages/LoginForm";
+import Page404 from "../pages/Page404";
 import {Navigate} from "react-router-dom";
-import Questions from "../Pages/Questions";
-import SelfAccount from "../Pages/SelfAccount";
-import Question from "../Pages/Question";
-import Account from "../Pages/Account";
+import Questions from "../pages/Questions";
+import SelfAccount from "../pages/SelfAccount";
+import Question from "../pages/Question";
+import Account from "../pages/Account";
 
 interface IRoute{
 	path: string;

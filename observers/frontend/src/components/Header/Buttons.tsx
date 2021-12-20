@@ -1,19 +1,24 @@
-import React, {FC, useContext} from 'react';
+import React, {FC} from 'react';
 import HeaderButton from "../Buttons/HeaderButton";
-import {AuthContext} from "../../Context/Context";
+import {useDispatch} from "react-redux";
+import {AuthActionTypes, UserActionTypes} from "../../types/types";
+import {useTypedSelector} from "../../hooks/useTypesSelector";
 
 const Buttons: FC = () => {
-	const {isAuth, setIsAuth} = useContext(AuthContext);
+	const user = useTypedSelector(state => state.user.user);
+	const authenticated = useTypedSelector(state => state.auth.authenticated);
+	const dispatch = useDispatch();
 
 	const signOut = () => {
+		dispatch({type: UserActionTypes.DELETE_USER});
 		localStorage.removeItem('token');
-		setIsAuth(false);
+		dispatch({type: AuthActionTypes.SET_FALSE});
 	}
 
 	return (
 		<div>
 			{
-				isAuth
+				authenticated
 				? 	<div className="buttons">
 						<HeaderButton content='account' url='/account'/>
 						<HeaderButton content='sign out' url='/questions' onClick={signOut}/>
@@ -23,7 +28,6 @@ const Buttons: FC = () => {
 						<HeaderButton content='login' url='/login'/>
 					</div>
 			}
-
 		</div>
 
 	);

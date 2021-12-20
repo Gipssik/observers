@@ -1,10 +1,6 @@
 import React, {FC, useState} from 'react';
 import Ex from "./Ex";
-
-interface ModalProps{
-	visible: boolean;
-	setVisible: any;
-}
+import {ModalProps} from "../../types/types";
 
 const Modal: FC<ModalProps> = ({visible, setVisible, children}) => {
 

@@ -1,43 +1,21 @@
 import React, {FC, useContext, useState} from 'react';
 import SubmitButton from "../components/Buttons/SubmitButton";
-import * as Yup from "yup";
 import {Form, Formik} from "formik";
-import {IUser} from "../Types/Types";
+import {IUser} from "../types/types";
 import RegisterFields from "../components/Register/RegisterFields";
 import {Navigate, NavLink, useNavigate} from "react-router-dom";
 import Modal from '../components/Modal/Modal';
-import {AuthContext} from "../Context/Context";
+import {AuthContext} from "../context/context";
 import {instance} from "../Instance";
+import {RegisterSchema} from "../forms/forms";
 
 const RegisterForm: FC = () => {
 	const navigate = useNavigate();
 	const [modal, setModal] = useState<boolean>(false);
-	const {isAuth} = useContext(AuthContext);
 
-	if(isAuth){
-		return <Navigate to='/account'/>
-	}
-
-	const RegisterSchema = Yup.object().shape({
-		username: Yup.string()
-			.matches(/^[a-zA-Z0-9_]+$/, 'Username must contain only alphanumeric character plus _.')
-			.min(4, 'Username must be at least 4 characters long.')
-			.max(20, 'Username\'s length must be lower than 20.')
-			.required('Required'),
-		email: Yup.string().email('Invalid email').required('Required'),
-		password: Yup.string()
-			.min(4, 'Password must be at least 4 characters long.')
-			.max(20, 'Password\'s length must be lower than 20.')
-			.required('Required'),
-		checkPassword: Yup.string().when("password", {
-			is: (val: string) => (!!(val && val.length > 0)),
-			then: Yup.string().oneOf(
-				[Yup.ref("password")],
-				"Passwords need to be the same"
-			)
-		})
-			.required('Required')
-	})
+	// if(isAuth){
+	// 	return <Navigate to='/account'/>
+	// }
 
 	const registerUser = async () => {
 		let username: string | undefined = document.querySelector<HTMLInputElement>('#username')?.value;
@@ -81,10 +59,10 @@ const RegisterForm: FC = () => {
 						<Form className="register-form">
 							<h1 className="register-title">Registration form</h1>
 							<RegisterFields errors={errors} touched={touched} />
-							<div className="flex flex-col items-center gap-3">
+							<div className="submit-button-with-subtext">
 								<SubmitButton content="Submit" />
-								<div className="text-sm text-secondaryTxt">
-									Already have an account? <NavLink className="underline" to='/login'>Log in here</NavLink>
+								<div className="subtext">
+									Already have an account? <NavLink className="subtext-link" to='/login'>Log in here</NavLink>
 								</div>
 							</div>
 						</Form>

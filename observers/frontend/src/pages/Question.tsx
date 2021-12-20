@@ -1,7 +1,7 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
-import {AuthContext} from "../Context/Context";
+import {AuthContext} from "../context/context";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
-import {IQuestion, IUser} from "../Types/Types";
+import {IQuestion, IUser} from "../types/types";
 import {instance} from "../Instance";
 import axios from "axios";
 import Loader from "../components/Loader/Loader";
@@ -11,7 +11,6 @@ const Question: FC = () => {
 	const [question, setQuestion] = useState<IQuestion>();
 	const [author, setAuthor] = useState<IUser>();
 	const [loading, setLoading] = useState(true);
-	const {isAuth, setIsAuth} = useContext(AuthContext);
 	const navigate = useNavigate();
 	const id = useParams().id;
 

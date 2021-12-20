@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {router} from "../../Router/Router";
+import {router} from "../../router/Router";
 import {Route, Routes} from "react-router-dom";
 
 const AppRouter: FC = () => {

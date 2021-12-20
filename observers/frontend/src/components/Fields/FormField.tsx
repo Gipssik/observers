@@ -1,13 +1,7 @@
 import {Field} from 'formik';
 import React, {FC} from 'react';
+import {RegisterFieldProps} from "../../types/types";
 
-interface RegisterFieldProps{
-	content: string;
-	type: string;
-	id: string;
-	errors: any;
-	touched: any;
-}
 
 const FormField: FC<RegisterFieldProps> = ({content, type, id, errors, touched}) => {
 	return (

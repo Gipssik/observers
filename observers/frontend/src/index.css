@@ -57,6 +57,18 @@
         @apply text-5xl text-primaryTxt text-center mb-3 font-bold;
     }
 
+    .submit-button-with-subtext{
+        @apply flex flex-col items-center gap-3;
+    }
+
+    .subtext{
+        @apply text-sm text-secondaryTxt;
+    }
+
+    .subtext-link{
+        @apply underline hover:text-primaryTxt;
+    }
+
     .form{
         @apply flex flex-col gap-4 w-full;
     }

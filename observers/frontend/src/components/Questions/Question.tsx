@@ -1,12 +1,6 @@
 import React, {FC} from 'react';
 import {useNavigate} from "react-router-dom";
-
-interface QuestionProps{
-	id: number;
-	title: string;
-	content: string;
-	views: number;
-}
+import {QuestionProps} from "../../types/types";
 
 const Question: FC<QuestionProps> = ({id, title, content, views}) => {
 	const navigate = useNavigate();

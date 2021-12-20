@@ -1,11 +1,6 @@
 import React, {FC} from 'react';
 import FormField from "../Fields/FormField";
-import {FormikErrors, FormikTouched} from "formik";
-
-interface LoginFieldsProps {
-	errors: FormikErrors<any>;
-	touched: FormikTouched<any>;
-}
+import {LoginFieldsProps} from "../../types/types";
 
 const LoginFields: FC<LoginFieldsProps> = ({errors, touched}) => {
 	return (

@@ -1,8 +1,5 @@
 import React, {FC} from 'react';
-
-interface ExProps{
-	onClick: () => void;
-}
+import {ExProps} from "../../types/types";
 
 const Ex: FC<ExProps> = ({onClick}) => {
 	return (

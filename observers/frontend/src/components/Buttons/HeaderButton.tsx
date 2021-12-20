@@ -1,11 +1,7 @@
 import React, {FC} from 'react';
 import {NavLink} from "react-router-dom";
+import {HeaderButtonProps} from "../../types/types";
 
-interface HeaderButtonProps {
-	content: string;
-	url: string;
-	onClick?: () => void;
-}
 
 const HeaderButton: FC<HeaderButtonProps> = ({content, url, onClick}) => {
 
