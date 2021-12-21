@@ -1,21 +1,22 @@
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useState} from 'react';
 import SubmitButton from "../components/Buttons/SubmitButton";
 import {Form, Formik} from "formik";
 import {IUser} from "../types/types";
 import RegisterFields from "../components/Register/RegisterFields";
 import {Navigate, NavLink, useNavigate} from "react-router-dom";
 import Modal from '../components/Modal/Modal';
-import {AuthContext} from "../context/context";
 import {instance} from "../Instance";
 import {RegisterSchema} from "../forms/forms";
+import {useTypedSelector} from "../hooks/useTypesSelector";
 
 const RegisterForm: FC = () => {
+	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
 	const [modal, setModal] = useState<boolean>(false);
 
-	// if(isAuth){
-	// 	return <Navigate to='/account'/>
-	// }
+	if(authenticated){
+		return <Navigate to='/account'/>
+	}
 
 	const registerUser = async () => {
 		let username: string | undefined = document.querySelector<HTMLInputElement>('#username')?.value;

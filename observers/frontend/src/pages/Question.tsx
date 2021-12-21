@@ -1,59 +1,62 @@
-import React, {FC, useContext, useEffect, useState} from 'react';
-import {AuthContext} from "../context/context";
-import {NavLink, useNavigate, useParams} from "react-router-dom";
-import {IQuestion, IUser} from "../types/types";
-import {instance} from "../Instance";
-import axios from "axios";
+import React, {FC, useEffect, useState} from 'react';
+import {useNavigate, useParams} from "react-router-dom";
+import {IQuestion, IUser, QuestionsActionTypes} from "../types/types";
 import Loader from "../components/Loader/Loader";
+import {useTypedSelector} from "../hooks/useTypesSelector";
+import {fetchQuestion} from "../store/action-creators/questions";
+import {useDispatch} from "react-redux";
+import {instance} from "../Instance";
+import Info from "../components/Question/Info";
 
 
 const Question: FC = () => {
-	const [question, setQuestion] = useState<IQuestion>();
-	const [author, setAuthor] = useState<IUser>();
-	const [loading, setLoading] = useState(true);
-	const navigate = useNavigate();
+	const {question, questions, loading, error} = useTypedSelector(state => state.questions);
 	const id = useParams().id;
+	const [author, setAuthor] = useState<IUser>();
+	const [loadingAuthor, setLoadingAuthor] = useState(true);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		instance.get<IQuestion>('forum/questions/' + id)
-			.then(response => {
-				setQuestion(response.data);
-				if(response.data){
-					instance.patch<IQuestion>(`forum/questions/${id}/views/?views=${response.data.views + 1}`);
+		if(!questions){
+			dispatch(fetchQuestion(Number(id), setAuthor, setLoadingAuthor));
+		}else{
+			const q = questions?.find(obj => {return obj.id === Number(id)});
 
-					instance.get<IUser>(`accounts/users/${response.data.author_id}`)
-						.then(response => {
-							setAuthor(response.data);
-							setLoading(false);
-						})
-				}
+			dispatch({
+				type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS,
+				payload: q
 			})
-			.catch(error => {
-				navigate('/404');
-			});
+
+			// @ts-ignore
+			instance.patch<IQuestion>(`forum/questions/${id}/views/?views=${q?.views + 1}`);
+			instance.get<IUser>(`accounts/users/${q?.author_id}/`)
+				.then(response => {
+					setAuthor(response.data);
+					setLoadingAuthor(false);
+				})
+				.catch(error => {
+					navigate('/404');
+				})
+		}
 	}, []);
+
+	useEffect(() => {
+		if(error)
+			navigate('/404');
+	}, [error]);
 
 	return (
 		<>
 			{
-				loading
+				loading || loadingAuthor
 				? <Loader/>
 				: 	<>
-						<div className="w-1/2 mx-auto text-primaryTxt mt-10">
-							<h1 className="text-3xl font-bold">{question?.title}</h1>
-
-							<div className="flex gap-5 mt-3 font-bold text-secondaryTxt">
-								{
-									question &&
-									<div className="">
-										{new Date(question?.date_created).toLocaleString().slice(0, -3)}
-									</div>
-								}
-								<div className="w-14 text-center">&#128065; {question?.views}</div>
-								<div>By <NavLink className="text-primaryTxt hover:underline" to={'/account/' + author?.username}>{author?.username}</NavLink></div>
-							</div>
-							<hr className="mt-3 border-t-2 border-primaryTxt"/>
-							<div className="mt-10">{question?.content}</div>
+						<div className="single-question-container">
+							<h1 className="single-question-title">{question?.title}</h1>
+							<Info question={question} author={author} />
+							<hr className="single-question-hr"/>
+							<div className="single-question-content">{question?.content}</div>
 						</div>
 					</>
 			}

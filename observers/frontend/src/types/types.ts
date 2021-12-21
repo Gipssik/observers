@@ -1,14 +1,26 @@
 import {FormikErrors, FormikTouched} from "formik";
+import React from "react";
+
+export interface IRole{
+	id?: number;
+	title?: string;
+}
+
+export interface ITag{
+	title: string;
+	id?: number;
+	questions?: IQuestion[];
+}
 
 export interface IUser{
 	id: number;
+	role: IRole;
 	username: string;
 	email: string;
 	date_created: string;
 	notifications: INotification[];
 	profile_image: string;
 	questions: IQuestion[];
-	// TODO: Finish User schema.
 }
 
 export interface INotification{
@@ -30,6 +42,27 @@ export interface IQuestion{
 	author_id: number;
 	date_created: string;
 	views: number;
+	tags: ITag[];
+	comments: IComment[];
+}
+
+export interface IComment{
+	content: string;
+	question_id: number;
+	id: number;
+	author_id: number;
+	date_created: string;
+	rating: number;
+	is_answer: boolean;
+}
+
+export interface IArticle{
+	title: string;
+	content: string;
+	id: number;
+	date_created: string;
+	likes: number;
+	dislikes: number;
 }
 
 export enum UserActionTypes {
@@ -86,6 +119,53 @@ interface AuthFalseAction {
 
 export type AuthAction = AuthTrueAction | AuthFalseAction;
 
+export enum QuestionsActionTypes{
+	FETCH_QUESTIONS = 'FETCH_QUESTIONS',
+	FETCH_QUESTIONS_SUCCESS = 'FETCH_QUESTIONS_SUCCESS',
+	FETCH_QUESTIONS_ERROR = 'FETCH_QUESTIONS_ERROR',
+	FETCH_QUESTION = 'FETCH_QUESTION',
+	FETCH_QUESTION_SUCCESS = 'FETCH_QUESTION_SUCCESS',
+	SET_SORTED_QUESTION = 'SET_SORTED_QUESTION',
+}
+
+export interface QuestionsState{
+	questions?: IQuestion[] | null;
+	question?: IQuestion | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchQuestionsAction{
+	type: QuestionsActionTypes.FETCH_QUESTIONS;
+}
+
+interface FetchQuestionsSuccessAction{
+	type: QuestionsActionTypes.FETCH_QUESTIONS_SUCCESS;
+	payload: IQuestion[];
+}
+
+interface FetchQuestionsErrorAction{
+	type: QuestionsActionTypes.FETCH_QUESTIONS_ERROR;
+	payload: string;
+}
+
+interface FetchQuestionAction{
+	type: QuestionsActionTypes.FETCH_QUESTION;
+}
+
+interface FetchQuestionSuccessAction{
+	type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS;
+	payload: IQuestion;
+}
+
+interface SetSortedQuestions{
+	type: QuestionsActionTypes.SET_SORTED_QUESTION;
+	payload: IQuestion[];
+}
+
+export type QuestionsAction = FetchQuestionsAction | FetchQuestionsSuccessAction |
+	FetchQuestionsErrorAction | FetchQuestionAction |
+	FetchQuestionSuccessAction | SetSortedQuestions;
 
 export interface HeaderButtonProps {
 	content: string;
@@ -134,4 +214,14 @@ export interface QuestionProps{
 export interface RegisterFieldsProps {
 	errors: FormikErrors<any>;
 	touched: FormikTouched<any>;
+}
+
+export interface AddQuestionFieldsProps {
+	errors: FormikErrors<any>;
+	touched: FormikTouched<any>;
+}
+
+export interface InfoProps{
+	question: IQuestion | null | undefined;
+	author: IUser | undefined;
 }

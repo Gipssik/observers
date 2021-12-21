@@ -12,6 +12,10 @@
         @apply absolute left-1/2 top-1/2;
     }
 
+    .error404-title{
+        @apply register-title mt-10;
+    }
+
     .main-header{
         @apply bg-primaryBg text-primaryTxt w-full p-5;
     }
@@ -151,6 +155,50 @@
 
     .options-container{
         @apply flex;
+    }
+
+    .account-container{
+        @apply w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10;
+    }
+
+    .account-img-block{
+        @apply border-2 border-primaryTxt;
+    }
+
+    .account-img{
+        @apply w-[100px] h-[100px];
+    }
+
+    .add-question-container{
+        @apply container w-1/2 mx-auto mt-10;
+    }
+
+    .single-question-container{
+        @apply w-1/2 mx-auto text-primaryTxt mt-10;
+    }
+
+    .single-question-title{
+        @apply text-3xl font-bold;
+    }
+
+    .single-question-info{
+        @apply flex gap-5 mt-3 font-bold text-secondaryTxt;
+    }
+
+    .single-question-views{
+        @apply w-14 text-center;
+    }
+
+    .single-question-by-link{
+        @apply text-primaryTxt hover:underline;
+    }
+
+    .single-question-hr{
+        @apply mt-3 border-t-2 border-primaryTxt;
+    }
+
+    .single-question-content{
+        @apply mt-10;
     }
 
 }

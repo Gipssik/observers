@@ -6,13 +6,13 @@ import {NavigateFunction} from "react-router-dom";
 export const fetchUser = () => {
 	return async (dispatch: Dispatch<UserAction | AuthAction>) => {
 		dispatch({type: UserActionTypes.FETCH_USER});
-		instance.get<IUser>('accounts/users/me')
+		instance.get<IUser>('accounts/users/me/')
 			.then(response => {
 				dispatch({type: UserActionTypes.FETCH_USER_SUCCESS, payload: response.data});
 				dispatch({type: AuthActionTypes.SET_TRUE, authenticated: true});
 			})
 			.catch(error => {
-				dispatch({type: UserActionTypes.FETCH_USER_ERROR, payload: 'Error'});
+				dispatch({type: UserActionTypes.FETCH_USER_ERROR, payload: 'Error while loading user'});
 				dispatch({type: AuthActionTypes.SET_FALSE, authenticated: false});
 			});
 	}

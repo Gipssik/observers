@@ -3,8 +3,10 @@ import {IUser} from "../types/types";
 import {useNavigate, useParams} from "react-router-dom";
 import {instance} from "../Instance";
 import Loader from "../components/Loader/Loader";
+import {useTypedSelector} from "../hooks/useTypesSelector";
 
 const Account: FC = () => {
+	const self = useTypedSelector(state => state.user.user);
 	const [user, setUser] = useState<IUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
@@ -21,16 +23,22 @@ const Account: FC = () => {
 			});
 	}, []);
 
+	useEffect(() => {
+		if(user && user.id === self?.id){
+			navigate('/account');
+		}
+	}, [user]);
+
 	return (
 		<>
 			{
 				loading
 				? 	<Loader/>
-				:	<div className="w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10">
-						<div className="border-2 border-primaryTxt">
+				:	<div className="account-container">
+						<div className="account-img-block">
 							<img
 								src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : ''}
-								className="w-[100px] h-[100px]"
+								className="account-img"
 								alt="Profile"/>
 						</div>
 						<div>

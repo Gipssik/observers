@@ -7,7 +7,7 @@ import {NavLink, useNavigate} from "react-router-dom";
 import {LoginSchema} from "../forms/forms";
 import {useTypedSelector} from "../hooks/useTypesSelector";
 import {useDispatch} from "react-redux";
-import {fetchUser, loginUser} from "../store/action-creators/user";
+import {loginUser} from "../store/action-creators/user";
 
 const LoginForm: FC = () => {
 	const [modal, setModal] = useState(false);
@@ -18,35 +18,6 @@ const LoginForm: FC = () => {
 	if(authenticated){
 		navigate('/account');
 	}
-
-	// const loginUser = async () => {
-	// 	let username: any = document.querySelector<HTMLInputElement>('#username')?.value;
-	// 	let password: any = document.querySelector<HTMLInputElement>('#password')?.value;
-	//
-	// 	let body = {
-	// 		'username': username,
-	// 		'password': password,
-	// 	};
-	//
-	// 	let bodyFormData = new FormData();
-	// 	bodyFormData.append('username', body.username);
-	// 	bodyFormData.append('password', body.password);
-	//
-	// 	instance.post<IToken>('token/', bodyFormData)
-	// 		.then(response => {
-	// 			let token =
-	// 				response.data.token_type.charAt(0).toUpperCase()
-	// 				+ response.data.token_type.slice(1)
-	// 				+ ` ${response.data.access_token}`;
-	//
-	// 			localStorage.setItem('token', token);
-	// 			dispatch(fetchUser());
-	// 			navigate('/questions');
-	// 		})
-	// 		.catch(error => {
-	// 			setModal(true);
-	// 		})
-	// };
 
 	return (
 		<Formik

@@ -12,11 +12,11 @@ const SelfAccount: FC = () => {
 	}
 
 	return (
-		<div className="w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10">
-			<div className="border-2 border-primaryTxt">
+		<div className="account-container">
+			<div className="account-img-block">
 				<img
 					src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : ''}
-					className="w-[100px] h-[100px]"
+					className="account-img"
 					alt="Profile"/>
 			</div>
 			<div>
