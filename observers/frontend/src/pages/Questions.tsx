@@ -5,45 +5,28 @@ import Loader from "../components/Loader/Loader";
 import {useTypedSelector} from "../hooks/useTypesSelector";
 import {useDispatch} from "react-redux";
 import {fetchQuestions} from "../store/action-creators/questions";
-import {IQuestion, QuestionsActionTypes} from "../types/types";
 
 const Questions: FC = () => {
-	const {questions, loading, error} = useTypedSelector(state => state.questions);
+	const {questions, loading} = useTypedSelector(state => state.questions);
 	const dispatch = useDispatch();
 
-	const compare = (a: IQuestion, b: IQuestion) => {
-		if (new Date(a.date_created) < new Date(b.date_created))
-			return -1;
-		if (new Date(a.date_created) > new Date(b.date_created))
-			return 1;
-		return 0;
-	}
-
 	useEffect(() => {
-		dispatch(fetchQuestions());
+		dispatch(fetchQuestions('order_by_date=desc'));
 	}, []);
-
-	useEffect(() => {
-		if(questions && !loading){
-			const q = questions.sort(compare).reverse();
-			dispatch({type: QuestionsActionTypes.SET_SORTED_QUESTION, payload: q});
-			console.log(q);
-		}
-	}, [questions]);
 
 
 	return (
-		<>
+		<div className="questions-container">
+			<Options />
 			{
 				loading ?
 					<Loader/>
 					:
-					<div className="questions-container">
-						<Options />
-						{questions?.map(q => <Question key={q.id} id={q.id} title={q.title} content={q.content} views={q.views}/>)}
-					</div>
+					questions?.map(q =>
+							<Question key={q.id} id={q.id} title={q.title} content={q.content} views={q.views} tags={q.tags}/>)
+
 			}
-		</>
+		</div>
 	);
 };
 

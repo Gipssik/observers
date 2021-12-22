@@ -62,7 +62,7 @@ def get_object_by_expression(cls: type, db: Session, expression: Any, raise_404:
     return obj
 
 
-def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -> list[Base]:
+def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100, order_by: any = None) -> list[Base]:
     """Returns all `Base` objects in range[`skip`:`skip+limit`].
 
     Args:
@@ -75,6 +75,8 @@ def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100) -> list
         `list[Base]`: All `Base` model objects.
     """
 
+    if order_by is not None:
+        return db.query(cls).order_by(order_by).offset(skip).limit(limit).all()
     return db.query(cls).offset(skip).limit(limit).all()
 
 
@@ -480,7 +482,7 @@ def create_question(db: Session, question: schemas.QuestionCreate) -> models.Que
     return question_db
 
 
-def get_question_by_title(db: Session, title: str) -> models.Question:
+def get_questions_by_title(db: Session, title: str) -> list[models.Question]:
     """Seeks for fuzzy equal question title to `title`.
 
     Args:
@@ -506,7 +508,7 @@ def get_question_by_title(db: Session, title: str) -> models.Question:
             detail="Question with this title does not exist."
         )
     
-    return questions[0][0]
+    return list(questions[0])
 
 
 def update_question(db: Session, question_id: int, question: schemas.QuestionUpdate) -> models.Question:
@@ -529,8 +531,9 @@ def update_question(db: Session, question_id: int, question: schemas.QuestionUpd
 
     db.query(models.Question).filter_by(id=question_id).update(updated_question.__dict__)
 
-    question_db.tags = []
-    fill_tags(db=db, tags=question.tags, question_db=question_db)
+    if question.tags:
+        question_db.tags = []
+        fill_tags(db=db, tags=question.tags, question_db=question_db)
 
     db.commit()
     db.refresh(question_db)

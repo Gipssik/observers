@@ -42,3 +42,9 @@ export const AddQuestionSchema = Yup.object().shape({
 		.min(32, 'Question\'s content must be at least 32 characters long.')
 		.required('Required'),
 })
+
+export const AddCommentSchema = Yup.object().shape({
+	comment: Yup.string()
+		.min(5, 'Comment\'s content must be at least 5 characters long.')
+		.required('Required')
+})

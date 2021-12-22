@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
 import {useTypedSelector} from "../hooks/useTypesSelector";
 
@@ -7,9 +7,11 @@ const SelfAccount: FC = () => {
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
 
-	if(!authenticated){
-		navigate('/login');
-	}
+	useEffect(() => {
+		if(!authenticated){
+			navigate('/login');
+		}
+	}, [authenticated]);
 
 	return (
 		<div className="account-container">

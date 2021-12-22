@@ -1,10 +1,5 @@
 import React, {FC} from 'react';
-
-interface RegularButtonProps {
-	content: string;
-	onClick: () => void;
-	className: string;
-}
+import {RegularButtonProps} from "../../types/types";
 
 const RegularButton: FC<RegularButtonProps> = ({content, onClick, className}) => {
 	return (

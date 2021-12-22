@@ -7,6 +7,7 @@ import {fetchQuestion} from "../store/action-creators/questions";
 import {useDispatch} from "react-redux";
 import {instance} from "../Instance";
 import Info from "../components/Question/Info";
+import AddComment from "../components/Question/AddComment";
 
 
 const Question: FC = () => {
@@ -57,6 +58,18 @@ const Question: FC = () => {
 							<Info question={question} author={author} />
 							<hr className="single-question-hr"/>
 							<div className="single-question-content">{question?.content}</div>
+							{
+								question?.comments && question.comments.length ?
+									<div className="text-3xl mt-5">Comments</div>
+									:
+									null
+							}
+							{
+								question ?
+									<AddComment questionId={question?.id}/>
+									:
+									null
+							}
 						</div>
 					</>
 			}

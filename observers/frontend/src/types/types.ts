@@ -120,6 +120,7 @@ interface AuthFalseAction {
 export type AuthAction = AuthTrueAction | AuthFalseAction;
 
 export enum QuestionsActionTypes{
+	SET_LOADING = 'SET_LOADING',
 	FETCH_QUESTIONS = 'FETCH_QUESTIONS',
 	FETCH_QUESTIONS_SUCCESS = 'FETCH_QUESTIONS_SUCCESS',
 	FETCH_QUESTIONS_ERROR = 'FETCH_QUESTIONS_ERROR',
@@ -133,6 +134,10 @@ export interface QuestionsState{
 	question?: IQuestion | null;
 	loading: boolean;
 	error: null | string;
+}
+
+interface SetLoadingAction{
+	type: QuestionsActionTypes.SET_LOADING;
 }
 
 interface FetchQuestionsAction{
@@ -165,7 +170,7 @@ interface SetSortedQuestions{
 
 export type QuestionsAction = FetchQuestionsAction | FetchQuestionsSuccessAction |
 	FetchQuestionsErrorAction | FetchQuestionAction |
-	FetchQuestionSuccessAction | SetSortedQuestions;
+	FetchQuestionSuccessAction | SetSortedQuestions | SetLoadingAction;
 
 export interface HeaderButtonProps {
 	content: string;
@@ -209,6 +214,7 @@ export interface QuestionProps{
 	title: string;
 	content: string;
 	views: number;
+	tags: ITag[];
 }
 
 export interface RegisterFieldsProps {
@@ -224,4 +230,15 @@ export interface AddQuestionFieldsProps {
 export interface InfoProps{
 	question: IQuestion | null | undefined;
 	author: IUser | undefined;
+}
+
+export interface RegularButtonProps {
+	content: string;
+	onClick: () => void;
+	className?: string;
+}
+
+export interface TagsProps{
+	tags: ITag[];
+	clickable: boolean;
 }

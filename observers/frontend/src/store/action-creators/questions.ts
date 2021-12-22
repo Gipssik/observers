@@ -1,12 +1,12 @@
 import {instance} from "../../Instance";
-import {IQuestion, IUser, QuestionsAction, QuestionsActionTypes} from "../../types/types";
+import {IQuestion, ITag, IUser, QuestionsAction, QuestionsActionTypes} from "../../types/types";
 import {Dispatch} from "redux";
 import React from "react";
 
-export const fetchQuestions = () => {
+export const fetchQuestions = (params: string | undefined) => {
 	return async (dispatch: Dispatch<QuestionsAction>) => {
 		dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS});
-		instance.get<IQuestion[]>('forum/questions/')
+		instance.get<IQuestion[]>(`forum/questions/${params ? `?${params}` : ''}`)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS_SUCCESS, payload: response.data});
 			})
@@ -37,4 +37,15 @@ export const fetchQuestion = (id: number, setAuthor: React.Dispatch<any>, setLoa
 	}
 }
 
+export const fetchQuestionsByTag = (tagName: string) => {
+	return async (dispatch: Dispatch<QuestionsAction>) => {
+		dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS});
+		instance.get<ITag>(`forum/tags/${tagName}`)
+			.then(response =>{
+				if(response.data.questions){
+					dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS_SUCCESS, payload: response.data.questions});
+				}
 
+			})
+	}
+}

@@ -14,10 +14,7 @@ const AddQuestionForm: FC = () => {
 		const title: any = document.querySelector<HTMLInputElement>('#title')?.value;
 		const content: any = document.querySelector<HTMLInputElement>('#content')?.value;
 
-		const body = {title, content};
-		console.log(body)
-
-		instance.post<IQuestion>('forum/questions/', body)
+		instance.post<IQuestion>('forum/questions/', {title, content})
 			.then(response => {
 				navigate('/questions');
 			});
