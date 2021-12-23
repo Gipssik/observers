@@ -17,17 +17,17 @@ interface AddCommentProps{
 }
 
 const AddComment: FC<AddCommentProps> = ({questionId}) => {
-	// const [editor, setEditor] = useState();
+	const [editor, setEditor] = useState();
 	const user = useTypedSelector(state => state.user.user);
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
 
-	// if(editor){
-	// 	// @ts-ignore
-	// 	console.log(draftToHtml(convertToRaw(editor.getCurrentContent())));
-	// 	// @ts-ignore
-	// 	console.log(convertToRaw(editor.getCurrentContent()));
-	// }
+	if(editor){
+		// @ts-ignore
+		console.log(draftToHtml(convertToRaw(editor.getCurrentContent())));
+		// @ts-ignore
+		console.log(convertToRaw(editor.getCurrentContent()));
+	}
 
 	const createComment = () => {
 		if(!authenticated || !user)
@@ -56,18 +56,18 @@ const AddComment: FC<AddCommentProps> = ({questionId}) => {
 			{({errors, touched}) => {
 				return (
 					<Form className="mt-10">
-						{/*<Editor*/}
-						{/*	wrapperClassName="editor-wrapper"*/}
-						{/*	editorClassName="editor-text"*/}
-						{/*	toolbarClassName="text-primaryBg"*/}
-						{/*	onEditorStateChange={(es: any) => {setEditor(es)}}*/}
-						{/*/>*/}
-						{/*{*/}
-						{/*	editor ?*/}
-						{/*		// @ts-ignore*/}
-						{/*		<div dangerouslySetInnerHTML={{__html: draftToHtml(convertToRaw(editor.getCurrentContent()))}}></div>*/}
-						{/*		:null*/}
-						{/*}*/}
+						<Editor
+							wrapperClassName="editor-wrapper"
+							editorClassName="editor-text"
+							toolbarClassName="text-primaryBg"
+							onEditorStateChange={(es: any) => {setEditor(es)}}
+						/>
+						{
+							editor ?
+								// @ts-ignore
+								<div dangerouslySetInnerHTML={{__html: draftToHtml(convertToRaw(editor.getCurrentContent()))}}></div>
+								:null
+						}
 						<TextareaField
 							content="Leave a comment"
 							type="textarea"

@@ -4,6 +4,58 @@
 
 @layer components{
 
+    h1{
+        @apply text-3xl font-bold;
+    }
+
+    h2{
+        @apply text-2xl font-bold;
+    }
+
+    h3{
+        @apply text-xl font-bold;
+    }
+
+    h4{
+        @apply text-lg font-bold;
+    }
+
+    h5{
+        @apply text-sm font-bold;
+    }
+
+    h6{
+        @apply text-xs font-bold;
+    }
+
+    ul{
+        @apply list-disc ml-5;
+    }
+
+    ol{
+        @apply list-decimal ml-5;
+    }
+
+    pre{
+        @apply p-4 my-2 rounded-md overflow-auto;
+    }
+
+    code{
+        @apply bg-primaryBg px-1 py-0.5 rounded-md;
+    }
+
+    a{
+        @apply underline
+    }
+
+    blockquote{
+        @apply ml-5 pl-3 border-l-4 border-primaryTxt;
+    }
+
+    .logo{
+        @apply text-white text-3xl italic -translate-y-1 no-underline;
+    }
+
     .app-container{
         @apply bg-secondaryBg min-h-full;
     }
@@ -30,7 +82,8 @@
     }
 
     .header-navlink{
-        @apply transition-all hover:opacity-70 uppercase tracking-wider;
+        @apply transition-all hover:opacity-70 uppercase tracking-wider
+        no-underline;
     }
 
     .search-field-container{
@@ -50,7 +103,8 @@
     .header-button{
         @apply bg-transparent border-2 border-primaryTxt
         rounded-md px-6 py-1 transition-all hover:bg-primaryTxt
-        hover:text-primaryBg hover:cursor-pointer capitalize;
+        hover:text-primaryBg hover:cursor-pointer capitalize
+        no-underline;
     }
 
     .register-form{
@@ -313,12 +367,33 @@
     outline: 1px solid slategrey;
 }
 
-pre{
-    background: #2c2b34 !important;
-    border-radius: 5px;
-    overflow: auto;
+.editor-text span[data-offset-key][style^='font-family: monospace;']:not([style=""]){
+    background: black !important;
 }
 
-code{
-    background: wheat;
+.editor-text blockquote{
+    border-left: 4px solid #F9AE74 !important;
+    padding-left: 10px !important;
+}
+
+pre{
+    background: #2c2b34 !important;
+}
+
+pre::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+pre::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px transparent;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background-color: #F9AE74;
+    outline: 1px solid slategrey;
+}
+
+span{
+    background: transparent;
 }
