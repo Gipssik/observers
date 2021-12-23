@@ -180,6 +180,7 @@ export interface HeaderButtonProps {
 
 export interface SubmitButtonProps{
 	content: string;
+	onClick?: () => void;
 }
 
 export interface RegisterFieldProps{

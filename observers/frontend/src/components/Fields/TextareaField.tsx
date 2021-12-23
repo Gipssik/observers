@@ -1,8 +1,13 @@
 import React, {FC} from 'react';
 import {Field} from "formik";
 import {RegisterFieldProps} from "../../types/types";
+import {Editor} from "react-draft-wysiwyg";
+import draftToHtml from "draftjs-to-html";
+import {convertToRaw} from "draft-js";
+import EditorField from "./EditorField";
 
 const TextareaField: FC<RegisterFieldProps> = ({content, id, errors, touched}) => {
+
 	return (
 		<div className="textarea-container">
 			<label className="textarea-label" htmlFor={id}>
@@ -10,15 +15,14 @@ const TextareaField: FC<RegisterFieldProps> = ({content, id, errors, touched}) =
 			</label>
 			<div className="options-container">
 				<Field name={id}>
-					{/*@ts-ignore*/}
-					{({field, form, meta}) => (
-						<div className="textarea-field-container">
-							<textarea {...field} id={id} className="textarea-field"></textarea>
-							{meta.touched && meta.error && (
-								<div className="textarea-errors">{meta.error}</div>
-							)}
-						</div>
-					)}
+					{/*{({field, form, meta}: any) => (*/}
+					{/*	<div className="textarea-field-container">*/}
+					{/*		<EditorField field={field} id={id}/>*/}
+					{/*		{meta.touched && meta.error && (*/}
+					{/*			<div className="textarea-errors">{meta.error}</div>*/}
+					{/*		)}*/}
+					{/*	</div>*/}
+					{/*)}*/}
 				</Field>
 			</div>
 		</div>

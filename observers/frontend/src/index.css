@@ -260,7 +260,7 @@
     }
 
     .single-question-content{
-        @apply mt-10;
+        @apply my-10;
     }
 
     .dropdown{
@@ -297,7 +297,7 @@
     }
 
     .editor-text{
-        @apply px-5 bg-primaryBg;
+        @apply px-5 bg-primaryBg w-full;
     }
 
 }

@@ -11,6 +11,7 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import {convertFromRaw, convertToRaw} from "draft-js";
 import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import EditorField from "../Fields/EditorField";
 
 interface AddCommentProps{
 	questionId: number;
@@ -18,69 +19,63 @@ interface AddCommentProps{
 
 const AddComment: FC<AddCommentProps> = ({questionId}) => {
 	const [editor, setEditor] = useState();
+	const [errors, setErrors] = useState('');
 	const user = useTypedSelector(state => state.user.user);
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
 
-	if(editor){
-		// @ts-ignore
-		console.log(draftToHtml(convertToRaw(editor.getCurrentContent())));
-		// @ts-ignore
-		console.log(convertToRaw(editor.getCurrentContent()));
-	}
+	// if(editor){
+	// 	// @ts-ignore
+	// 	console.log(draftToHtml(convertToRaw(editor.getCurrentContent())));
+	// 	// @ts-ignore
+	// 	console.log(convertToRaw(editor.getCurrentContent()));
+	// }
 
 	const createComment = () => {
 		if(!authenticated || !user)
 			navigate('/login')
 
-		const comment = document.querySelector<HTMLInputElement>('#comment')?.value;
-		const body = {
-			question_id: questionId,
-			author_id: user?.id,
-			content: comment
+		// @ts-ignore
+		const comment = draftToHtml(convertToRaw(editor.getCurrentContent()));
+		if(comment.replaceAll(/<p>(&nbsp;)*<\/p>/ig, '').length > 32 + 8){
+			setErrors('');
+			const body = {
+				question_id: questionId,
+				author_id: user?.id,
+				content: comment
+			}
+			instance.post<IComment>('forum/comments/', body)
+				.then(response => {
+					window.location.reload();
+				})
+		}else{
+			setErrors('Comment\'s content must be at least 32 character long');
 		}
-		instance.post<IComment>('forum/comments/', body)
-			.then(response => {
-				navigate('/questions/' + questionId);
-			})
+
 	}
 
 	return (
-		<Formik
-			initialValues={{
-				comment: ''
-			}}
-			validationSchema={AddCommentSchema}
-			onSubmit={() => createComment()}
-		>
-			{({errors, touched}) => {
-				return (
-					<Form className="mt-10">
-						<Editor
-							wrapperClassName="editor-wrapper"
-							editorClassName="editor-text"
-							toolbarClassName="text-primaryBg"
-							onEditorStateChange={(es: any) => {setEditor(es)}}
-						/>
-						{
-							editor ?
-								// @ts-ignore
-								<div dangerouslySetInnerHTML={{__html: draftToHtml(convertToRaw(editor.getCurrentContent()))}}></div>
-								:null
-						}
-						<TextareaField
-							content="Leave a comment"
-							type="textarea"
-							id="comment"
-							errors={errors}
-							touched={touched}/>
-						<div className="mt-5 w-full">
-							<SubmitButton content="Send"/>
-						</div>
-					</Form>
-				)
-			}}
-		</Formik>
+		<div>
+			<div>
+				<EditorField setState={setEditor}/>
+				{
+					errors ?
+						<div className="field-error">{errors}</div>
+						:
+						null
+				}
+
+			</div>
+			<div className="mt-5 w-full">
+				<SubmitButton onClick={createComment} content="Send"/>
+			</div>
+			{/*{*/}
+			{/*	editor ?*/}
+			{/*		// @ts-ignore*/}
+			{/*		<div dangerouslySetInnerHTML={{__html: ta.value}}></div>*/}
+			{/*		:null*/}
+			{/*}*/}
+		</div>
 	);
 };
 
