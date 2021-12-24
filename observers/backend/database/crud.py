@@ -589,22 +589,16 @@ def get_comments_by_question_id(db: Session, question_id: int) -> list[models.Co
 
     Args:
         `db` (Session): Database connection.
-        `question_id` (int): `Question` object's id.
-
-    Raises:
-        `HTTPException`: If there's no question with this id.
+        `question_id` (int): `Question` object's id..
 
     Returns:
         `list[models.Comment]`: List of `Comment` objects.
     """
 
-    if not (question := get_object(cls=models.Question, db=db, object_id=question_id)):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Question with this id does not exist.'
-        )
-
-    return question.comments
+    comments = db.query(models.Comment)\
+        .order_by(models.Comment.date_created.asc())\
+        .filter_by(question_id=question_id).all()
+    return comments
 
 
 def create_article(db: Session, article: schemas.ArticleCreate) -> models.Article:

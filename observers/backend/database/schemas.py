@@ -127,7 +127,6 @@ class Question(QuestionBase):
     date_created: datetime.datetime
     views: int
     tags: list[TagBase] = []
-    comments: list[Comment] = []
 
     class Config:
         orm_mode = True

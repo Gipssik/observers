@@ -43,7 +43,6 @@ export interface IQuestion{
 	date_created: string;
 	views: number;
 	tags: ITag[];
-	comments: IComment[];
 }
 
 export interface IComment{
