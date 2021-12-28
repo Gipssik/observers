@@ -10,7 +10,8 @@ const FormField: FC<RegisterFieldProps> = ({content, type, id, errors, touched})
 				{content.charAt(0).toUpperCase() + content.slice(1)}:
 			</label>
 			<div className="options-container">
-				<Field name={id} id={id} type={type} className="field"/>
+				<Field name={id} id={id} type={type} className="field"
+					   placeholder={content.charAt(0).toUpperCase() + content.slice(1)}/>
 				{errors && touched ? (
 					<div className="flex items-center">
 						<span className="field-error">{errors}</span>

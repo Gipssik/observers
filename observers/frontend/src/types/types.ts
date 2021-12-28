@@ -187,7 +187,8 @@ export interface RegisterFieldProps{
 	type: string;
 	id: string;
 	errors: any;
-	touched: any;
+	touched?: any;
+	handleChange?: (e: any) => void;
 }
 
 export interface MenuItemProps {
@@ -225,6 +226,8 @@ export interface RegisterFieldsProps {
 export interface AddQuestionFieldsProps {
 	errors: FormikErrors<any>;
 	touched: FormikTouched<any>;
+	setEditor: React.Dispatch<React.SetStateAction<undefined>>;
+	editorErrors: string;
 }
 
 export interface InfoProps{
@@ -241,4 +244,8 @@ export interface RegularButtonProps {
 export interface TagsProps{
 	tags: ITag[];
 	clickable: boolean;
+}
+
+export interface UserOptionsProps{
+	onClick: () => void;
 }

@@ -8,12 +8,12 @@ export const fetchUser = () => {
 		dispatch({type: UserActionTypes.FETCH_USER});
 		instance.get<IUser>('accounts/users/me/')
 			.then(response => {
-				dispatch({type: UserActionTypes.FETCH_USER_SUCCESS, payload: response.data});
 				dispatch({type: AuthActionTypes.SET_TRUE, authenticated: true});
+				dispatch({type: UserActionTypes.FETCH_USER_SUCCESS, payload: response.data});
 			})
 			.catch(error => {
-				dispatch({type: UserActionTypes.FETCH_USER_ERROR, payload: 'Error while loading user'});
 				dispatch({type: AuthActionTypes.SET_FALSE, authenticated: false});
+				dispatch({type: UserActionTypes.FETCH_USER_ERROR, payload: 'Error while loading user'});
 			});
 	}
 }

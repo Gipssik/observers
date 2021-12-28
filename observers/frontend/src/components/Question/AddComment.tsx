@@ -1,6 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Form, Formik} from "formik";
-import TextareaField from "../Fields/TextareaField";
+import {Form, Formik, useFormik} from "formik";
 import {AddCommentSchema} from "../../forms/forms";
 import SubmitButton from "../Buttons/SubmitButton";
 import {instance} from "../../Instance";
@@ -12,69 +11,62 @@ import draftToHtml from "draftjs-to-html";
 import {convertFromRaw, convertToRaw} from "draft-js";
 import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import EditorField from "../Fields/EditorField";
+import Preview from "../Preview/Preview";
 
 interface AddCommentProps{
 	questionId: number;
 }
 
 const AddComment: FC<AddCommentProps> = ({questionId}) => {
-	const [editor, setEditor] = useState();
-	const [errors, setErrors] = useState('');
 	const user = useTypedSelector(state => state.user.user);
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
-
-	// if(editor){
-	// 	// @ts-ignore
-	// 	console.log(draftToHtml(convertToRaw(editor.getCurrentContent())));
-	// 	// @ts-ignore
-	// 	console.log(convertToRaw(editor.getCurrentContent()));
-	// }
 
 	const createComment = () => {
 		if(!authenticated || !user)
 			navigate('/login')
 
-		// @ts-ignore
-		const comment = draftToHtml(convertToRaw(editor.getCurrentContent()));
-		if(comment.replaceAll(/<p>(&nbsp;)*<\/p>/ig, '').length > 32 + 8){
-			setErrors('');
-			const body = {
-				question_id: questionId,
-				author_id: user?.id,
-				content: comment
-			}
-			instance.post<IComment>('forum/comments/', body)
-				.then(response => {
-					window.location.reload();
-				})
-		}else{
-			setErrors('Comment\'s content must be at least 32 character long');
+		const body = {
+			question_id: questionId,
+			author_id: user?.id,
+			content: formik.values.comment
 		}
+		instance.post<IComment>('forum/comments/', body)
+			.then(response => {
+				window.location.reload();
+			})
 
 	}
 
+	const formik = useFormik({
+		initialValues: { comment: "" },
+		onSubmit: createComment,
+		validationSchema: AddCommentSchema
+	})
+
 	return (
-		<div>
-			<div>
-				<EditorField setState={setEditor}/>
+		<div className="mt-5">
+			<h2 className="mb-2">Add a comment:</h2>
+			<form onSubmit={formik.handleSubmit} className="form">
+				<div>
+					<EditorField setFieldValue={(val => {formik.setFieldValue("comment", val)})}/>
+					{
+						formik.errors.comment ?
+							<div className="field-error">{formik.errors.comment}</div>
+							:
+							null
+					}
+				</div>
 				{
-					errors ?
-						<div className="field-error">{errors}</div>
+					formik.values.comment ?
+						<Preview content={formik.values.comment}/>
 						:
 						null
 				}
-
-			</div>
-			<div className="mt-5 w-full">
-				<SubmitButton onClick={createComment} content="Send"/>
-			</div>
-			{/*{*/}
-			{/*	editor ?*/}
-			{/*		// @ts-ignore*/}
-			{/*		<div dangerouslySetInnerHTML={{__html: ta.value}}></div>*/}
-			{/*		:null*/}
-			{/*}*/}
+				<div className="mt-8 w-full">
+					<SubmitButton onClick={() => {}} content="Send"/>
+				</div>
+			</form>
 		</div>
 	);
 };

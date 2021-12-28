@@ -1,25 +1,17 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import CreationField from "../Fields/CreationField";
-import TextareaField from "../Fields/TextareaField";
 import {AddQuestionFieldsProps} from "../../types/types";
+import EditorField from "../Fields/EditorField";
 
-const AddQuestionFields: FC<AddQuestionFieldsProps> = ({errors, touched}) => {
+const AddQuestionFields: FC<AddQuestionFieldsProps> = ({
+	   errors,
+	   touched,
+	   setEditor,
+	   editorErrors
+}) => {
 	return (
 		<div className="form">
-			<CreationField
-				content="title"
-				type="text"
-				id="title"
-				errors={errors.username}
-				touched={touched.username}
-			/>
-			<TextareaField
-				content="content"
-				type="textarea"
-				id="content"
-				errors={errors.password}
-				touched={touched.password}
-			/>
+
 		</div>
 	);
 };

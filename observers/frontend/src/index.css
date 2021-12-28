@@ -49,7 +49,7 @@
     }
 
     blockquote{
-        @apply ml-5 pl-3 border-l-4 border-primaryTxt;
+        @apply ml-7 my-4 pl-3 py-3 border-l-4 border-primaryTxt;
     }
 
     .logo{
@@ -142,11 +142,28 @@
     .field{
         @apply w-64 bg-primaryBg text-primaryTxt border-2
         border-secondaryTxt rounded-md px-4 py-2
-        focus:outline-none focus:border-primaryTxt;
+        focus:outline-none focus:border-primaryTxt
+        placeholder:text-secondaryTxt placeholder:opacity-70;
     }
 
     .field-error{
         @apply absolute text-red-500 text-sm ml-4;
+    }
+
+    .creation-field-container{
+        @apply flex flex-col gap-2 relative;
+    }
+
+    .creation-label{
+        @apply text-primaryTxt text-xl;
+    }
+
+    .creation-input-container{
+        @apply w-full flex items-center relative;
+    }
+
+    .creation-error{
+        @apply text-red-500 text-sm absolute left-[100%] ml-5 w-40;
     }
 
     .submit-button{
@@ -167,11 +184,15 @@
 
     .modal-content{
         @apply p-10 bg-primaryBg mx-auto opacity-100
-        text-primaryTxt text-xl relative;
+        text-primaryTxt text-xl relative rounded-md;
+    }
+
+    .modal-buttons{
+        @apply flex flex-row justify-center gap-5 mt-5;
     }
 
     .ex{
-        @apply absolute top-0 right-0 w-[20px] h-[20px]
+        @apply absolute top-1.5 right-1.5 w-[20px] h-[20px]
         hover:cursor-pointer hover:opacity-70 transition;
     }
 
@@ -239,6 +260,10 @@
         @apply w-1/2 mx-auto text-primaryTxt mt-10;
     }
 
+    .single-question-header{
+        @apply flex flex-row justify-between gap-16 items-center;
+    }
+
     .single-question-title{
         @apply text-3xl font-bold;
     }
@@ -297,7 +322,30 @@
     }
 
     .editor-text{
-        @apply px-5 bg-primaryBg w-full;
+        @apply px-5 bg-primaryBg w-full text-primaryTxt;
+    }
+
+    .preview-container{
+        @apply border-2 border-primaryTxt rounded-md min-h-[40px]
+        mt-3 text-primaryTxt p-4;
+    }
+
+    .user-options-container{
+        @apply flex flex-col gap-2
+    }
+
+    .icon-container{
+        @apply border-[1px] p-1 rounded-md transition
+        hover:opacity-70 hover:cursor-pointer;
+    }
+
+    .trash{
+        @apply border-[1px] border-[#fa314a] p-1 rounded-md transition
+        hover:opacity-70 hover:cursor-pointer hover:bg-[#fa314a];
+    }
+
+    .icon{
+        @apply transition group-hover:fill-primaryBg;
     }
 
 }
@@ -368,7 +416,7 @@
 }
 
 .editor-text span[data-offset-key][style^='font-family: monospace;']:not([style=""]){
-    background: black !important;
+    background: #191820 !important;
 }
 
 .editor-text blockquote{

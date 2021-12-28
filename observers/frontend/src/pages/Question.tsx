@@ -9,11 +9,18 @@ import {instance} from "../Instance";
 import Info from "../components/Question/Info";
 import AddComment from "../components/Question/AddComment";
 import Comments from "../components/Question/Comments";
+import Trash from "../components/Question/Trash";
+import Modal from "../components/Modal/Modal";
+import RegularButton from "../components/Buttons/RegularButton";
+import Edit from "../components/Question/Edit";
 
 
 const Question: FC = () => {
 	const {question, questions, loading, error} = useTypedSelector(state => state.questions);
 	const id = useParams().id;
+	const [modalVisible, setModalVisible] = useState(false);
+	const authenticated = useTypedSelector(state => state.auth.authenticated);
+	const self = useTypedSelector(state => state.user.user);
 	const [author, setAuthor] = useState<IUser>();
 	const [comments, setComments] = useState<IComment[]>([]);
 	const [commentators, setCommentators] = useState<IUser[]>([]);
@@ -22,30 +29,33 @@ const Question: FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const loadCommentators = (cs: IComment[]) => {
-		cs.map(async (c) => {
-			let a = commentators.filter(obj => obj.id === c.author_id);
-			console.log(`out ${a}`);
-			if(a.length === 0){
-				console.log(`in ${a}`);
-				let response = await instance.get<IUser>('accounts/users/' + c.author_id);
-				if(!response.data){
-					navigate('/404');
-				}
-				// TODO: have no time to save commentator
-				setCommentators([...commentators, response.data])
-				if(commentators.includes(response.data)){
-					console.log(213);
-				}
-				// instance.get<IUser>('accounts/users/' + c.author_id)
-				// 	.then(response => {
-				// 		setCommentators([...commentators, response.data]);
-				// 	})
-				// 	.catch(error => {
-				// 		navigate('/404');
-				// 	})
+	const loadCommentators = async (coms: IComment[]) => {
+		let users: IUser[] = [];
+
+		for(let c of coms){
+			let s = users.filter(obj => obj.id === c.author_id)
+			if(s.length === 0){
+				await instance.get<IUser>('accounts/users/' + c.author_id)
+					.then(response => {
+						users.push(response.data)
+					})
+					.catch(error => {
+						navigate('/404');
+					})
 			}
-		})
+		}
+		setCommentators(users);
+		setLoadingComments(false);
+	}
+
+	const deleteQuestion = () => {
+		instance.delete('forum/questions/' + id)
+			.then(response => {
+				navigate('/questions');
+			})
+			.catch(error => {
+				console.log(error);
+			})
 	}
 
 	useEffect(() => {
@@ -77,7 +87,6 @@ const Question: FC = () => {
 			.then(response => {
 				setComments(response.data);
 				loadCommentators(response.data);
-				setLoadingComments(false);
 			})
 			.catch(error => {
 				console.error('Error while loading comments.')
@@ -96,11 +105,43 @@ const Question: FC = () => {
 				loading || loadingAuthor || loadingComments
 				? <Loader/>
 				: 	<>
+						<Modal visible={modalVisible} setVisible={setModalVisible}>
+							<div>
+								Are you sure you want to delete this questions?
+							</div>
+							<div className="modal-buttons">
+								<RegularButton
+									className="w-28 bg-green-600"
+									content="Yes"
+									onClick={deleteQuestion}
+								/>
+								<RegularButton
+									className="w-28 bg-red-500"
+									content="No"
+									onClick={() => setModalVisible(false)}
+								/>
+							</div>
+						</Modal>
 						<div className="single-question-container">
-							<h1 className="single-question-title">{question?.title}</h1>
-							<Info question={question} author={author} />
+							<div className="single-question-header">
+								<div>
+									<h1 className="single-question-title">{question?.title}</h1>
+									<Info question={question} author={author} />
+								</div>
+								{
+									authenticated && (self?.id === author?.id || self?.role.title === 'Admin') ?
+										<div className="user-options-container">
+											<Trash onClick={() => setModalVisible(true)}/>
+											<Edit onClick={() => console.log(123)}/>
+										</div>
+										:
+										null
+								}
+							</div>
 							<hr className="single-question-hr"/>
-							<div className="single-question-content">{question?.content}</div>
+							<div className="single-question-content"
+								 dangerouslySetInnerHTML={{__html: question ? question.content : ""}}
+							></div>
 							<hr className="single-question-hr"/>
 							{
 								comments.length > 0 ?
