@@ -5,7 +5,7 @@ import {instance} from "../Instance";
 import Loader from "../components/Loader/Loader";
 import {useTypedSelector} from "../hooks/useTypesSelector";
 
-const Account: FC = () => {
+const UserAccount: FC = () => {
 	const self = useTypedSelector(state => state.user.user);
 	const [user, setUser] = useState<IUser | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -21,13 +21,13 @@ const Account: FC = () => {
 			.catch(error => {
 				navigate('/404');
 			});
-	}, []);
+	});
 
 	useEffect(() => {
 		if(user && user.id === self?.id){
 			navigate('/account');
 		}
-	}, [user]);
+	}, [user, self, navigate]);
 
 	return (
 		<>
@@ -41,15 +41,14 @@ const Account: FC = () => {
 								className="account-img"
 								alt="Profile"/>
 						</div>
-						<div>
+						<div className="account-about">
 							<div>Username: {user?.username}</div>
 							<div>Email: {user?.email}</div>
 						</div>
-
 					</div>
 			}
 		</>
 	);
 };
 
-export default Account;
+export default UserAccount;

@@ -131,8 +131,16 @@ const Question: FC = () => {
 								{
 									authenticated && (self?.id === author?.id || self?.role.title === 'Admin') ?
 										<div className="user-options-container">
-											<Trash onClick={() => setModalVisible(true)}/>
-											<Edit onClick={() => console.log(123)}/>
+											<Trash
+												onClick={() => setModalVisible(true)}
+												width={32}
+												height={32}
+											/>
+											<Edit
+												onClick={() => navigate(`/questions/${id}/edit`)}
+												width={32}
+												height={32}
+											/>
 										</div>
 										:
 										null
@@ -151,7 +159,10 @@ const Question: FC = () => {
 							}
 							{
 								question ?
-									<AddComment questionId={question?.id}/>
+									<div className="mt-5">
+										<h2 className="mb-2">Add a comment:</h2>
+										<AddComment questionId={question?.id}/>
+									</div>
 									:
 									null
 							}

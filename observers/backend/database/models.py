@@ -5,10 +5,10 @@ from sqlalchemy.orm import relationship
 
 from .db import Base
 
-
-tag_question = Table('tag_question', Base.metadata,
-                     Column('tag_id', ForeignKey('tags.id', ondelete='CASCADE'), primary_key=True, index=True),
-                     Column('question_id', ForeignKey('questions.id', ondelete='CASCADE'), primary_key=True, index=True)
+tag_question = Table(
+    'tag_question', Base.metadata,
+    Column('tag_id', ForeignKey('tags.id', ondelete='CASCADE'), primary_key=True, index=True),
+    Column('question_id', ForeignKey('questions.id', ondelete='CASCADE'), primary_key=True, index=True)
 )
 
 
@@ -90,7 +90,6 @@ class Comment(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String, nullable=False)
     date_created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    rating = Column(Integer, nullable=False, default=0)
     is_answer = Column(Boolean, nullable=False, default=False)
     author_id = Column(Integer, ForeignKey('users.id'))
     question_id = Column(Integer, ForeignKey('questions.id'))

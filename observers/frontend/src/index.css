@@ -52,12 +52,22 @@
         @apply ml-7 my-4 pl-3 py-3 border-l-4 border-primaryTxt;
     }
 
+    iframe{
+        @apply min-w-full min-h-full overflow-visible;
+    }
+    /* TODO: To style iframe */
+
     .logo{
         @apply text-white text-3xl italic -translate-y-1 no-underline;
     }
 
     .app-container{
-        @apply bg-secondaryBg min-h-full;
+        @apply bg-secondaryBg min-h-full flex flex-col justify-between
+        gap-10;
+    }
+
+    .content{
+        @apply min-h-full flex-1 flex justify-around;
     }
 
     .loader{
@@ -65,7 +75,7 @@
     }
 
     .error404-title{
-        @apply register-title mt-10;
+        @apply register-title;
     }
 
     .main-header{
@@ -73,8 +83,8 @@
     }
 
     .main-footer{
-        @apply bg-primaryBg w-full py-5 mt-10 sticky
-        top-full text-primaryTxt text-xl text-center;
+        @apply bg-primaryBg w-full py-5 top-full 
+        text-primaryTxt text-xl text-center;
     }
 
     .header-inner{
@@ -108,7 +118,7 @@
     }
 
     .register-form{
-        @apply w-3/5 mx-auto flex flex-col items-center gap-8 mt-8;
+        @apply w-3/5 mx-auto flex flex-col items-center gap-8;
     }
 
     .register-title{
@@ -207,8 +217,7 @@
     }
 
     .questions-container{
-        @apply container w-3/5 mx-auto mt-8 flex
-        flex-col gap-4;
+        @apply container w-3/5 mx-auto flex flex-col gap-4;
     }
 
     .question-container{
@@ -241,23 +250,27 @@
     }
 
     .account-container{
-        @apply w-1/3 mx-auto flex gap-5 text-primaryTxt mt-10;
+        @apply w-2/5 py-10 px-5 mx-auto flex gap-5 text-primaryTxt;
     }
 
     .account-img-block{
-        @apply border-2 border-primaryTxt;
+        @apply border-2 border-primaryTxt w-fit h-fit rounded-md;
     }
 
     .account-img{
-        @apply w-[100px] h-[100px];
+        @apply w-[200px] h-[200px];
+    }
+
+    .account-about{
+        @apply bg-primaryBg h-fit;
     }
 
     .add-question-container{
-        @apply container w-1/2 mx-auto mt-10;
+        @apply container w-1/2 mx-auto;
     }
 
     .single-question-container{
-        @apply w-1/2 mx-auto text-primaryTxt mt-10;
+        @apply w-1/2 mx-auto text-primaryTxt;
     }
 
     .single-question-header{
@@ -327,7 +340,7 @@
 
     .preview-container{
         @apply border-2 border-primaryTxt rounded-md min-h-[40px]
-        mt-3 text-primaryTxt p-4;
+        mt-3 text-primaryTxt p-4 break-words overflow-x-auto;
     }
 
     .user-options-container{
@@ -346,6 +359,35 @@
 
     .icon{
         @apply transition group-hover:fill-primaryBg;
+    }
+
+    .comment-container{
+        @apply flex flex-col my-5 border-2 border-primaryTxt rounded-md;
+    }
+
+    .comment-header{
+        @apply relative flex p-3 items-center font-bold justify-between;
+    }
+
+    .comment-author-link{
+        @apply text-lg transition hover:opacity-70;
+    }
+
+    .comment-options{
+        @apply flex items-center gap-6;
+    }
+
+    .comment-answer{
+        @apply text-xl text-green-700 transition hover:opacity-70 hover:cursor-pointer;
+    }
+
+    .comment-not-answer{
+        @apply text-secondaryBg text-shadow hover:opacity-100
+        hover:text-primaryTxt;
+    }
+
+    .text-shadow{
+        text-shadow: -1px 0 #F9AE74, 0 1px #F9AE74, 1px 0 #F9AE74, 0 -1px #F9AE74;
     }
 
 }
@@ -428,18 +470,18 @@ pre{
     background: #2c2b34 !important;
 }
 
-pre::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 4px;
-    height: 4px;
+    height: 6px;
 }
 
-pre::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 2px transparent;
+*::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 100px #191820;
 }
 
-pre::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background-color: #F9AE74;
-    outline: 1px solid slategrey;
+    outline: 1px solid transparent;
 }
 
 span{

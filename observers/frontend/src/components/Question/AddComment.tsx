@@ -15,9 +15,19 @@ import Preview from "../Preview/Preview";
 
 interface AddCommentProps{
 	questionId: number;
+	buttonText?: string;
+	edit?: boolean;
+	value?: string;
+	setEditing?: any;
 }
 
-const AddComment: FC<AddCommentProps> = ({questionId}) => {
+const AddComment: FC<AddCommentProps> = ({
+	 questionId,
+	 buttonText,
+	 edit,
+	 value,
+	 setEditing
+}) => {
 	const user = useTypedSelector(state => state.user.user);
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
@@ -38,18 +48,34 @@ const AddComment: FC<AddCommentProps> = ({questionId}) => {
 
 	}
 
+	const editComment = () => {
+		if(!authenticated || !user)
+			navigate('/login')
+
+		if(value === formik.values.comment){
+			setEditing(false);
+			return;
+		}
+
+		const body = {
+			content: formik.values.comment
+		}
+		instance.patch<IComment>('forum/comments/' + questionId, body)
+			.then(response => {
+				window.location.reload();
+			})
+	}
+
 	const formik = useFormik({
 		initialValues: { comment: "" },
-		onSubmit: createComment,
+		onSubmit: edit ? editComment : createComment,
 		validationSchema: AddCommentSchema
 	})
 
 	return (
-		<div className="mt-5">
-			<h2 className="mb-2">Add a comment:</h2>
 			<form onSubmit={formik.handleSubmit} className="form">
 				<div>
-					<EditorField setFieldValue={(val => {formik.setFieldValue("comment", val)})}/>
+					<EditorField setFieldValue={(val => {formik.setFieldValue("comment", val)})} {...(value && {value: value})}/>
 					{
 						formik.errors.comment ?
 							<div className="field-error">{formik.errors.comment}</div>
@@ -64,10 +90,10 @@ const AddComment: FC<AddCommentProps> = ({questionId}) => {
 						null
 				}
 				<div className="mt-8 w-full">
-					<SubmitButton onClick={() => {}} content="Send"/>
+					<SubmitButton content={buttonText ? buttonText : "Send"}/>
 				</div>
 			</form>
-		</div>
+
 	);
 };
 

@@ -143,7 +143,6 @@ class CommentCreate(CommentBase):
 
 class CommentUpdate(BaseModel):
     content: Optional[str] = None
-    rating: Optional[int] = None
     is_answer: Optional[bool] = None
 
 
@@ -151,7 +150,6 @@ class Comment(CommentBase):
     id: int
     author_id: int
     date_created: datetime.datetime
-    rating: int
     is_answer: bool
 
     class Config:

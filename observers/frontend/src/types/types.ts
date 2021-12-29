@@ -51,7 +51,6 @@ export interface IComment{
 	id: number;
 	author_id: number;
 	date_created: string;
-	rating: number;
 	is_answer: boolean;
 }
 
@@ -189,6 +188,7 @@ export interface RegisterFieldProps{
 	errors: any;
 	touched?: any;
 	handleChange?: (e: any) => void;
+	value?: string;
 }
 
 export interface MenuItemProps {
@@ -248,4 +248,6 @@ export interface TagsProps{
 
 export interface UserOptionsProps{
 	onClick: () => void;
+	width: number;
+	height: number;
 }

@@ -21,7 +21,7 @@ const SelfAccount: FC = () => {
 					className="account-img"
 					alt="Profile"/>
 			</div>
-			<div>
+			<div className="account-about">
 				<div>Username: {user?.username}</div>
 				<div>Email: {user?.email}</div>
 			</div>

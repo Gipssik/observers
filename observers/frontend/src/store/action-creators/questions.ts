@@ -16,13 +16,19 @@ export const fetchQuestions = (params: string | undefined) => {
 	}
 }
 
-export const fetchQuestion = (id: number, setAuthor: React.Dispatch<any>, setLoadingAuthor: React.Dispatch<any>) => {
+export const fetchQuestion = (
+	id: number,
+	setAuthor: React.Dispatch<any>,
+	setLoadingAuthor: React.Dispatch<any>,
+	addView: boolean = true
+) => {
 	return async (dispatch: Dispatch<QuestionsAction>) => {
 		dispatch({type: QuestionsActionTypes.FETCH_QUESTION});
 		instance.get<IQuestion>(`forum/questions/${id}/`)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS, payload: response.data});
-				instance.patch<IQuestion>(`forum/questions/${id}/views/?views=${response.data.views + 1}`);
+				if(addView)
+					instance.patch<IQuestion>(`forum/questions/${id}/views/?views=${response.data.views + 1}`);
 
 				instance.get<IUser>(`accounts/users/${response.data.author_id}/`)
 					.then(response => {

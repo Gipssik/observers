@@ -88,15 +88,7 @@ def update_comment(
 
     comment_db = crud.get_object(cls=models.Comment, db=db, object_id=comment_id)
 
-    if comment.rating and current_user.id != comment_db.author.id:
-        return crud.update_object(
-            cls=models.Comment,
-            db=db,
-            object_id=comment_id,
-            schema_object=schemas.CommentUpdate(rating=comment.rating)
-        )
-
-    elif comment.content and current_user.id == comment_db.author.id:
+    if comment.content and current_user.id == comment_db.author.id:
         return crud.update_object(
             cls=models.Comment,
             db=db,
@@ -104,7 +96,7 @@ def update_comment(
             schema_object=schemas.CommentUpdate(content=comment.content)
         )
 
-    elif comment.is_answer and current_user.id == comment_db.question.author.id:
+    elif comment.is_answer is not None and current_user.id == comment_db.question.author.id:
         return crud.update_object(
             cls=models.Comment,
             db=db,

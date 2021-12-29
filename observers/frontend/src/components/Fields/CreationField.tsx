@@ -6,7 +6,8 @@ const CreationField: FC<RegisterFieldProps> = ({
 	   type,
 	   id,
 	   errors,
-	   handleChange
+	   handleChange,
+	   value
 }) => {
 	return (
 		<div className="creation-field-container">
@@ -18,6 +19,7 @@ const CreationField: FC<RegisterFieldProps> = ({
 				onChange={handleChange}
 				className="field w-full"
 				placeholder={content.charAt(0).toUpperCase() + content.slice(1)}
+				defaultValue={value ? value : ""}
 			/>
 			{
 				errors ?

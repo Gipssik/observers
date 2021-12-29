@@ -1,19 +1,31 @@
 import React, {FC, useState} from 'react';
 import {AddQuestionSchema} from "../../forms/forms";
-import {Form, Formik, useFormik} from "formik";
+import {useFormik} from "formik";
 import SubmitButton from "../Buttons/SubmitButton";
-import AddQuestionFields from "./AddQuestionFields";
 import {instance} from "../../Instance";
-import {IComment, IQuestion} from "../../types/types";
+import {IComment, IQuestion, ITag} from "../../types/types";
 import {useNavigate} from "react-router-dom";
 import CreationField from "../Fields/CreationField";
 import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
 
-const AddQuestionForm: FC = () => {
-	const navigate = useNavigate();
+interface AddQuestionFormProps{
+	title?: string;
+	tags?: string[];
+	content?: string;
+	buttonText?: string;
+	onSubmit: any;
+}
 
-	const createQuestion = () => {
+const AddQuestionForm: FC<AddQuestionFormProps> = ({
+	   title,
+	   tags,
+	   content,
+	   buttonText,
+	   onSubmit
+}) => {
+
+	const submit = () => {
 		const title: string = formik.values.title;
 		const tags: string[] = Array.from(
 			new Set(formik.values.tags
@@ -29,28 +41,29 @@ const AddQuestionForm: FC = () => {
 			body.tags = tags;
 		}
 
-		instance.post<IQuestion>('forum/questions/', body)
-			.then(response => {
-				navigate('/questions');
-			});
+		onSubmit(body)
 	}
 
 	const formik = useFormik({
-		initialValues: { title: "", tags: "", content: "" },
-		onSubmit: createQuestion,
+		initialValues: {
+			title: title ? title : "",
+			tags: tags ? tags.join(" ") : "",
+			content: content ? content : ""
+		},
+		onSubmit: submit,
 		validationSchema: AddQuestionSchema
 	})
 
 	return (
 		<div>
 			<form onSubmit={formik.handleSubmit} className="form">
-				<h1 className="register-title">Ask Question</h1>
 				<CreationField
 					content="title"
 					id="title"
 					type="text"
 					errors={formik.errors.title}
 					handleChange={formik.handleChange}
+					value={title ? title : ""}
 				/>
 				<CreationField
 					content={"tags (separated with \" \") "}
@@ -58,10 +71,14 @@ const AddQuestionForm: FC = () => {
 					id="tags"
 					errors={formik.errors.tags}
 					handleChange={formik.handleChange}
+					value={tags ? tags.join(" ") : ""}
 				/>
 				<div className="creation-field-container mb-3">
 					<span className="creation-label">Content:</span>
-					<EditorField setFieldValue={(val => {formik.setFieldValue("content", val)})}/>
+					<EditorField
+						setFieldValue={(val => {formik.setFieldValue("content", val)})}
+						{...(content && {value: content})}
+					/>
 					{
 						formik.errors.content ?
 							<div className="field-error bottom-0 translate-y-[100%]">{formik.errors.content}</div>
@@ -76,7 +93,7 @@ const AddQuestionForm: FC = () => {
 						null
 				}
 				<div className="mx-auto">
-					<SubmitButton content="Ask"/>
+					<SubmitButton content={buttonText ? buttonText : "Ask"}/>
 				</div>
 			</form>
 		</div>
