@@ -12,6 +12,7 @@ import {convertFromRaw, convertToRaw} from "draft-js";
 import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
+import RegularButton from '../Buttons/RegularButton';
 
 interface AddCommentProps{
 	questionId?: number;
@@ -97,8 +98,18 @@ const AddComment: FC<AddCommentProps> = ({
 						:
 						null
 				}
-				<div className="mt-8 w-full">
+				<div className="add-comment-buttons">
 					<SubmitButton content={buttonText ? buttonText : "Send"}/>
+					{
+						setEditing ?
+							<RegularButton 
+								content="Cancel"
+								onClick={() => setEditing(false)}
+								className="transparent-button"
+							/>
+							:
+							null
+					}
 				</div>
 			</form>
 

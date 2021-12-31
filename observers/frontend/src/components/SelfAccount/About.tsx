@@ -17,7 +17,6 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 			&& user.email !== email.value
 			&& email.value.toLowerCase().match(re)
 		){
-			setLoading(true);
 			let u = await instance.get<IUser>(`accounts/users/${email.value}`);
 			if(u.data){
 				setLoading(false);
@@ -25,6 +24,8 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 				setEmailError('This email is already taken.');
 				return;
 			}
+			
+			setLoading(true);
 
 			instance.patch<IUser>(`accounts/users/${user.id}`, {email: email.value})
 				.then(response => {

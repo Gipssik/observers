@@ -103,7 +103,7 @@ const Comment: FC<CommentProps> = ({comment, user}) => {
 							setEditing={setEditing}
 						/>
 						:
-						<div className="p-3" dangerouslySetInnerHTML={{__html: commentState.content}}></div>
+						<div className="comment-content" dangerouslySetInnerHTML={{__html: commentState.content}}></div>
 				}
 			</div>
 		</div>

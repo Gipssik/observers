@@ -361,7 +361,7 @@
     }
 
     .user-options-container{
-        @apply flex flex-col gap-2
+        @apply flex flex-col gap-2;
     }
 
     .icon-container{
@@ -401,6 +401,14 @@
     .comment-not-answer{
         @apply text-secondaryBg text-shadow hover:opacity-100
         hover:text-primaryTxt;
+    }
+
+    .comment-content{
+        @apply p-3 break-words overflow-y-auto;
+    }
+
+    .add-comment-buttons{
+        @apply mt-6 w-full flex gap-3;
     }
 
     .text-shadow{
