@@ -45,14 +45,21 @@ const Comment: FC<CommentProps> = ({comment, user}) => {
 				className={"comment-header "
 				+ (commentState.is_answer ? "bg-primaryTxt text-primaryBg" : "")}
 			>
-				<div>
-					<NavLink
-						to={self?.id === user.id ? '/account' :'/account/' + user.username}
-						className="comment-author-link"
-					>
-						{user.username}
-					</NavLink>
-					<div className="text-xs">{new Date(commentState?.date_created).toLocaleString().slice(0, -3)}</div>
+				<div className="flex gap-3">
+					<img
+						className="w-[50px] h-[50px] rounded-md"
+						src={user.profile_image === 'default.jpg' ? '/' + user.profile_image : user.profile_image}
+						alt="User"
+					/>
+					<div>
+						<NavLink
+							to={self?.id === user.id ? '/account' :'/account/' + user.username}
+							className="comment-author-link"
+						>
+							{user.username}
+						</NavLink>
+						<div className="text-xs">{new Date(commentState?.date_created).toLocaleString().slice(0, -3)}</div>
+					</div>
 				</div>
 				<div className="comment-options">
 					{
@@ -89,7 +96,7 @@ const Comment: FC<CommentProps> = ({comment, user}) => {
 				{
 					editing ?
 						<AddComment
-							questionId={commentState.question_id}
+							commentId={commentState.id}
 							edit={true}
 							buttonText="Confirm"
 							value={commentState.content}

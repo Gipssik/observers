@@ -3,7 +3,7 @@ import React, {FC} from 'react';
 const Footer: FC = () => {
 	return (
 		<footer className='main-footer'>
-			Made by Gipss
+			©Made by Gipss
 		</footer>
 	);
 };

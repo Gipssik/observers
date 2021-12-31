@@ -1,9 +1,17 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {useTypedSelector} from "../hooks/useTypesSelector";
+import RegularButton from "../components/Buttons/RegularButton";
+import axios from "axios";
+import FormData from "form-data";
+import {instance} from "../Instance";
+import {IUser} from "../types/types";
+import Loader from "../components/Loader/Loader";
+import Image from "../components/SelfAccount/Image";
+import About from "../components/SelfAccount/About";
 
 const SelfAccount: FC = () => {
-	const user = useTypedSelector(state => state.user.user);
+	const [loading, setLoading] = useState(false);
 	const authenticated = useTypedSelector(state => state.auth.authenticated);
 	const navigate = useNavigate();
 
@@ -14,19 +22,17 @@ const SelfAccount: FC = () => {
 	}, [authenticated]);
 
 	return (
-		<div className="account-container">
-			<div className="account-img-block">
-				<img
-					src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : ''}
-					className="account-img"
-					alt="Profile"/>
-			</div>
-			<div className="account-about">
-				<div>Username: {user?.username}</div>
-				<div>Email: {user?.email}</div>
-			</div>
-
-		</div>
+		<>
+			{
+				loading ?
+					<Loader/>
+					:
+					<div className="account-container">
+						<Image setLoading={setLoading}/>
+						<About setLoading={setLoading}/>
+					</div>
+			}
+		</>
 	);
 };
 

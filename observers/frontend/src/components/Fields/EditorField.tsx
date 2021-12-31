@@ -6,9 +6,10 @@ import {ContentState, EditorState, convertFromHTML, convertToRaw} from "draft-js
 interface EditorField{
 	setFieldValue: (val: string) => void;
 	value?: string;
+	onBlur?: () => void;
 }
 
-const EditorField: FC<EditorField> = ({setFieldValue, value}) => {
+const EditorField: FC<EditorField> = ({setFieldValue, value, onBlur}) => {
 	const [editorState, setEditorState] = useState<any>();
 	const editorDefaultState = value ?
 		// @ts-ignore
@@ -26,6 +27,7 @@ const EditorField: FC<EditorField> = ({setFieldValue, value}) => {
 
 	return (
 		<Editor
+			onBlur={onBlur}
 			wrapperClassName="editor-wrapper"
 			editorClassName="editor-text"
 			toolbarClassName="text-primaryBg"

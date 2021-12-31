@@ -251,3 +251,7 @@ export interface UserOptionsProps{
 	width: number;
 	height: number;
 }
+
+export interface AccountEditProps{
+	setLoading: any;
+}

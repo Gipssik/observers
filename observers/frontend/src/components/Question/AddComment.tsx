@@ -14,7 +14,8 @@ import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
 
 interface AddCommentProps{
-	questionId: number;
+	questionId?: number;
+	commentId?: number;
 	buttonText?: string;
 	edit?: boolean;
 	value?: string;
@@ -23,6 +24,7 @@ interface AddCommentProps{
 
 const AddComment: FC<AddCommentProps> = ({
 	 questionId,
+	 commentId,
 	 buttonText,
 	 edit,
 	 value,
@@ -60,7 +62,7 @@ const AddComment: FC<AddCommentProps> = ({
 		const body = {
 			content: formik.values.comment
 		}
-		instance.patch<IComment>('forum/comments/' + questionId, body)
+		instance.patch<IComment>('forum/comments/' + commentId, body)
 			.then(response => {
 				window.location.reload();
 			})
@@ -75,7 +77,13 @@ const AddComment: FC<AddCommentProps> = ({
 	return (
 			<form onSubmit={formik.handleSubmit} className="form">
 				<div>
-					<EditorField setFieldValue={(val => {formik.setFieldValue("comment", val)})} {...(value && {value: value})}/>
+					<EditorField
+						setFieldValue={
+							(val => {formik.setFieldValue("comment", val)})
+						}
+						{...(value && {value: value})}
+						{...(setEditing && {onBlur: () => setEditing(false)})}
+					/>
 					{
 						formik.errors.comment ?
 							<div className="field-error">{formik.errors.comment}</div>

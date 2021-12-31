@@ -250,19 +250,36 @@
     }
 
     .account-container{
-        @apply w-2/5 py-10 px-5 mx-auto flex gap-5 text-primaryTxt;
+        @apply w-1/2 py-10 px-5 mx-auto flex gap-5 text-primaryTxt
+        justify-center;
     }
 
     .account-img-block{
-        @apply border-2 border-primaryTxt w-fit h-fit rounded-md;
+        @apply min-w-fit h-fit rounded-md flex flex-col gap-2 items-center;
     }
 
     .account-img{
-        @apply w-[200px] h-[200px];
+        @apply w-[200px] h-[200px] border-2 border-primaryTxt rounded-md;
     }
 
     .account-about{
-        @apply bg-primaryBg h-fit;
+        @apply h-fit px-5 py-3 flex flex-col gap-7;
+    }
+
+    .account-about-table td{
+        @apply align-bottom py-1 w-fit;
+    }
+
+    .account-about-table tr td:first-child{
+        @apply flex flex-col gap-1 mr-3;
+    }
+
+    .account-about-table tr:not(:nth-child(2)) td:first-child span{
+        @apply text-lg
+    }
+
+    .account-about-table tr:nth-child(2) td{
+        @apply ml-5 text-2xl font-bold;
     }
 
     .add-question-container{
@@ -388,6 +405,11 @@
 
     .text-shadow{
         text-shadow: -1px 0 #F9AE74, 0 1px #F9AE74, 1px 0 #F9AE74, 0 -1px #F9AE74;
+    }
+
+    .transparent-button{
+        @apply bg-transparent border-2 border-primaryTxt text-primaryTxt
+        hover:bg-primaryTxt hover:text-primaryBg hover:opacity-100;
     }
 
 }

@@ -78,8 +78,7 @@ def get_user(user_key: Union[int, str], db: Session = Depends(get_db)) -> models
         return crud.get_object_by_expression(
             cls=models.User,
             db=db,
-            expression=(models.User.email == user_key),
-            raise_404=True
+            expression=(models.User.email == user_key)
         )
     elif user_key.replace('_', '').isalnum():
         return crud.get_object_by_expression(

@@ -93,7 +93,7 @@ def delete_object(cls: type, db: Session, object_id: int) -> None:
     """
 
     db_object = get_object(cls=cls, db=db, object_id=object_id)
-    
+
     db.delete(db_object)
     db.commit()
     return None
@@ -269,7 +269,7 @@ def update_user(db: Session, user_id: int, user: schemas.UserUpdate) -> models.U
     user_schema = schemas.UserUpdate(**db_user.__dict__)
 
     if user.email\
-        and (u := get_object_by_expression(cls=models.User, db=db, expression=(models.User.email == user_schema.email)))\
+        and (u := get_object_by_expression(cls=models.User, db=db, expression=(models.User.email == user.email)))\
         and u.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -340,7 +340,7 @@ def get_notifications_by_user_id(db: Session, user_id: int, skip: int, limit: in
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User with this id does not exist."
         )
-    
+
     return db.query(models.Notification).filter_by(user_id=user_id).offset(skip).limit(limit).all()
 
 
@@ -366,7 +366,7 @@ def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
 
     db.query(models.Notification).filter_by(user_id=user_id).delete()
     db.commit()
-    
+
     return None
 
 
@@ -389,7 +389,7 @@ def create_tag(db: Session, tag: schemas.TagCreate) -> models.Tag:
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Tag with this title already exist.'
         )
-        
+
     tag_db = models.Tag(title=tag.title)
     db.add(tag_db)
     db.commit()
@@ -438,7 +438,7 @@ def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> Non
 
     for tag in tags:
         tag = tag.lower()
-        if not tag.isalnum():
+        if not tag.replace('.', '').isalnum():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Wrong tag title.'
@@ -464,7 +464,7 @@ def create_question(db: Session, question: schemas.QuestionCreate) -> models.Que
     Returns:
         `models.Question`: A `Question` object.
     """
-    
+
     get_object(cls=models.User, db=db, object_id=question.author_id)
 
     question_db = models.Question(
@@ -507,7 +507,7 @@ def get_questions_by_title(db: Session, title: str) -> list[models.Question]:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Question with this title does not exist."
         )
-    
+
     return list(questions[0])
 
 

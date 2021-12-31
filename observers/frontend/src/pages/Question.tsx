@@ -83,7 +83,7 @@ const Question: FC = () => {
 			}
 		}
 
-		instance.get<IComment[]>(`forum/comments/${id}`)
+		instance.get<IComment[]>(`forum/comments/${id}/`)
 			.then(response => {
 				setComments(response.data);
 				loadCommentators(response.data);
