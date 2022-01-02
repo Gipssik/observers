@@ -30,10 +30,12 @@ const EditQuestion: FC = () => {
 			modifiedBody.content = body.content;
 		}
 
-		instance.patch<IQuestion>('/forum/questions/' + id, modifiedBody)
+		instance.patch<IQuestion>(`/forum/questions/${id}/`, modifiedBody)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS, payload: null});
-				navigate('/questions/' + id);
+			})
+			.then(() => {
+				navigate(`/questions/${id}/`);
 			})
 			.catch(error => {
 				console.log(error);
