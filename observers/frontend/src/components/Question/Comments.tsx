@@ -1,8 +1,5 @@
-import React, {FC, useEffect, useState} from 'react';
-import {instance} from "../../Instance";
-import {IComment, IQuestion, IUser} from "../../types/types";
-import {NavLink, useNavigate} from "react-router-dom";
-import {useTypedSelector} from "../../hooks/useTypesSelector";
+import React, {FC} from 'react';
+import {IComment, IUser} from "../../types/types";
 import Comment from "./Comment";
 
 interface CommentsProps{
@@ -11,7 +8,6 @@ interface CommentsProps{
 }
 
 const Comments: FC<CommentsProps> = ({comments, commentators}) => {
-	const navigate = useNavigate();
 
 	return (
 		<>

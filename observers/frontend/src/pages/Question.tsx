@@ -29,13 +29,16 @@ const Question: FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
+	console.log(question);
+	console.log(questions);
+
 	const loadCommentators = async (coms: IComment[]) => {
 		let users: IUser[] = [];
 
 		for(let c of coms){
 			let s = users.filter(obj => obj.id === c.author_id)
 			if(s.length === 0){
-				await instance.get<IUser>('accounts/users/' + c.author_id)
+				await instance.get<IUser>(`accounts/users/${c.author_id}/`)
 					.then(response => {
 						users.push(response.data)
 					})
@@ -49,7 +52,7 @@ const Question: FC = () => {
 	}
 
 	const deleteQuestion = () => {
-		instance.delete('forum/questions/' + id)
+		instance.delete(`forum/questions/${id}/`)
 			.then(response => {
 				navigate('/questions');
 			})
@@ -94,7 +97,6 @@ const Question: FC = () => {
 	}, []);
 
 	useEffect(() => {
-
 		if(error)
 			navigate('/404');
 	}, [error]);

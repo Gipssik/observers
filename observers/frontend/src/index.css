@@ -55,10 +55,20 @@
     iframe{
         @apply min-w-full min-h-full overflow-visible;
     }
-    /* TODO: To style iframe */
 
     .logo{
         @apply text-white text-3xl italic -translate-y-1 no-underline;
+    }
+
+    .header-icon{
+        @apply fill-primaryTxt h-full w-[32px] transition hover:opacity-70
+        hover:cursor-pointer;
+    }
+
+    .notifications-icon{
+        @apply relative after:content-[attr(after)] after:absolute after:top-0
+        after:right-0 after:bg-red-600 after:text-white after:text-xs
+        after:text-center after:align-middle after:rounded-full after:h-4 after:w-4 ;
     }
 
     .app-container{
@@ -107,7 +117,7 @@
     }
 
     .buttons{
-        @apply flex gap-2;
+        @apply flex gap-3;
     }
 
     .header-button{
@@ -220,6 +230,10 @@
         @apply container w-3/5 mx-auto flex flex-col gap-4;
     }
 
+    .questions-title{
+        @apply text-4xl text-primaryTxt font-bold mb-5;
+    }
+
     .question-container{
         @apply relative w-full p-5 pl-10 overflow-hidden
         border-2 bg-primaryBg border-secondaryTxt
@@ -250,7 +264,7 @@
     }
 
     .account-container{
-        @apply w-1/2 py-10 px-5 mx-auto flex gap-5 text-primaryTxt
+        @apply w-1/2 h-fit py-10 px-5 mx-auto flex gap-5 text-primaryTxt
         justify-center;
     }
 
@@ -280,6 +294,16 @@
 
     .account-about-table tr:nth-child(2) td{
         @apply ml-5 text-2xl font-bold;
+    }
+
+    .account-title{
+        @apply text-3xl text-center font-bold text-primaryTxt;
+    }
+
+    .account-question{
+        @apply w-2/3 bg-primaryBg py-3 px-5 text-lg text-primaryTxt
+        border-secondaryTxt border-2 rounded-md transition
+        hover:border-primaryTxt hover:bg-opacity-70 hover:cursor-pointer;
     }
 
     .add-question-container{
@@ -319,7 +343,7 @@
     }
 
     .dropdown{
-        @apply appearance-none bg-primaryBg p-2 border-2 w-32
+        @apply bg-primaryBg p-2 border-2 w-32
         border-secondaryTxt rounded-md text-center text-primaryTxt
         transition focus:outline-none focus:border-primaryTxt
         hover:cursor-pointer hover:border-primaryTxt;
@@ -418,6 +442,20 @@
     .transparent-button{
         @apply bg-transparent border-2 border-primaryTxt text-primaryTxt
         hover:bg-primaryTxt hover:text-primaryBg hover:opacity-100;
+    }
+
+    .notifications-container{
+        @apply absolute w-full h-screen bg-transparent left-0 top-0 z-10;
+    }
+
+    .notifications{
+        @apply min-w-[32rem] max-h-60 overflow-y-scroll absolute bg-primaryBg p-3 border-2 border-primaryTxt rounded-md
+        -translate-x-[100%] flex flex-col items-center z-20;
+    }
+
+    .notification{
+        @apply w-[95%] border-b-[1px] border-secondaryTxt py-3 text-center
+        hover:underline hover:cursor-pointer;
     }
 
 }

@@ -1,12 +1,14 @@
 import React, {FC, useState} from 'react';
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import SubmitButton from "../Buttons/SubmitButton";
-import {AccountEditProps, IUser} from "../../types/types";
+import {AccountEditProps, IToken, IUser} from "../../types/types";
 import {instance} from "../../Instance";
 
-const About: FC<AccountEditProps> = ({setLoading}) => {
+const About: FC<AccountEditProps> = ({setLoading, setModal, setModalData}) => {
 	const user = useTypedSelector(state => state.user.user);
 	const [emailError, setEmailError] = useState('');
+	const [oldError, setOldError] = useState('');
+	const [newError, setNewError] = useState('');
 
 	const saveEmail = async () => {
 		let email = document.querySelector<HTMLInputElement>('#email');
@@ -19,8 +21,6 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 		){
 			let u = await instance.get<IUser>(`accounts/users/${email.value}`);
 			if(u.data){
-				setLoading(false);
-				// TODO: set email error after set loading
 				setEmailError('This email is already taken.');
 				return;
 			}
@@ -36,6 +36,8 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 				})
 				.then(() => {
 					setLoading(false);
+					setModalData('Email was successfully updated!');
+					setModal(true);
 				})
 
 		}else if(email && !email.value.toLowerCase().match(re)){
@@ -43,6 +45,47 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 		}else{
 			setEmailError('');
 		}
+	}
+
+	const changePassword = () => {
+		let oldPassword = document.querySelector<HTMLInputElement>('#old');
+		let newPassword = document.querySelector<HTMLInputElement>('#new');
+
+		if(!user || !oldPassword || !newPassword)
+			return;
+
+		if(newPassword && (newPassword.value.length < 4 || newPassword.value.length > 19)){
+			setNewError('Password\'s length must be lower than 20 and higher than 3.');
+			return;
+		}else {
+			setNewError('');
+		}
+
+		if(oldPassword && (oldPassword.value.length < 4 || oldPassword.value.length > 19)){
+			setOldError('Password\'s length must be lower than 20 and higher than 3.');
+			return;
+		}else {
+			setOldError('');
+		}
+
+		setLoading(true);
+		let data = new FormData();
+		data.append('username', user.username)
+		data.append('password', oldPassword.value);
+		instance.post<IToken>('token/', data)
+			.then(response => {
+				instance.patch<IUser>(`accounts/users/${user.id}/`, {password: newPassword?.value})
+					.then(response => {
+						setLoading(false);
+						setModalData('Password was successfully updated!');
+						setModal(true);
+					})
+			})
+			.catch(error => {
+				setLoading(false);
+				setModalData('Wrong password!');
+				setModal(true);
+			})
 	}
 
 	return (
@@ -80,8 +123,17 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 					</tr>
 					<tr>
 						<td>
-							<span>Old password:</span>
+							<span>
+								Old password:
+								{
+									oldError ?
+										<span className="field-error">{oldError}</span>
+										:
+										null
+								}
+							</span>
 							<input
+								id="old"
 								type="password"
 								className="field"
 								placeholder="Old password"
@@ -91,15 +143,24 @@ const About: FC<AccountEditProps> = ({setLoading}) => {
 					</tr>
 					<tr>
 						<td>
-							<span>New password:</span>
+							<span>
+								New password:
+								{
+									newError ?
+										<span className="field-error">{newError}</span>
+										:
+										null
+								}
+							</span>
 							<input
+								id="new"
 								type="password"
 								className="field"
 								placeholder="New password"
 							/>
 						</td>
 						<td>
-							<SubmitButton content="Save" onClick={() => console.log(123)}/>
+							<SubmitButton content="Save" onClick={changePassword}/>
 						</td>
 					</tr>
 				</tbody>

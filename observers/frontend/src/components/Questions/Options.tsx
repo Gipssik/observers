@@ -12,7 +12,7 @@ const Options: FC = () => {
 
 	return (
 		<>
-			<h1 className="text-4xl text-primaryTxt font-bold mb-5">Last questions</h1>
+			<h1 className="questions-title">Questions</h1>
 			<div className="flex mb-5 gap-4">
 				<select
 					className="dropdown"

@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
@@ -77,24 +77,30 @@ def get_user_notifications(
     return crud.get_notifications_by_user_id(db=db, user_id=user_id, skip=skip, limit=limit)
 
 
-@router.delete('/{user_id}/')
-@raise_403_if_no_access
+@router.delete('/{notification_id}/')
 def delete_notification(
-        user_id: int,
+        notification_id: int,
         db: Session = Depends(get_db),
         current_user: schemas.User = Depends(get_current_user)
 ) -> Response:
-    """Deletes a notification(s) by a given `key_id`.
+    """Deletes a notification by a given `notification_id`.
 
     Args:
-        `key_id` (int): `Notification`'s or `User`'s id.
+        `notification_id` (int): `Notification`'s id.
         `db` (Session, optional): Database connection.
 
     Returns:
         `Response`: No content response.
     """
 
-    crud.delete_notifications_by_user_id(db=db, user_id=user_id)
+    notification = crud.get_object(cls=models.Notification, db=db, object_id=notification_id)
+    if notification.user_id != current_user.id and current_user.role.title != 'Admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You are not that user.'
+        )
+
+    crud.delete_object(cls=models.Notification, db=db, object_id=notification_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 

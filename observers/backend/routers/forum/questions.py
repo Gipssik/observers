@@ -100,6 +100,25 @@ def get_question(question_id: int, db: Session = Depends(get_db)) -> models.Ques
     return crud.get_object(cls=models.Question, db=db, object_id=question_id)
 
 
+@router.get('/{user_id}/user/', response_model=list[schemas.Question])
+def get_questions_by_user(user_id: int, db: Session = Depends(get_db)) -> list[models.Question]:
+    """Returns a list of user's questions by `user_id`.
+
+    Args:
+        `user_id` (int): User's id.
+        `db` (): Database connection.
+
+    Returns:
+        `list[models.Question]`: List of `Question` objects.
+    """
+
+    return crud.get_objects_by_expression(
+        cls=models.Question,
+        db=db,
+        expression=(models.Question.author_id == user_id),
+    )
+
+
 @router.patch('/{question_id}/', response_model=schemas.Question)
 def update_question(
         question_id: int,

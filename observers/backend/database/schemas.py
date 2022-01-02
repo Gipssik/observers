@@ -53,8 +53,6 @@ class User(UserBase):
     role: RoleBase
     date_created: datetime.datetime
     profile_image: Optional[str] = None
-    questions: list[Question] = []
-    notifications: list[Notification] = []
 
     class Config:
         orm_mode = True

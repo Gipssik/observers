@@ -7,18 +7,22 @@ import Loader from "./components/Loader/Loader";
 import {useTypedSelector} from "./hooks/useTypesSelector";
 import {useDispatch} from "react-redux";
 import {fetchUser} from "./store/action-creators/user";
+import {fetchNotifications} from "./store/action-creators/notifications";
 
 const App: FC = () => {
 	const {user, loading, error} = useTypedSelector(state => state.user);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchUser());
+		if(!user)
+			dispatch(fetchUser());
+		if (user)
+			dispatch(fetchNotifications(user.id));
 
 		if(error && localStorage.getItem('token')){
 			localStorage.removeItem('token');
 		}
-	}, []);
+	}, [user]);
 
 	return(
 		<BrowserRouter>

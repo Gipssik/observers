@@ -18,9 +18,7 @@ export interface IUser{
 	username: string;
 	email: string;
 	date_created: string;
-	notifications: INotification[];
 	profile_image: string;
-	questions: IQuestion[];
 }
 
 export interface INotification{
@@ -170,6 +168,35 @@ export type QuestionsAction = FetchQuestionsAction | FetchQuestionsSuccessAction
 	FetchQuestionsErrorAction | FetchQuestionAction |
 	FetchQuestionSuccessAction | SetSortedQuestions | SetLoadingAction;
 
+export enum NotificationsActionTypes{
+	FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS',
+	FETCH_NOTIFICATIONS_SUCCESS = 'FETCH_NOTIFICATIONS_SUCCESS',
+	FETCH_NOTIFICATIONS_ERROR = 'FETCH_QUESTIONS_ERROR',
+}
+
+export interface NotificationsState{
+	notifications?: INotification[] | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchNotificationsAction{
+	type: NotificationsActionTypes.FETCH_NOTIFICATIONS;
+}
+
+interface FetchNotificationsSuccessAction{
+	type: NotificationsActionTypes.FETCH_NOTIFICATIONS_SUCCESS;
+	payload: INotification[];
+}
+
+interface FetchNotificationsErrorAction{
+	type: NotificationsActionTypes.FETCH_NOTIFICATIONS_ERROR;
+	payload: string;
+}
+
+export type NotificationsAction = FetchNotificationsAction
+	| FetchNotificationsSuccessAction | FetchNotificationsErrorAction;
+
 export interface HeaderButtonProps {
 	content: string;
 	url: string;
@@ -254,4 +281,10 @@ export interface UserOptionsProps{
 
 export interface AccountEditProps{
 	setLoading: any;
+	setModal?: any;
+	setModalData?: any;
+}
+
+export interface IconProps{
+	onClick: () => void;
 }

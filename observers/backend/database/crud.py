@@ -62,6 +62,22 @@ def get_object_by_expression(cls: type, db: Session, expression: Any, raise_404:
     return obj
 
 
+def get_objects_by_expression(cls: type, db: Session, expression: Any) -> list[Base]:
+    """Returns list of `cls` model objects filtered by `expression`.
+
+    Args:
+        `cls` (type): Type of the object to get.
+        `db` (Session): Database connection.
+        `expression` (Any): Expression to filter function.
+
+    Returns:
+        `list[Base]`: List of `Base` model objects.
+
+    """
+
+    return db.query(cls).filter(expression).all()
+
+
 def get_objects(cls: type, db: Session, skip: int = 0, limit: int = 100, order_by: any = None) -> list[Base]:
     """Returns all `Base` objects in range[`skip`:`skip+limit`].
 
@@ -341,7 +357,8 @@ def get_notifications_by_user_id(db: Session, user_id: int, skip: int, limit: in
             detail="User with this id does not exist."
         )
 
-    return db.query(models.Notification).filter_by(user_id=user_id).offset(skip).limit(limit).all()
+    return db.query(models.Notification).order_by(models.Notification.id.desc())\
+        .filter_by(user_id=user_id).offset(skip).limit(limit).all()
 
 
 def delete_notifications_by_user_id(db: Session, user_id: int) -> None:
