@@ -515,17 +515,11 @@ def get_questions_by_title(db: Session, title: str) -> list[models.Question]:
 
     questions = sorted(
         [(question, c) for question in db.query(models.Question).all()
-        if (c := fuzz.WRatio(question.title, title)) >= 75],
+        if (c := fuzz.WRatio(question.title, title)) >= 60],
         key=lambda x: x[1], reverse=True
     )
 
-    if not questions:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Question with this title does not exist."
-        )
-
-    return list(questions[0])
+    return [question[0] for question in questions]
 
 
 def update_question(db: Session, question_id: int, question: schemas.QuestionUpdate) -> models.Question:

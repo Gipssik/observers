@@ -23,7 +23,6 @@ const Image: FC<AccountEditProps> = ({setLoading}) => {
 		}
 		axios.post('https://api.imgur.com/3/image', data, config)
 			.then(response => {
-				console.log(response);
 				let profile_image: string = response.data.data.link;
 				instance.patch<IUser>(`accounts/users/${user?.id}/`, {profile_image})
 					.then(response => {

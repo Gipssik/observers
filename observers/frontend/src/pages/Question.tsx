@@ -29,9 +29,6 @@ const Question: FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	console.log(question);
-	console.log(questions);
-
 	const loadCommentators = async (coms: IComment[]) => {
 		let users: IUser[] = [];
 
@@ -94,7 +91,7 @@ const Question: FC = () => {
 			.catch(error => {
 				console.error('Error while loading comments.')
 			})
-	}, []);
+	}, [id]);
 
 	useEffect(() => {
 		if(error)

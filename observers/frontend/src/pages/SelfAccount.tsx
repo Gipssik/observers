@@ -27,7 +27,7 @@ const SelfAccount: FC = () => {
 				setUserQuestions(response.data);
 				setLoading(false);
 			})
-	}, [])
+	}, [user])
 
 	useEffect(() => {
 		if(!authenticated || !user){

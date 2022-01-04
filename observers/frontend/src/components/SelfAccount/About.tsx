@@ -19,7 +19,7 @@ const About: FC<AccountEditProps> = ({setLoading, setModal, setModalData}) => {
 			&& user.email !== email.value
 			&& email.value.toLowerCase().match(re)
 		){
-			let u = await instance.get<IUser>(`accounts/users/${email.value}`);
+			let u = await instance.get<IUser>(`accounts/users/${email.value}/`);
 			if(u.data){
 				setEmailError('This email is already taken.');
 				return;
@@ -27,7 +27,7 @@ const About: FC<AccountEditProps> = ({setLoading, setModal, setModalData}) => {
 			
 			setLoading(true);
 
-			instance.patch<IUser>(`accounts/users/${user.id}`, {email: email.value})
+			instance.patch<IUser>(`accounts/users/${user.id}/`, {email: email.value})
 				.then(response => {
 					user.email = response.data.email;
 				})

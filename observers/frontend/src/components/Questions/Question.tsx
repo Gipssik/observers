@@ -12,7 +12,7 @@ const Question: FC<QuestionProps> = ({id, title, content, views, tags}) => {
 				{title.slice(0, 50)}{title.length > 50 ? '...' : null}
 			</div>
 			<Tags tags={tags} clickable={true}/>
-			<div className="question-views">&#128065; {views}</div>
+			<div className="question-views"><span className="font-bold">&#128065;</span> {views}</div>
 		</div>
 	);
 };

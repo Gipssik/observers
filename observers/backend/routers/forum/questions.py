@@ -85,6 +85,11 @@ def get_questions(
     return crud.get_objects(cls=models.Question, db=db, skip=skip, limit=limit)
 
 
+@router.get('/{question_title}/title/', response_model=list[schemas.Question])
+def get_questions_by_title(question_title: str, db: Session = Depends(get_db)) -> list[models.Question]:
+    return crud.get_questions_by_title(db=db, title=question_title)
+
+
 @router.get('/{question_id}/', response_model=schemas.Question)
 def get_question(question_id: int, db: Session = Depends(get_db)) -> models.Question:
     """Gets `Question` object by `question_key`.

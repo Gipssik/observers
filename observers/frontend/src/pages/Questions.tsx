@@ -22,9 +22,20 @@ const Questions: FC = () => {
 				loading ?
 					<Loader/>
 					:
-					questions?.map(q =>
-							<Question key={q.id} id={q.id} title={q.title} content={q.content} views={q.views} tags={q.tags}/>)
-
+					(
+						questions && questions.length > 0 ?
+							questions?.map(q =>
+								<Question
+									key={q.id}
+									id={q.id}
+									title={q.title}
+									content={q.content}
+									views={q.views}
+									tags={q.tags}
+								/>)
+							:
+							<div className="error404-title">There's no questions yet.</div>
+					)
 			}
 		</div>
 	);

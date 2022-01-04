@@ -3,10 +3,10 @@ import {IQuestion, ITag, IUser, QuestionsAction, QuestionsActionTypes} from "../
 import {Dispatch} from "redux";
 import React from "react";
 
-export const fetchQuestions = (params: string | undefined) => {
+export const fetchQuestions = (params: string | undefined, path: boolean = false) => {
 	return async (dispatch: Dispatch<QuestionsAction>) => {
 		dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS});
-		instance.get<IQuestion[]>(`forum/questions/${params ? `?${params}` : ''}`)
+		instance.get<IQuestion[]>(`forum/questions/${params ? `${!path ? '?' : ''}${params}` : ''}`)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS_SUCCESS, payload: response.data});
 			})

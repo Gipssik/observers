@@ -110,12 +110,6 @@
         @apply w-full mr-4;
     }
 
-    .search-field{
-        @apply w-full bg-transparent border-2 border-secondaryTxt
-        text-primaryTxt rounded-md px-3 py-0.5 focus:border-primaryTxt
-        focus:outline-none placeholder:text-secondaryTxt placeholder:opacity-70;
-    }
-
     .buttons{
         @apply flex gap-3;
     }
@@ -273,7 +267,8 @@
     }
 
     .account-img{
-        @apply w-[200px] h-[200px] border-2 border-primaryTxt rounded-md;
+        @apply min-w-[200px] min-h-[200px] max-w-[200px] max-h-[200px] border-2
+        border-primaryTxt rounded-md;
     }
 
     .account-about{
@@ -347,6 +342,10 @@
         border-secondaryTxt rounded-md text-center text-primaryTxt
         transition focus:outline-none focus:border-primaryTxt
         hover:cursor-pointer hover:border-primaryTxt;
+    }
+
+    .search-field{
+        @apply field;
     }
 
     .textarea-container{
@@ -449,13 +448,39 @@
     }
 
     .notifications{
-        @apply min-w-[32rem] max-h-60 overflow-y-scroll absolute bg-primaryBg p-3 border-2 border-primaryTxt rounded-md
-        -translate-x-[100%] flex flex-col items-center z-20;
+        @apply min-w-[32rem] max-h-60 overflow-y-scroll absolute bg-primaryBg p-3
+        border-2 border-primaryTxt rounded-md -translate-x-[100%] flex flex-col
+        items-center z-20;
     }
 
     .notification{
         @apply w-[95%] border-b-[1px] border-secondaryTxt py-3 text-center
         hover:underline hover:cursor-pointer;
+    }
+
+    .arrow-back{
+        @apply h-11 w-11 border-[1px] border-primaryTxt rounded-3xl
+        transition hover:bg-primaryTxt hover:cursor-pointer;
+    }
+
+    .arrow-back div{
+        @apply rounded-xl;
+    }
+
+    .arrow-side{
+        @apply bg-primaryTxt h-1 w-3.5 translate-x-2.5 transition group-hover:bg-secondaryBg;
+    }
+
+    .arrow-top{
+        @apply arrow-side -rotate-45 translate-y-3.5;
+    }
+
+    .arrow-bot{
+        @apply arrow-side rotate-45 translate-y-[18px];
+    }
+
+    .arrow-mid{
+        @apply arrow-side w-6 translate-y-4;
     }
 
 }
