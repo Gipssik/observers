@@ -1,15 +1,11 @@
-import React, {FC, useEffect, useState} from 'react';
-import {Form, Formik, useFormik} from "formik";
+import React, {FC} from 'react';
+import {useFormik} from "formik";
 import {AddCommentSchema} from "../../forms/forms";
 import SubmitButton from "../Buttons/SubmitButton";
 import {instance} from "../../Instance";
 import {IComment} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import {useNavigate} from "react-router-dom";
-import { Editor } from "react-draft-wysiwyg";
-import draftToHtml from "draftjs-to-html";
-import {convertFromRaw, convertToRaw} from "draft-js";
-import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
 import RegularButton from '../Buttons/RegularButton';

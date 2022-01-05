@@ -42,7 +42,12 @@ def get_articles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
         `list[models.Article]`: A `list` of all `Article` objects.
     """
 
-    return crud.get_objects(cls=models.Article, db=db, skip=skip, limit=limit)
+    return crud.get_objects(
+        cls=models.Article,
+        db=db, skip=skip,
+        limit=limit,
+        order_by=models.Article.date_created.desc()
+    )
 
 
 @router.get('/{article_id}/', response_model=schemas.Article)

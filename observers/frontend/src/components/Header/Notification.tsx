@@ -15,7 +15,6 @@ const Notification: FC<NotificationProps> = ({notification, setVisible}) => {
 
 	return (
 		<NavLink to={'/questions/' + notification.question_id} className="notification" onClick={() => {
-			// TODO: fix rerender.
 			dispatch({type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS, payload: null})
 			setVisible(false);
 			instance.delete(`accounts/notifications/${notification.id}/`)

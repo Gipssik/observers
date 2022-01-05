@@ -2,6 +2,7 @@ import React, {FC, useState} from 'react';
 import {Editor} from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import {ContentState, EditorState, convertFromHTML, convertToRaw} from "draft-js";
+import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 interface EditorField{
 	setFieldValue: (val: string) => void;

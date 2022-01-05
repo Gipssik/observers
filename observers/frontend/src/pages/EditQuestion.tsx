@@ -33,6 +33,8 @@ const EditQuestion: FC = () => {
 		instance.patch<IQuestion>(`/forum/questions/${id}/`, modifiedBody)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS, payload: response.data});
+			})
+			.then(() => {
 				navigate('/questions/' + id);
 			})
 			.catch(error => {

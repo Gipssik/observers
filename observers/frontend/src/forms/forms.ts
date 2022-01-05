@@ -51,3 +51,14 @@ export const AddCommentSchema = Yup.object().shape({
 				val => val ? (val.replaceAll(/<p>(&nbsp;)*<\/p>/ig, '').length > 40) : false)
 		.required('Required')
 })
+
+export const AddArticleSchema = Yup.object().shape({
+	title: Yup.string()
+		.min(5, 'Question\'s title must be at least 5 characters long.')
+		.max(128, 'Question\'s title must be 128 characters long maximum.')
+		.required('Required'),
+	content: Yup.string()
+		.test('comment', 'Question\'s content must be at least 32 character long',
+			val => val ? (val.replaceAll(/<p>(&nbsp;)*<\/p>/ig, '').length > 40) : false)
+		.required('Required')
+})

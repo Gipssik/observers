@@ -14,7 +14,6 @@ import Modal from "../components/Modal/Modal";
 import RegularButton from "../components/Buttons/RegularButton";
 import Edit from "../components/Question/Edit";
 
-
 const Question: FC = () => {
 	const {question, questions, loading, error} = useTypedSelector(state => state.questions);
 	const id = useParams().id;
@@ -104,23 +103,28 @@ const Question: FC = () => {
 				loading || loadingAuthor || loadingComments
 				? <Loader/>
 				: 	<>
-						<Modal visible={modalVisible} setVisible={setModalVisible}>
-							<div>
-								Are you sure you want to delete this questions?
-							</div>
-							<div className="modal-buttons">
-								<RegularButton
-									className="w-28 bg-green-600"
-									content="Yes"
-									onClick={deleteQuestion}
-								/>
-								<RegularButton
-									className="w-28 bg-red-500"
-									content="No"
-									onClick={() => setModalVisible(false)}
-								/>
-							</div>
-						</Modal>
+						{
+							self?.id === author?.id || self?.role.title === 'Admin' ?
+								<Modal visible={modalVisible} setVisible={setModalVisible}>
+									<div>
+										Are you sure you want to delete this questions?
+									</div>
+									<div className="modal-buttons">
+										<RegularButton
+											className="w-28 bg-green-600"
+											content="Yes"
+											onClick={deleteQuestion}
+										/>
+										<RegularButton
+											className="w-28 bg-red-500"
+											content="No"
+											onClick={() => setModalVisible(false)}
+										/>
+									</div>
+								</Modal>
+								:
+								null
+						}
 						<div className="single-question-container">
 							<div className="single-question-header">
 								<div>

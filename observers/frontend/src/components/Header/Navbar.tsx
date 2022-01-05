@@ -6,6 +6,7 @@ const Navbar: FC = () => {
 		<nav className='flex gap-10 items-center'>
 			<NavbarItem content='questions' url='/questions'/>
 			<NavbarItem content='news' url='/news'/>
+			<NavbarItem content='chat' url='/chat'/>
 		</nav>
 	);
 };

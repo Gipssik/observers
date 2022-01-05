@@ -314,7 +314,7 @@
     }
 
     .single-question-title{
-        @apply text-3xl font-bold;
+        @apply text-3xl font-bold break-all;
     }
 
     .single-question-info{
@@ -481,6 +481,101 @@
 
     .arrow-mid{
         @apply arrow-side w-6 translate-y-4;
+    }
+
+    .welcome-container{
+        @apply text-primaryTxt flex flex-col gap-10 max-w-[50%];
+    }
+
+    .welcome-title{
+        @apply text-5xl text-center;
+    }
+
+    .welcome-list-title{
+        @apply text-center text-5xl font-bold mb-5;
+    }
+
+    .welcome-list{
+        @apply flex flex-wrap gap-5 justify-center mt-10;
+    }
+
+    .welcome-list > a{
+        @apply flex flex-col basis-[30%] items-center justify-center h-48 px-5
+        text-center border-2 border-secondaryTxt rounded-md bg-primaryBg
+        transition hover:bg-opacity-70 hover:border-primaryTxt hover:cursor-pointer
+        no-underline;
+    }
+
+    .welcome-list > a > div:first-child{
+        @apply text-white underline italic;
+    }
+
+    .article-header{
+        @apply flex flex-col gap-5 justify-center items-center;
+    }
+
+    .article-title{
+        @apply questions-title mb-0;
+    }
+
+    .no-articles{
+        @apply error404-title mt-10 text-3xl;
+    }
+
+    .articles-block{
+        @apply flex flex-wrap gap-5 justify-center mt-10;
+    }
+
+    .article-block{
+        @apply basis-[23%] max-w-[23%] min-w-[250px] h-40 min-h-fit border-2
+        border-secondaryTxt rounded-md text-primaryTxt bg-primaryBg px-5 py-3
+        transition hover:bg-opacity-70 hover:border-primaryTxt hover:cursor-pointer
+        break-words overflow-y-hidden flex flex-col justify-between gap-2;
+    }
+
+    .article-block-title{
+        @apply max-h-[80%] overflow-y-hidden;
+    }
+
+    .article-block h4{
+        @apply text-center break-all;
+    }
+
+    .article-block-data{
+        @apply flex items-center max-h-[19%] gap-2 justify-between
+        text-secondaryTxt;
+    }
+
+    .article-block-rating{
+        @apply flex items-center gap-0.5;
+    }
+
+    .article-icon{
+        @apply fill-secondaryTxt w-[32px] h-[32px];
+    }
+
+    .article-icon.active{
+        @apply transition hover:fill-primaryTxt hover:cursor-pointer;
+    }
+
+    .single-article-container{
+        @apply w-1/2 mx-auto text-primaryTxt;
+    }
+
+    .single-article-info-block{
+        @apply w-full flex justify-between gap-16 items-center;
+    }
+
+    .single-article-info-block h1{
+        @apply break-all;
+    }
+
+    .single-article-info{
+        @apply flex flex-col gap-5;
+    }
+
+    .single-article-stats{
+        @apply flex items-center gap-5 text-secondaryTxt font-bold;
     }
 
 }

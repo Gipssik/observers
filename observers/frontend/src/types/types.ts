@@ -197,6 +197,47 @@ interface FetchNotificationsErrorAction{
 export type NotificationsAction = FetchNotificationsAction
 	| FetchNotificationsSuccessAction | FetchNotificationsErrorAction;
 
+export enum ArticlesActionTypes{
+	FETCH_ARTICLES = 'FETCH_ARTICLES',
+	FETCH_ARTICLES_SUCCESS = 'FETCH_ARTICLES_SUCCESS',
+	FETCH_ARTICLE = 'FETCH_ARTICLE',
+	FETCH_ARTICLE_SUCCESS = 'FETCH_ARTICLE_SUCCESS',
+	FETCH_ARTICLES_ERROR = 'FETCH_ARTICLES_ERROR',
+}
+
+export interface ArticlesState{
+	articles?: IArticle[] | null;
+	article?: IArticle | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchArticlesAction{
+	type: ArticlesActionTypes.FETCH_ARTICLES;
+}
+
+interface FetchArticlesSuccessAction{
+	type: ArticlesActionTypes.FETCH_ARTICLES_SUCCESS;
+	payload: IArticle[];
+}
+
+interface FetchArticleAction{
+	type: ArticlesActionTypes.FETCH_ARTICLE;
+}
+
+interface FetchArticleSuccessAction{
+	type: ArticlesActionTypes.FETCH_ARTICLE_SUCCESS;
+	payload: IArticle;
+}
+
+interface FetchArticlesErrorAction{
+	type: ArticlesActionTypes.FETCH_ARTICLES_ERROR;
+	payload: string;
+}
+
+export type ArticlesAction = FetchArticlesAction | FetchArticleAction | FetchArticleSuccessAction
+	| FetchArticlesSuccessAction | FetchArticlesErrorAction;
+
 export interface HeaderButtonProps {
 	content: string;
 	url: string;
@@ -286,5 +327,13 @@ export interface AccountEditProps{
 }
 
 export interface IconProps{
-	onClick: () => void;
+	onClick?: () => void;
+	className?: string;
+}
+
+export interface AddArticleFormProps{
+	title?: string;
+	content?: string;
+	buttonText?: string;
+	onSubmit?: any;
 }

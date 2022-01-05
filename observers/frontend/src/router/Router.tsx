@@ -9,6 +9,11 @@ import Question from "../pages/Question";
 import UserAccount from "../pages/UserAccount";
 import AddQuestion from "../pages/AddQuestion";
 import EditQuestion from "../pages/EditQuestion";
+import Welcome from "../pages/Welcome";
+import Articles from "../pages/Articles";
+import Article from "../pages/Article";
+import AddArticle from "../pages/AddArticle";
+import EditArticle from "../pages/EditArticle";
 
 interface IRoute{
 	path: string;
@@ -16,6 +21,7 @@ interface IRoute{
 }
 
 export const router: IRoute[] = [
+	{path: '/', component: <Welcome/>},
 	{path: '/register', component: <RegisterForm/>},
 	{path: '/login', component: <LoginForm/>},
 	{path: '/account', component: <SelfAccount/>},
@@ -24,6 +30,10 @@ export const router: IRoute[] = [
 	{path: '/questions', component: <Questions/>},
 	{path: '/questions/:id/edit', component: <EditQuestion/>},
 	{path: '/questions/:id', component: <Question/>},
+	{path: '/create-news', component: <AddArticle/>},
+	{path: '/news', component: <Articles/>},
+	{path: '/news/:id/edit', component: <EditArticle/>},
+	{path: '/news/:id', component: <Article/>},
 	{path: '/404', component: <Page404/>},
 	{path: '*', component: <Navigate to='/404'/>},
 ];
