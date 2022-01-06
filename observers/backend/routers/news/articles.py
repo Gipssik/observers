@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
@@ -83,15 +83,35 @@ def update_article(
         `models.Article`: `Article` object.
     """
 
-    if current_user.role.title != 'Admin' and (article.likes or article.dislikes):
-        article_upt = schemas.ArticleUpdate()
-        if article.likes:
-            article_upt.likes = article.likes
-        if article.dislikes:
-            article_upt.dislikes = article.dislikes
-        return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article_upt)
+    if current_user.role.title == 'Admin':
+        return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article)
 
-    return crud.update_object(cls=models.Article, db=db, object_id=article_id, schema_object=article)
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail='You have no access no edit articles.'
+    )
+
+
+@router.patch('/{article_id}/{rating_type}/', response_model=schemas.Article)
+def update_article_rating(
+        article_id: int,
+        rating_type: schemas.ArticleRatingType,
+        db: Session = Depends(get_db),
+        current_user: schemas.User = Depends(get_current_user)
+) -> models.Article:
+    """Updates article's rating by a given `article_id` and `rating_type`.
+
+    Args:
+        `article_id` (int): `Article` object's id.
+        `rating_type` (str): Enum string - 'likes' or 'dislikes'.
+        `db` (Session): Database connection.
+        `current_user` (schemas.User): Current `User` object.
+
+    Returns:
+        `models.Article`: `Article` object.
+    """
+
+    return crud.update_article_rating(db=db, article_id=article_id, user=current_user, rating_type=rating_type)
 
 
 @router.delete('/{article_id}/')

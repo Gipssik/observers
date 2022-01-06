@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 from typing import ForwardRef, List, Optional
 
 from pydantic import BaseModel, EmailStr
@@ -166,18 +167,21 @@ class ArticleCreate(ArticleBase):
 class ArticleUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
-    likes: Optional[int] = None
-    dislikes: Optional[int] = None
 
 
 class Article(ArticleBase):
     id: int
     date_created: datetime.datetime
-    likes: int
-    dislikes: int
+    likes: list[User]
+    dislikes: list[User]
 
     class Config:
         orm_mode = True
+
+
+class ArticleRatingType(str, Enum):
+    likes = 'likes'
+    dislikes = 'dislikes'
 
 
 Role.update_forward_refs()

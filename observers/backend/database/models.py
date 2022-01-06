@@ -11,6 +11,18 @@ tag_question = Table(
     Column('question_id', ForeignKey('questions.id', ondelete='CASCADE'), primary_key=True, index=True)
 )
 
+users_like_article = Table(
+    'users_like_article', Base.metadata,
+    Column('user_id', ForeignKey('users.id', ondelete='CASCADE'), primary_key=True, index=True),
+    Column('article_id', ForeignKey('articles.id', ondelete='CASCADE'), primary_key=True, index=True)
+)
+
+users_dislike_article = Table(
+    'users_dislike_article', Base.metadata,
+    Column('user_id', ForeignKey('users.id', ondelete='CASCADE'), primary_key=True, index=True),
+    Column('article_id', ForeignKey('articles.id', ondelete='CASCADE'), primary_key=True, index=True)
+)
+
 
 class Role(Base):
     __tablename__ = 'roles'
@@ -105,8 +117,8 @@ class Article(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     date_created = Column(DateTime, nullable=False, default=datetime.datetime.now)
-    likes = Column(Integer, nullable=False, default=0)
-    dislikes = Column(Integer, nullable=False, default=0)
+    likes = relationship('User', secondary=users_like_article, backref='likes')
+    dislikes = relationship('User', secondary=users_dislike_article, backref='dislikes')
 
     def __repr__(self) -> str:
         return f'Article("{self.title}")'

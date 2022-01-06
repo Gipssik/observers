@@ -91,81 +91,71 @@ const About: FC<AccountEditProps> = ({setLoading, setModal, setModalData}) => {
 	return (
 		<div className="account-about">
 			<div className="text-5xl font-bold">{user?.username}</div>
-			<table className="account-about-table">
-				<tbody>
-					<tr>
-						<td>
-							<span>
-								Email:
-								{
-									emailError ?
-										<span className="field-error">{emailError}</span>
-										:
-										null
-								}
-							</span>
-							<input
-								id="email"
-								type="email"
-								className="field"
-								defaultValue={user?.email}
-								placeholder="Email"
-							/>
-						</td>
-						<td>
-							<SubmitButton content="Save" onClick={saveEmail}/>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span>Change password:</span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span>
-								Old password:
-								{
-									oldError ?
-										<span className="field-error">{oldError}</span>
-										:
-										null
-								}
-							</span>
-							<input
-								id="old"
-								type="password"
-								className="field"
-								placeholder="Old password"
-							/>
-						</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>
-							<span>
-								New password:
-								{
-									newError ?
-										<span className="field-error">{newError}</span>
-										:
-										null
-								}
-							</span>
-							<input
-								id="new"
-								type="password"
-								className="field"
-								placeholder="New password"
-							/>
-						</td>
-						<td>
-							<SubmitButton content="Save" onClick={changePassword}/>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
+			<div className="account-about-block">
+				<div className="account-field-block">
+					<div className="account-field-with-label">
+						<span>
+							Email:
+							{
+								emailError ?
+									<span className="field-error">{emailError}</span>
+									:
+									null
+							}
+						</span>
+						<input
+							id="email"
+							type="email"
+							className="field"
+							defaultValue={user?.email}
+							placeholder="Email"
+						/>
+					</div>
+					<SubmitButton content="Save" onClick={saveEmail}/>
+				</div>
+				<div className="account-change-password-title">
+					Change password:
+				</div>
+				<div className="account-field-block">
+					<div className="account-field-with-label">
+						<span>
+							Old password:
+							{
+								oldError ?
+									<span className="field-error">{oldError}</span>
+									:
+									null
+							}
+						</span>
+						<input
+							id="old"
+							type="password"
+							className="field"
+							placeholder="Old password"
+						/>
+					</div>
+				</div>
+				<div className="account-field-block">
+					<div className="account-field-with-label">
+						<span>
+							New password:
+							{
+								newError ?
+									<span className="field-error">{newError}</span>
+									:
+									null
+							}
+						</span>
+						<input
+							id="new"
+							type="password"
+							className="field"
+							placeholder="New password"
+						/>
+					</div>
+					<SubmitButton content="Save" onClick={changePassword}/>
+				</div>
+			</div>
 		</div>
 	);
 };

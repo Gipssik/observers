@@ -23,9 +23,17 @@ const Options: FC = () => {
 
 	return (
 		<>
-			<h1 className="questions-title">Questions</h1>
-			<div className="flex mb-5 gap-4 justify-between">
-				<div className="flex gap-3">
+			<div className="flex items-center justify-between">
+				<h1 className="questions-title">Questions</h1>
+				{
+					authenticated ?
+						<RegularButton className="w-40" content={'ask question'} onClick={() => navigate('/ask-question')}/>
+						:
+						null
+				}
+			</div>
+			<div className="options">
+				<div className="options-sort">
 					<select
 						className="dropdown"
 						name="sort_by"
@@ -50,12 +58,6 @@ const Options: FC = () => {
 							null
 					}
 				</div>
-				{
-					authenticated ?
-						<RegularButton className="w-40" content={'ask question'} onClick={() => navigate('/ask-question')}/>
-						:
-						null
-				}
 			</div>
 		</>
 	);

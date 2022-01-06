@@ -55,7 +55,7 @@ const Image: FC<AccountEditProps> = ({setLoading}) => {
 				content="Change"
 				// @ts-ignore
 				onClick={() => inputFile.current.click()}
-				className="transparent-button w-full"
+				className="transparent-button w-full max-w-[200px]"
 			/>
 		</div>
 	);

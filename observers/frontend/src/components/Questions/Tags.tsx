@@ -10,7 +10,7 @@ const Tags: FC<TagsProps> = ({tags, clickable}) => {
 		<>
 			{
 				tags.length > 0 ?
-					<div className="flex gap-2">
+					<div className="flex gap-2 overflow-x-auto max-w-full">
 						{tags.map(t =>
 							<span
 								onClick={

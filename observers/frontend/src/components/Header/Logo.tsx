@@ -1,15 +1,17 @@
 import React, {FC} from 'react';
-import {NavLink} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 interface LogoProps{
 	className?: string;
 }
 
 const Logo: FC<LogoProps> = ({className}) => {
+	const navigate = useNavigate();
+
 	return (
-		<NavLink to='/' className={"logo " + (className ? className : "")}>
+		<span onClick={() => navigate('/')} className={"logo " + (className ? className : "")}>
             <span className='text-primaryTxt not-italic'>Ob</span>servers
-		</NavLink>
+		</span>
 	);
 };
 

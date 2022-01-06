@@ -16,8 +16,8 @@ const Article: FC<ArticleProps> = ({article}) => {
 			<h4 className="article-block-title">{article.title.slice(0, 50) + (article.title.length > 50 ? "..." : "")}</h4>
 			<div className="article-block-data">
 				<div className="article-block-rating">
-					<Like className="w-[26px] h-[26px]"/>{article.likes}
-					<Dislike className="w-[26px] h-[26px]"/>{article.dislikes}
+					<Like className="w-[26px] h-[26px]"/>{article.likes.length}
+					<Dislike className="w-[26px] h-[26px]"/>{article.dislikes.length}
 				</div>
 				<div>
 					{new Date(article.date_created).toLocaleDateString()}

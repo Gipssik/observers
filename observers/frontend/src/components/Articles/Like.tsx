@@ -3,7 +3,7 @@ import {IconProps} from "../../types/types";
 
 const Like: FC<IconProps> = ({onClick, className}) => {
 	return (
-		<div>
+		<div {...(onClick && {onClick: onClick})}>
 			<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 				 className={"article-icon " + (className ? className : "")}
 				 viewBox="0 0 172 172">

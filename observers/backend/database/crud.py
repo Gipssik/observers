@@ -629,3 +629,38 @@ def create_article(db: Session, article: schemas.ArticleCreate) -> models.Articl
     db.commit()
 
     return article_db
+
+
+def update_article_rating(db: Session, article_id: int, user: schemas.User, rating_type: str) -> models.Article:
+    """Updates article's rating by a given `article_id` and `rating_type`.
+
+    Args:
+        `db` (Session): Database connection.
+        `article_id` (int): `Article` object's id.
+        `user` (schemas.User): Current `User` object.
+        `rating_type` (str): Enum string - 'likes' or 'dislikes'
+
+    Returns:
+        `models.Article`: `Article` object.
+    """
+
+    article_db = get_object(cls=models.Article, db=db, object_id=article_id)
+    user_db = get_object(cls=models.User, db=db, object_id=user.id)
+
+    data_main = getattr(article_db, rating_type)
+
+    if user_db in data_main:
+        data_main.pop(data_main.index(user_db))
+        setattr(article_db, rating_type, data_main)
+    elif user_db not in data_main:
+        data_main.append(user_db)
+        setattr(article_db, rating_type, data_main)
+        names = schemas.ArticleRatingType._member_names_
+        data_secondary = getattr(article_db, names[names.index(rating_type) - 1])
+        if user_db in data_secondary:
+            data_secondary.pop(data_secondary.index(user_db))
+            setattr(article_db, names[names.index(rating_type) - 1], data_secondary)
+
+    db.commit()
+    db.refresh(article_db)
+    return article_db

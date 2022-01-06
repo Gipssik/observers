@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useDispatch} from "react-redux";
 import {AuthActionTypes, UserActionTypes} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypesSelector";

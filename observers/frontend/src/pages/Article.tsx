@@ -23,6 +23,7 @@ const Article: FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
+
 	const deleteArticle = () => {
 		instance.delete(`news/articles/${id}/`)
 			.then(response => {

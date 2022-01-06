@@ -57,8 +57,8 @@ export interface IArticle{
 	content: string;
 	id: number;
 	date_created: string;
-	likes: number;
-	dislikes: number;
+	likes: IUser[];
+	dislikes: IUser[];
 }
 
 export enum UserActionTypes {

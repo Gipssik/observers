@@ -52,12 +52,17 @@
         @apply ml-7 my-4 pl-3 py-3 border-l-4 border-primaryTxt;
     }
 
+    input{
+        @apply z-10;
+    }
+
     iframe{
         @apply min-w-full min-h-full overflow-visible;
     }
 
     .logo{
-        @apply text-white text-3xl italic -translate-y-1 no-underline;
+        @apply text-white text-3xl italic -translate-y-1 no-underline
+        hover:cursor-pointer;
     }
 
     .header-icon{
@@ -77,7 +82,7 @@
     }
 
     .content{
-        @apply min-h-full flex-1 flex justify-around;
+        @apply min-h-full flex-1 flex justify-around px-2;
     }
 
     .loader{
@@ -98,7 +103,30 @@
     }
 
     .header-inner{
-        @apply container mx-auto h-full flex items-center justify-between;
+        @apply container mx-auto h-full flex gap-16 items-center md:justify-start 
+        justify-between;
+    }
+
+    nav{
+        @apply md:w-full;
+    }
+
+    .navbar{
+        @apply md:flex md:static md:flex-row items-center md:justify-between
+        md:p-0 md:bg-transparent hidden bg-primaryBg flex-col gap-2 absolute
+        p-5 bg-opacity-80 md:w-full;
+    }
+
+    .navbar-active{
+        @apply md:right-auto md:translate-y-0 right-0 flex translate-y-5 z-20;
+    }
+
+    .hidden-icon{
+        @apply md:hidden block;
+    }
+
+    .navbar-links{
+        @apply flex md:flex-row md:gap-6 items-center flex-col gap-2;
     }
 
     .header-navlink{
@@ -106,12 +134,8 @@
         no-underline;
     }
 
-    .search-field-container{
-        @apply w-full mr-4;
-    }
-
     .buttons{
-        @apply flex gap-3;
+        @apply flex md:flex-row md:gap-3 flex-col gap-2;
     }
 
     .header-button{
@@ -181,15 +205,16 @@
     }
 
     .submit-button{
-        @apply w-32 text-center text-primaryBg
+        @apply w-32 max-h-12 text-center text-primaryBg
         capitalize rounded-md px-6 py-2 transition-all
-        bg-primaryTxt hover:opacity-70 hover:cursor-pointer;
+        bg-primaryTxt hover:opacity-70 hover:cursor-pointer
+        whitespace-nowrap;
     }
 
     .modal{
         @apply top-0 bottom-0 right-0 left-0 fixed
         bg-black bg-opacity-70 items-center
-        transition hidden z-10;
+        transition hidden z-50;
     }
 
     .modal.active{
@@ -219,24 +244,33 @@
         @apply absolute w-[2px] h-5 bg-primaryTxt
         rotate-[-45deg] translate-x-[10px];
     }
-
+    
     .questions-container{
-        @apply container w-3/5 mx-auto flex flex-col gap-4;
+        @apply lg:w-3/5 container mx-auto flex flex-col gap-4;
     }
 
     .questions-title{
-        @apply text-4xl text-primaryTxt font-bold mb-5;
+        @apply text-4xl text-primaryTxt font-bold;
+    }
+
+    .options{
+        @apply flex md:flex-row flex-col my-5 gap-4 justify-between flex-wrap;
+    }
+
+    .options-sort{
+        @apply flex gap-3 flex-wrap;
     }
 
     .question-container{
         @apply relative w-full p-5 pl-10 overflow-hidden
         border-2 bg-primaryBg border-secondaryTxt
-        rounded-md text-primaryTxt flex flex-col gap-3;
+        rounded-md text-primaryTxt flex flex-col gap-3
+        z-10;
     }
 
     .question-title{
         @apply text-primaryTxt text-2xl font-bold
-        hover:underline hover:cursor-pointer;
+        hover:underline hover:cursor-pointer max-w-[80%];
     }
 
     .question-tag{
@@ -258,8 +292,8 @@
     }
 
     .account-container{
-        @apply w-1/2 h-fit py-10 px-5 mx-auto flex gap-5 text-primaryTxt
-        justify-center;
+        @apply md:w-1/2 container h-fit py-10 px-5 mx-auto flex md:flex-row gap-5 text-primaryTxt
+        justify-center flex-col w-full;
     }
 
     .account-img-block{
@@ -274,21 +308,29 @@
     .account-about{
         @apply h-fit px-5 py-3 flex flex-col gap-7;
     }
-
-    .account-about-table td{
-        @apply align-bottom py-1 w-fit;
+    
+    .account-about-block{
+        @apply flex flex-col gap-4;
     }
 
-    .account-about-table tr td:first-child{
-        @apply flex flex-col gap-1 mr-3;
+    .account-field-block{
+        @apply flex flex-wrap md:flex-nowrap items-end gap-3;
     }
 
-    .account-about-table tr:not(:nth-child(2)) td:first-child span{
-        @apply text-lg
+    .account-field-with-label{
+        @apply flex flex-col;
     }
 
-    .account-about-table tr:nth-child(2) td{
-        @apply ml-5 text-2xl font-bold;
+    .account-field-with-label input{
+        @apply h-10;
+    }
+
+    .account-field-with-label span:first-child{
+        @apply text-lg;
+    }
+
+    .account-change-password-title{
+        @apply text-2xl font-bold text-center;
     }
 
     .account-title{
@@ -302,11 +344,11 @@
     }
 
     .add-question-container{
-        @apply container w-1/2 mx-auto;
+        @apply md:w-1/2 container mx-auto;
     }
 
     .single-question-container{
-        @apply w-1/2 mx-auto text-primaryTxt;
+        @apply md:w-1/2 container mx-auto text-primaryTxt;
     }
 
     .single-question-header{
@@ -334,7 +376,7 @@
     }
 
     .single-question-content{
-        @apply my-10;
+        @apply my-10 break-words;
     }
 
     .dropdown{
@@ -345,7 +387,7 @@
     }
 
     .search-field{
-        @apply field;
+        @apply field w-full md:w-auto;
     }
 
     .textarea-container{
@@ -444,7 +486,7 @@
     }
 
     .notifications-container{
-        @apply absolute w-full h-screen bg-transparent left-0 top-0 z-10;
+        @apply absolute w-full h-full md:h-screen bg-transparent left-0 top-0;
     }
 
     .notifications{
@@ -484,7 +526,7 @@
     }
 
     .welcome-container{
-        @apply text-primaryTxt flex flex-col gap-10 max-w-[50%];
+        @apply lg:w-3/5 container text-primaryTxt flex flex-col gap-10;
     }
 
     .welcome-title{
@@ -500,10 +542,10 @@
     }
 
     .welcome-list > a{
-        @apply flex flex-col basis-[30%] items-center justify-center h-48 px-5
+        @apply flex flex-col md:basis-[30%] sm:basis-[40%] basis-[80%] items-center justify-center h-48 px-5
         text-center border-2 border-secondaryTxt rounded-md bg-primaryBg
         transition hover:bg-opacity-70 hover:border-primaryTxt hover:cursor-pointer
-        no-underline;
+        no-underline min-w-[180px];
     }
 
     .welcome-list > a > div:first-child{
@@ -523,11 +565,11 @@
     }
 
     .articles-block{
-        @apply flex flex-wrap gap-5 justify-center mt-10;
+        @apply flex flex-wrap gap-5 justify-center mt-10 w-full;
     }
 
     .article-block{
-        @apply basis-[23%] max-w-[23%] min-w-[250px] h-40 min-h-fit border-2
+        @apply md:basis-[23%] sm:basis-[40%] basis-[80%] min-w-[240px] h-40 min-h-fit border-2
         border-secondaryTxt rounded-md text-primaryTxt bg-primaryBg px-5 py-3
         transition hover:bg-opacity-70 hover:border-primaryTxt hover:cursor-pointer
         break-words overflow-y-hidden flex flex-col justify-between gap-2;
@@ -559,7 +601,7 @@
     }
 
     .single-article-container{
-        @apply w-1/2 mx-auto text-primaryTxt;
+        @apply md:w-3/5 container mx-auto text-primaryTxt;
     }
 
     .single-article-info-block{

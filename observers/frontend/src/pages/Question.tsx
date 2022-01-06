@@ -127,7 +127,7 @@ const Question: FC = () => {
 						}
 						<div className="single-question-container">
 							<div className="single-question-header">
-								<div>
+								<div className="max-w-[70%]">
 									<h1 className="single-question-title">{question?.title}</h1>
 									<Info question={question} author={author} />
 								</div>

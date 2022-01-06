@@ -1,8 +1,9 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import Notification from "./Notification";
+import {IconProps} from "../../types/types";
 
-const Notifications: FC = () => {
+const Notifications: FC<IconProps> = ({className}) => {
 	const {notifications, loading} = useTypedSelector(state => state.notifications);
 	const [visible, setVisible] = useState(false);
 
@@ -11,7 +12,9 @@ const Notifications: FC = () => {
 			<div
 				// @ts-ignore
 				after={notifications?.length}
-				className={'header-icon ' + (notifications && notifications.length > 0 ? 'notifications-icon' : '')}
+				className={"header-icon "
+				+ (notifications && notifications.length > 0 ? "notifications-icon " : "")
+				+ (className ? className : "")}
 				onClick={() => setVisible(!visible)}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
