@@ -14,6 +14,7 @@ import Articles from "../pages/Articles";
 import Article from "../pages/Article";
 import AddArticle from "../pages/AddArticle";
 import EditArticle from "../pages/EditArticle";
+import Chat from "../pages/Chat";
 
 interface IRoute{
 	path: string;
@@ -34,6 +35,7 @@ export const router: IRoute[] = [
 	{path: '/news', component: <Articles/>},
 	{path: '/news/:id/edit', component: <EditArticle/>},
 	{path: '/news/:id', component: <Article/>},
+	{path: '/chat', component: <Chat/>},
 	{path: '/404', component: <Page404/>},
 	{path: '*', component: <Navigate to='/404'/>},
 ];

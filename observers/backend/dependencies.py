@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, WebSocket, Query
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
@@ -22,8 +22,7 @@ def get_db():
         db.close()
 
 
-async def get_current_user(user_token: str = Depends(security_token.oauth2_scheme),
-                           db: Session = Depends(get_db)) -> models.User:
+def get_user(user_token: str, db: Session):
     """Returns the current user if he passes authentication.
 
     Args:
@@ -58,3 +57,24 @@ async def get_current_user(user_token: str = Depends(security_token.oauth2_schem
     if user is None:
         raise credentials_exception
     return user
+
+
+async def get_current_user(
+        user_token: str = Depends(security_token.oauth2_scheme),
+        db: Session = Depends(get_db)
+) -> models.User:
+    return get_user(user_token, db)
+
+
+async def get_token_in_query(
+    websocket: WebSocket,
+    token: str = Query(...),
+):
+    return token.replace('Bearer ', '')
+
+
+async def get_current_user_by_query(
+        user_token: str = Depends(get_token_in_query),
+        db: Session = Depends(get_db)
+) -> models.User:
+    return get_user(user_token, db)

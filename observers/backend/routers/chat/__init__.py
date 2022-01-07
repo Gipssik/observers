@@ -1,3 +1,7 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix='/chat')
+from . import chat
+
+router = APIRouter(prefix='/ws')
+
+router.include_router(chat.router)
