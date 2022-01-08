@@ -16,6 +16,10 @@ const UserAccount: FC = () => {
 	const {username} = useParams();
 
 	useEffect(() => {
+		document.title = `${user?.username} - Observers`;
+	}, [user]);
+
+	useEffect(() => {
 		instance.get<IUser>(`accounts/users/${username}/`)
 			.then(response => {
 				setUser(response.data);

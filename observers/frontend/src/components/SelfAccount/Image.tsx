@@ -7,7 +7,7 @@ import {AccountEditProps, IUser} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 
 const Image: FC<AccountEditProps> = ({setLoading}) => {
-	const clientId = "18687b9e2c86e05";
+	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const inputFile = useRef(null);
 	const user = useTypedSelector(state => state.user.user);
 
@@ -21,6 +21,7 @@ const Image: FC<AccountEditProps> = ({setLoading}) => {
 				Accept: '*/*',
 			}
 		}
+
 		axios.post('https://api.imgur.com/3/image', data, config)
 			.then(response => {
 				let profile_image: string = response.data.data.link;

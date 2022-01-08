@@ -1,8 +1,13 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {NavLink} from "react-router-dom";
 import Logo from "../components/Header/Logo";
 
 const Welcome: FC = () => {
+
+	useEffect(() => {
+		document.title = 'Observers';
+	}, []);
+
 	return (
 		<div className="welcome-container">
 			<h1 className="welcome-title">

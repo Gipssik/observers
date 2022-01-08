@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 
 from database import models, schemas
@@ -17,6 +19,7 @@ async def chat(
         response = {
             'user': current_user.username,
             'message': 'connected to the chat',
+            'connection': True
         }
         await socket_manager.send(response)
 

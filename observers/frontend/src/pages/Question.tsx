@@ -93,6 +93,10 @@ const Question: FC = () => {
 	}, [id]);
 
 	useEffect(() => {
+		document.title = `${question?.title} - Observers`;
+	}, [question]);
+
+	useEffect(() => {
 		if(error)
 			navigate('/404');
 	}, [error]);

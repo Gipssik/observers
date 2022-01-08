@@ -37,6 +37,10 @@ const EditArticle: FC = () => {
 	}
 
 	useEffect(() => {
+		document.title = 'Edit news - Observers';
+	}, []);
+
+	useEffect(() => {
 		if(isNaN(Number(id))){
 			navigate('/news');
 			return;

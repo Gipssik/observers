@@ -61,6 +61,13 @@ export interface IArticle{
 	dislikes: IUser[];
 }
 
+export interface IMessage{
+	user: string;
+	message: string;
+	connection?: boolean;
+	time?: string;
+}
+
 export enum UserActionTypes {
 	FETCH_USER = 'FETCH_USER',
 	FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS',
@@ -237,6 +244,59 @@ interface FetchArticlesErrorAction{
 
 export type ArticlesAction = FetchArticlesAction | FetchArticleAction | FetchArticleSuccessAction
 	| FetchArticlesSuccessAction | FetchArticlesErrorAction;
+
+export enum ChatActionTypes{
+	CREATE_CONNECTION = 'CREATE_CONNECTION',
+	SET_ONOPEN = 'SET_ONOPEN',
+	SET_ONCLOSE = 'SET_ONCLOSE',
+	SET_ONMESSAGE = 'SET_ONMESSAGE',
+	ADD_MESSAGE = 'ADD_MESSAGE',
+	SET_CONNECTED = 'SET_CONNECTED',
+	CLEAR_STATE = 'CLEAR_STATE',
+}
+
+export interface ChatState{
+	messages: IMessage[] | null;
+	connected: boolean;
+	ws: WebSocket | null;
+}
+
+interface CreateConnectionAction{
+	type: ChatActionTypes.CREATE_CONNECTION;
+	payload: string;
+}
+
+interface SetOnOpenAction{
+	type: ChatActionTypes.SET_ONOPEN;
+	payload: any;
+}
+
+interface SetOnCloseAction{
+	type: ChatActionTypes.SET_ONCLOSE;
+	payload: any;
+}
+
+interface SetOnMessageAction{
+	type: ChatActionTypes.SET_ONMESSAGE;
+	payload: any;
+}
+
+interface AddMessageAction{
+	type: ChatActionTypes.ADD_MESSAGE;
+	payload: IMessage;
+}
+
+interface SetConnectedAction{
+	type: ChatActionTypes.SET_CONNECTED;
+	payload: boolean;
+}
+
+interface ClearStateAction{
+	type: ChatActionTypes.CLEAR_STATE;
+}
+
+export type ChatAction = CreateConnectionAction | AddMessageAction | SetConnectedAction |
+	SetOnOpenAction | SetOnCloseAction | SetOnMessageAction | ClearStateAction;
 
 export interface HeaderButtonProps {
 	content: string;

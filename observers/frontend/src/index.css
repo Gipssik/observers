@@ -620,6 +620,43 @@
         @apply flex items-center gap-5 text-secondaryTxt font-bold;
     }
 
+    .chat-container{
+        @apply max-h-[75vh] flex flex-col container lg:w-3/5 xl:w-2/5 text-primaryTxt;
+    }
+
+    .chat-messages-block{
+        @apply flex flex-col max-h-full overflow-y-auto flex-1 border-[1px] border-primaryTxt
+        rounded-md py-2 px-3;
+    }
+
+    .message{
+        @apply my-1 max-w-full w-fit py-2 px-3 rounded-md break-words bg-secondaryTxt
+        text-primaryBg relative;
+    }
+
+    .message-left{
+        @apply message self-start;
+    }
+
+    .message-right{
+        @apply message self-end text-right;
+    }
+
+    .message-center{
+        @apply py-2 self-center relative;
+    }
+
+    .message-input{
+        @apply flex;
+    }
+
+    .message-input input{
+        @apply flex-1;
+    }
+
+    .message-time{
+        @apply text-xs right-0 text-secondaryBg;
+    }
 }
 
 #root {

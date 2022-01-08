@@ -19,7 +19,7 @@ const Comment: FC<CommentProps> = ({comment, user}) => {
 	const [editing, setEditing] = useState(false);
 
 	const deleteComment = (commentId: number) => {
-		instance.delete('forum/comments/' + commentId)
+		instance.delete(`forum/comments/${commentId}/`)
 			.then(response => {
 				window.location.reload();
 			})

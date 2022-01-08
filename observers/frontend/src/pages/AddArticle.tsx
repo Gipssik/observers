@@ -18,6 +18,10 @@ const AddArticle: FC = () => {
 	}
 
 	useEffect(() => {
+		document.title = 'Create article - Observers';
+	}, []);
+
+	useEffect(() => {
 		if(!authenticated){
 			navigate('/login');
 		}else if(user?.role.title !== 'Admin'){

@@ -8,7 +8,7 @@ const Question: FC<QuestionProps> = ({id, title, content, views, tags}) => {
 
 	return (
 		<div className="question-container">
-			<div onClick={() => navigate('/questions/' + id)} className="question-title">
+			<div onClick={() => navigate(`/questions/${id}/`)} className="question-title">
 				{title.slice(0, 50)}{title.length > 50 ? '...' : null}
 			</div>
 			<Tags tags={tags} clickable={true}/>

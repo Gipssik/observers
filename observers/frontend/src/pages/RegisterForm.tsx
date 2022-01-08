@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import SubmitButton from "../components/Buttons/SubmitButton";
 import {Form, Formik} from "formik";
 import {IUser} from "../types/types";
@@ -14,9 +14,15 @@ const RegisterForm: FC = () => {
 	const navigate = useNavigate();
 	const [modal, setModal] = useState<boolean>(false);
 
-	if(authenticated){
-		return <Navigate to='/account'/>
-	}
+	useEffect(() => {
+		document.title = 'Sign Up - Observers';
+	}, []);
+
+	useEffect(() => {
+		if (authenticated) {
+			navigate('/account');
+		}
+	}, [authenticated]);
 
 	const registerUser = async () => {
 		let username: string | undefined = document.querySelector<HTMLInputElement>('#username')?.value;

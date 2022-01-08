@@ -13,6 +13,10 @@ const Articles: FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		document.title = 'News - Observers';
+	}, []);
+
+	useEffect(() => {
 		dispatch(fetchArticles());
 	}, [])
 

@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Form, Formik} from "formik";
 import Modal from "../components/Modal/Modal";
 import SubmitButton from "../components/Buttons/SubmitButton";
@@ -15,9 +15,15 @@ const LoginForm: FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	if(authenticated){
-		navigate('/account');
-	}
+	useEffect(() => {
+		document.title = 'Sign In - Observers';
+	}, []);
+
+	useEffect(() => {
+		if(authenticated){
+			navigate('/account');
+		}
+	}, [authenticated])
 
 	return (
 		<Formik

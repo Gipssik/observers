@@ -43,6 +43,10 @@ const EditQuestion: FC = () => {
 	}
 
 	useEffect(() => {
+		document.title = 'Edit question - Observers';
+	}, []);
+
+	useEffect(() => {
 		if(isNaN(Number(id))){
 			navigate('/questions');
 			return;

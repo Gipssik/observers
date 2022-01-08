@@ -19,6 +19,10 @@ const SelfAccount: FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		document.title = 'Account - Observers';
+	}, []);
+
+	useEffect(() => {
 		if(!user)
 			return;
 		setLoading(true);

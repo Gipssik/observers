@@ -1,6 +1,6 @@
 import React, {FC, useEffect} from 'react';
 import {useDispatch} from "react-redux";
-import {AuthActionTypes, UserActionTypes} from "../../types/types";
+import {AuthActionTypes, ChatActionTypes, UserActionTypes} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import Notifications from "./Notifications";
 import SignOut from "./SignOut";
@@ -18,6 +18,7 @@ const Buttons: FC = () => {
 		dispatch({type: UserActionTypes.DELETE_USER});
 		localStorage.removeItem('token');
 		dispatch({type: AuthActionTypes.SET_FALSE});
+		dispatch({type: ChatActionTypes.CLEAR_STATE});
 	}
 
 	return (

@@ -11,9 +11,12 @@ const Questions: FC = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchQuestions('order_by_date=desc'));
+		document.title = 'Questions - Observers';
 	}, []);
 
+	useEffect(() => {
+		dispatch(fetchQuestions('order_by_date=desc'));
+	}, []);
 
 	return (
 		<div className="questions-container">

@@ -35,6 +35,10 @@ const Article: FC = () => {
 	}
 
 	useEffect(() => {
+		document.title = `${article?.title} - Observers`;
+	}, [article]);
+
+	useEffect(() => {
 		if(!articles){
 			dispatch(fetchArticle(Number(id)));
 		}else{

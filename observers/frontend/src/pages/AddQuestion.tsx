@@ -18,6 +18,10 @@ const AddQuestion: FC = () => {
 	}
 
 	useEffect(() => {
+		document.title = 'Create question - Observers';
+	}, []);
+
+	useEffect(() => {
 		if(!authenticated){
 			navigate('/login');
 		}
