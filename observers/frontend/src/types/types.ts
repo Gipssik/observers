@@ -298,6 +298,21 @@ interface ClearStateAction{
 export type ChatAction = CreateConnectionAction | AddMessageAction | SetConnectedAction |
 	SetOnOpenAction | SetOnCloseAction | SetOnMessageAction | ClearStateAction;
 
+export enum AdminActionTypes{
+	SET_ACTIVE = 'SET_ACTIVE',
+}
+
+export interface AdminState{
+	active: string | null;
+}
+
+interface SetActiveAction{
+	type: AdminActionTypes.SET_ACTIVE;
+	payload: string;
+}
+
+export type AdminAction = SetActiveAction;
+
 export interface HeaderButtonProps {
 	content: string;
 	url: string;

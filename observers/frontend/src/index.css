@@ -82,7 +82,7 @@
     }
 
     .content{
-        @apply min-h-full flex-1 flex justify-around px-2;
+        @apply min-h-full flex-1 flex justify-around;
     }
 
     .loader{
@@ -246,7 +246,7 @@
     }
     
     .questions-container{
-        @apply lg:w-3/5 container mx-auto flex flex-col gap-4;
+        @apply lg:w-3/5 container mx-auto flex flex-col gap-4 px-2;
     }
 
     .questions-title{
@@ -348,7 +348,7 @@
     }
 
     .single-question-container{
-        @apply md:w-1/2 container mx-auto text-primaryTxt;
+        @apply md:w-1/2 container mx-auto text-primaryTxt px-2;
     }
 
     .single-question-header{
@@ -601,7 +601,7 @@
     }
 
     .single-article-container{
-        @apply md:w-3/5 container mx-auto text-primaryTxt;
+        @apply md:w-3/5 container mx-auto text-primaryTxt px-2;
     }
 
     .single-article-info-block{
@@ -621,7 +621,7 @@
     }
 
     .chat-container{
-        @apply max-h-[75vh] flex flex-col container lg:w-3/5 xl:w-2/5 text-primaryTxt;
+        @apply max-h-[75vh] flex flex-col container lg:w-3/5 xl:w-2/5 text-primaryTxt px-2;
     }
 
     .chat-messages-block{
@@ -657,6 +657,51 @@
     .message-time{
         @apply text-xs right-0 text-secondaryBg;
     }
+
+    .admin-container{
+        @apply w-full max-h-[75vh] border-y-2 border-primaryTxt flex;
+    }
+
+    .admin-menu{
+        @apply border-r-2 border-primaryTxt min-w-[180px] w-[15%] flex
+        flex-col bg-primaryBg;
+    }
+
+    .admin-model-container{
+        @apply flex-1 overflow-auto px-4 pt-3;
+    }
+
+    .admin-logo{
+        @apply leading-3 flex flex-col px-2 py-3 items-center border-b-2
+        border-primaryTxt;
+    }
+
+    .admin-logo span:first-child{
+        @apply translate-y-[5px];
+    }
+
+    .admin-sub{
+        @apply text-base text-secondaryTxt -translate-y-[5px] italic;
+    }
+
+    .admin-models-names-container{
+        @apply flex flex-col flex-1;
+    }
+
+    .admin-model-title{
+        @apply border-primaryBg border-y-[1px] text-primaryTxt text-center
+        transition hover:cursor-pointer hover:border-primaryTxt;
+    }
+
+    .admin-model-title span {
+        @apply py-2 px-4 inline-block w-full h-full border-r-2 border-r-primaryBg
+        transition hover:translate-x-[2px];
+    }
+
+    .admin-model-title-active{
+        @apply translate-x-[2px];
+    }
+
 }
 
 #root {
