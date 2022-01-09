@@ -300,10 +300,18 @@ export type ChatAction = CreateConnectionAction | AddMessageAction | SetConnecte
 
 export enum AdminActionTypes{
 	SET_ACTIVE = 'SET_ACTIVE',
+	SET_MODAL_CONTENT = 'SET_MODAL_CONTENT',
+	SET_MODAL_TYPE = 'SET_MODAL_TYPE',
+	SET_MODAL_SHOW = 'SET_MODAL_SHOW',
+	SET_MODAL_ON_CONFIRM = 'SET_MODAL_ON_CONFIRM',
 }
 
 export interface AdminState{
-	active: string | null;
+	active?: string | null;
+	modalContent?: string | null;
+	modalType?: string;
+	showModal?: boolean;
+	onConfirm?: () => void;
 }
 
 interface SetActiveAction{
@@ -311,7 +319,143 @@ interface SetActiveAction{
 	payload: string;
 }
 
-export type AdminAction = SetActiveAction;
+interface SetModalContentAction{
+	type: AdminActionTypes.SET_MODAL_CONTENT;
+	payload: string;
+}
+
+interface SetModalTypeAction{
+	type: AdminActionTypes.SET_MODAL_TYPE;
+	payload: string;
+}
+
+interface SetModalShowAction{
+	type: AdminActionTypes.SET_MODAL_SHOW;
+	payload: boolean;
+}
+
+interface SetModalOnConfirmAction{
+	type: AdminActionTypes.SET_MODAL_ON_CONFIRM;
+	payload: () => void;
+}
+
+export type AdminAction = SetActiveAction | SetModalContentAction | SetModalTypeAction
+	| SetModalShowAction | SetModalOnConfirmAction;
+
+export enum RolesActionTypes{
+	FETCH_ROLES = 'FETCH_ROLES',
+	FETCH_ROLES_SUCCESS = 'FETCH_ROLES_SUCCESS',
+	FETCH_ROLES_ERROR = 'FETCH_ROLES_ERROR',
+}
+
+export interface RolesState{
+	roles?: IRole[] | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchRolesAction{
+	type: RolesActionTypes.FETCH_ROLES;
+}
+
+interface FetchRolesSuccessAction{
+	type: RolesActionTypes.FETCH_ROLES_SUCCESS;
+	payload: IRole[];
+}
+
+interface FetchRolesErrorAction{
+	type: RolesActionTypes.FETCH_ROLES_ERROR;
+	payload: string;
+}
+
+export type RolesAction = FetchRolesAction
+	| FetchRolesSuccessAction | FetchRolesErrorAction;
+
+export enum UsersActionTypes{
+	FETCH_USERS = 'FETCH_USERS',
+	FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS',
+	FETCH_USERS_ERROR = 'FETCH_USERS_ERROR',
+}
+
+export interface UsersState{
+	users?: IUser[] | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchUsersAction{
+	type: UsersActionTypes.FETCH_USERS;
+}
+
+interface FetchUsersSuccessAction{
+	type: UsersActionTypes.FETCH_USERS_SUCCESS;
+	payload: IUser[];
+}
+
+interface FetchUsersErrorAction{
+	type: UsersActionTypes.FETCH_USERS_ERROR;
+	payload: string;
+}
+
+export type UsersAction = FetchUsersAction
+	| FetchUsersSuccessAction | FetchUsersErrorAction;
+
+export enum TagsActionTypes{
+	FETCH_TAGS = 'FETCH_TAGS',
+	FETCH_TAGS_SUCCESS = 'FETCH_TAGS_SUCCESS',
+	FETCH_TAGS_ERROR = 'FETCH_TAGS_ERROR',
+}
+
+export interface TagsState{
+	tags?: ITag[] | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchTagsAction{
+	type: TagsActionTypes.FETCH_TAGS;
+}
+
+interface FetchTagsSuccessAction{
+	type: TagsActionTypes.FETCH_TAGS_SUCCESS;
+	payload: ITag[];
+}
+
+interface FetchTagsErrorAction{
+	type: TagsActionTypes.FETCH_TAGS_ERROR;
+	payload: string;
+}
+
+export type TagsAction = FetchTagsAction | FetchTagsSuccessAction | FetchTagsErrorAction;
+
+export enum CommentsActionTypes{
+	FETCH_COMMENTS = 'FETCH_COMMENTS',
+	FETCH_COMMENTS_SUCCESS = 'FETCH_COMMENTS_SUCCESS',
+	FETCH_COMMENTS_ERROR = 'FETCH_COMMENTS_ERROR',
+}
+
+export interface CommentsState{
+	comments?: IComment[] | null;
+	loading: boolean;
+	error: null | string;
+}
+
+interface FetchCommentsAction{
+	type: CommentsActionTypes.FETCH_COMMENTS;
+}
+
+interface FetchCommentsSuccessAction{
+	type: CommentsActionTypes.FETCH_COMMENTS_SUCCESS;
+	payload: IComment[];
+}
+
+interface FetchCommentsErrorAction{
+	type: CommentsActionTypes.FETCH_COMMENTS_ERROR;
+	payload: string;
+}
+
+export type CommentsAction = FetchCommentsAction
+	| FetchCommentsSuccessAction | FetchCommentsErrorAction;
 
 export interface HeaderButtonProps {
 	content: string;

@@ -30,7 +30,7 @@ const Comment: FC<CommentProps> = ({comment, user}) => {
 
 	const changeAnswerStatus = async () => {
 		let is_answer: boolean = !commentState.is_answer;
-		await instance.patch<IComment>('/forum/comments/' + commentState.id, {is_answer})
+		await instance.patch<IComment>(`/forum/comments/${commentState.id}/`, {is_answer})
 			.then(response => {
 				setCommentState({...commentState, is_answer: is_answer});
 			})

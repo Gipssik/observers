@@ -3,7 +3,7 @@ import Logo from "../Header/Logo";
 import ModelTitle from "./ModelTitle";
 
 const AdminMenu: FC = () => {
-	const models = ['Role', 'User', 'Notification', 'Tag', 'Question', 'Comment', 'Article'];
+	const models = ['Role', 'User', 'Tag', 'Question', 'Comment', 'Article'];
 
 	return (
 		<div className="admin-menu">

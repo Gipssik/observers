@@ -2,7 +2,6 @@ import React, {FC} from 'react';
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import Roles from "./Roles";
 import Users from "./Users";
-import Notifications from "./Notifications";
 import Tags from "./Tags";
 import Questions from "./Questions";
 import Comments from "./Comments";
@@ -17,8 +16,6 @@ const ModelBlock: FC = () => {
 				return <Roles/>;
 			case 'User':
 				return <Users/>;
-			case 'Notification':
-				return <Notifications/>;
 			case 'Tag':
 				return <Tags/>;
 			case 'Question':
