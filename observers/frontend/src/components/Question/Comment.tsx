@@ -1,16 +1,11 @@
 import React, {FC, useState} from 'react';
-import {IComment, IUser} from "../../types/types";
+import {CommentProps, IComment} from "../../types/types";
 import {NavLink} from "react-router-dom";
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import Trash from "./Trash";
 import Edit from "./Edit";
 import {instance} from "../../Instance";
 import AddComment from "./AddComment";
-
-interface CommentProps{
-	comment: IComment;
-	user: IUser;
-}
 
 const Comment: FC<CommentProps> = ({comment, user}) => {
 	const [commentState, setCommentState] = useState(comment);

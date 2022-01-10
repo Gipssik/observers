@@ -1,9 +1,6 @@
 import React, {FC} from 'react';
 import {useNavigate} from "react-router-dom";
-
-interface LogoProps{
-	className?: string;
-}
+import {LogoProps} from "../../types/types";
 
 const Logo: FC<LogoProps> = ({className}) => {
 	const navigate = useNavigate();

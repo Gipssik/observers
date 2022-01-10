@@ -1,8 +1,5 @@
 import React, {FC} from 'react';
-
-interface ArrowBackProps{
-	onClick: () => void;
-}
+import {ArrowBackProps} from "../../types/types";
 
 const ArrowBack: FC<ArrowBackProps> = ({onClick}) => {
 	return (

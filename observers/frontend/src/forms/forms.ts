@@ -62,3 +62,9 @@ export const AddArticleSchema = Yup.object().shape({
 			val => val ? (val.replaceAll(/<p>(&nbsp;)*<\/p>/ig, '').length > 40) : false)
 		.required('Required')
 })
+
+export const EditTagSchema = Yup.object().shape({
+	title: Yup.string()
+		.max(64, 'Tag\'s title must be 64 characters long maximum.')
+		.required('Required'),
+})

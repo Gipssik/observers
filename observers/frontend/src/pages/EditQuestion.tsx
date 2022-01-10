@@ -10,7 +10,7 @@ import {instance} from "../Instance";
 
 const EditQuestion: FC = () => {
 	const id = useParams().id;
-	const question = useTypedSelector(state => state.questions.question);
+	const {question, questions} = useTypedSelector(state => state.questions);
 	const [author, setAuthor] = useState<IUser>();
 	const [loadingAuthor, setLoadingAuthor] = useState(true);
 	const self = useTypedSelector(state => state.user.user);
@@ -33,8 +33,14 @@ const EditQuestion: FC = () => {
 		instance.patch<IQuestion>(`/forum/questions/${id}/`, modifiedBody)
 			.then(response => {
 				dispatch({type: QuestionsActionTypes.FETCH_QUESTION_SUCCESS, payload: response.data});
-			})
-			.then(() => {
+				if(questions){
+					const q = questions?.findIndex(obj => {return obj.id === Number(id)});
+					if(q !== -1){
+						let qs = questions;
+						qs[q] = response.data;
+						dispatch({type: QuestionsActionTypes.FETCH_QUESTIONS_SUCCESS, payload: qs});
+					}
+				}
 				navigate('/questions/' + id);
 			})
 			.catch(error => {

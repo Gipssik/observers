@@ -2,7 +2,7 @@ import React, {FC, useEffect} from 'react';
 import AddArticleForm from "../components/Articles/AddArticleForm";
 import {useTypedSelector} from "../hooks/useTypesSelector";
 import {instance} from "../Instance";
-import {ArticlesActionTypes, IQuestion} from "../types/types";
+import {ArticlesActionTypes, IArticle} from "../types/types";
 import {useDispatch} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {fetchArticle} from "../store/action-creators/articles";
@@ -10,7 +10,7 @@ import Loader from "../components/Loader/Loader";
 
 const EditArticle: FC = () => {
 	const id = useParams().id;
-	const {article, loading} = useTypedSelector(state => state.articles);
+	const {article, articles, loading} = useTypedSelector(state => state.articles);
 	const user = useTypedSelector(state => state.user.user);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -24,11 +24,17 @@ const EditArticle: FC = () => {
 			modifiedBody.content = body.content;
 		}
 
-		instance.patch<IQuestion>(`/news/articles/${id}/`, modifiedBody)
+		instance.patch<IArticle>(`/news/articles/${id}/`, modifiedBody)
 			.then(response => {
 				dispatch({type: ArticlesActionTypes.FETCH_ARTICLE_SUCCESS, payload: response.data});
-			})
-			.then(() => {
+				if(articles){
+					const a = articles?.findIndex(obj => {return obj.id === Number(id)});
+					if(a !== -1){
+						let as = articles;
+						as[a] = response.data;
+						dispatch({type: ArticlesActionTypes.FETCH_ARTICLES_SUCCESS, payload: as});
+					}
+				}
 				navigate('/news/' + id);
 			})
 			.catch(error => {

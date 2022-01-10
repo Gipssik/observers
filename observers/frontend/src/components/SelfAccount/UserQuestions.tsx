@@ -1,10 +1,6 @@
 import React, {FC} from 'react';
-import {IQuestion} from "../../types/types";
 import UserQuestion from "./UserQuestion";
-
-interface UserQuestionsProps{
-	questions: IQuestion[];
-}
+import {UserQuestionsProps} from "../../types/types";
 
 const UserQuestions: FC<UserQuestionsProps> = ({questions}) => {
 	return (

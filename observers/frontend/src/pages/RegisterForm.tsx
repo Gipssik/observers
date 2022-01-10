@@ -3,7 +3,7 @@ import SubmitButton from "../components/Buttons/SubmitButton";
 import {Form, Formik} from "formik";
 import {IUser} from "../types/types";
 import RegisterFields from "../components/Register/RegisterFields";
-import {Navigate, NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import Modal from '../components/Modal/Modal';
 import {instance} from "../Instance";
 import {RegisterSchema} from "../forms/forms";

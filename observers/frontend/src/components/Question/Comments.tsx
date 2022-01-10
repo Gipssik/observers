@@ -1,11 +1,6 @@
 import React, {FC} from 'react';
-import {IComment, IUser} from "../../types/types";
+import {CommentsProps} from "../../types/types";
 import Comment from "./Comment";
-
-interface CommentsProps{
-	comments: IComment[];
-	commentators: IUser[];
-}
 
 const Comments: FC<CommentsProps> = ({comments, commentators}) => {
 

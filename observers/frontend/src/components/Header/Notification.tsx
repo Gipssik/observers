@@ -1,14 +1,9 @@
 import React, {FC} from 'react';
-import {INotification, QuestionsActionTypes} from "../../types/types";
-import {NavLink, useNavigate} from "react-router-dom";
+import {NotificationProps, QuestionsActionTypes} from "../../types/types";
+import {NavLink} from "react-router-dom";
 import {instance} from "../../Instance";
 import {useDispatch} from "react-redux";
 import {fetchNotifications} from "../../store/action-creators/notifications";
-
-interface NotificationProps{
-	notification: INotification;
-	setVisible: any;
-}
 
 const Notification: FC<NotificationProps> = ({notification, setVisible}) => {
 	const dispatch = useDispatch();

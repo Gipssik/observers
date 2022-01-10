@@ -1,18 +1,11 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import {AddQuestionSchema} from "../../forms/forms";
 import {useFormik} from "formik";
 import SubmitButton from "../Buttons/SubmitButton";
 import CreationField from "../Fields/CreationField";
 import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
-
-interface AddQuestionFormProps{
-	title?: string;
-	tags?: string[];
-	content?: string;
-	buttonText?: string;
-	onSubmit: any;
-}
+import {AddQuestionFormProps} from "../../types/types";
 
 const AddQuestionForm: FC<AddQuestionFormProps> = ({
 	   title,

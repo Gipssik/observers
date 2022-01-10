@@ -556,3 +556,55 @@ export interface AddArticleFormProps{
 	buttonText?: string;
 	onSubmit?: any;
 }
+
+export interface AddQuestionFormProps{
+	title?: string;
+	tags?: string[];
+	content?: string;
+	buttonText?: string;
+	onSubmit: any;
+}
+
+export interface LogoProps{
+	className?: string;
+}
+
+export interface NotificationProps{
+	notification: INotification;
+	setVisible: any;
+}
+
+export interface PreviewProps{
+	content: string
+}
+
+export interface AddCommentProps{
+	questionId?: number;
+	commentId?: number;
+	buttonText?: string;
+	edit?: boolean;
+	value?: string;
+	setEditing?: any;
+}
+
+export interface CommentProps{
+	comment: IComment;
+	user: IUser;
+}
+
+export interface CommentsProps{
+	comments: IComment[];
+	commentators: IUser[];
+}
+
+export interface ArrowBackProps{
+	onClick: () => void;
+}
+
+export interface UserQuestionProps{
+	question: IQuestion;
+}
+
+export interface UserQuestionsProps{
+	questions: IQuestion[];
+}

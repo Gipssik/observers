@@ -3,21 +3,12 @@ import {useFormik} from "formik";
 import {AddCommentSchema} from "../../forms/forms";
 import SubmitButton from "../Buttons/SubmitButton";
 import {instance} from "../../Instance";
-import {IComment} from "../../types/types";
+import {AddCommentProps, IComment} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import {useNavigate} from "react-router-dom";
 import EditorField from "../Fields/EditorField";
 import Preview from "../Preview/Preview";
 import RegularButton from '../Buttons/RegularButton';
-
-interface AddCommentProps{
-	questionId?: number;
-	commentId?: number;
-	buttonText?: string;
-	edit?: boolean;
-	value?: string;
-	setEditing?: any;
-}
 
 const AddComment: FC<AddCommentProps> = ({
 	 questionId,

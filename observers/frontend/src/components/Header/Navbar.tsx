@@ -2,7 +2,6 @@ import React, {FC, useState} from 'react';
 import NavbarItem from "./NavbarItem";
 import Buttons from "./Buttons";
 import Menu from "./Menu";
-import Notifications from "./Notifications";
 
 const Navbar: FC = () => {
 	const [visible, setVisible] = useState(false);

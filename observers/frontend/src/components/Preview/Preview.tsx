@@ -1,8 +1,5 @@
 import React, {FC} from 'react';
-
-interface PreviewProps{
-	content: string
-}
+import {PreviewProps} from "../../types/types";
 
 const Preview: FC<PreviewProps> = ({content}) => {
 	return (

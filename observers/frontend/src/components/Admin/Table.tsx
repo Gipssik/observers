@@ -14,13 +14,17 @@ const Table = <T extends object>({objectArray, onDelete, onEdit}: TableProps<T> 
 			<>
 				{
 					onEdit ?
-						<td><Edit onClick={() => onEdit(obj)} width={32} height={32}/></td>
+						<td
+							style={{width: "10px"}}
+						>
+							<Edit onClick={() => onEdit(obj)} width={32} height={32}/>
+						</td>
 						:
 						null
 				}
 				{
 					onDelete ?
-						<td><Trash onClick={() => onDelete(obj)} width={32} height={32}/></td>
+						<td style={{width: "10px"}}><Trash onClick={() => onDelete(obj)} width={32} height={32}/></td>
 						:
 						null
 				}
@@ -50,13 +54,13 @@ const Table = <T extends object>({objectArray, onDelete, onEdit}: TableProps<T> 
 				<tr>
 					{
 						onEdit ?
-							<th>Edit</th>
+							<th style={{width: "10px"}}>Edit</th>
 							:
 							null
 					}
 					{
 						onDelete ?
-							<th>Del</th>
+							<th style={{width: "10px"}}>Del</th>
 							:
 							null
 					}

@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {useTypedSelector} from "../../hooks/useTypesSelector";
 import Notification from "./Notification";
 import {IconProps} from "../../types/types";

@@ -5,8 +5,6 @@ import Loader from "../components/Loader/Loader";
 import {ArticlesActionTypes} from "../types/types";
 import {useDispatch} from "react-redux";
 import {fetchArticle} from "../store/action-creators/articles";
-import Like from "../components/Articles/Like";
-import Dislike from "../components/Articles/Dislike";
 import Trash from "../components/Question/Trash";
 import Edit from "../components/Question/Edit";
 import Modal from "../components/Modal/Modal";

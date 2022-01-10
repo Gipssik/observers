@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import Ex from "./Ex";
 import {ModalProps} from "../../types/types";
 

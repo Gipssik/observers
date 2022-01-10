@@ -16,6 +16,7 @@ import AddArticle from "../pages/AddArticle";
 import EditArticle from "../pages/EditArticle";
 import Chat from "../pages/Chat";
 import Admin from "../pages/Admin";
+import EditTag from "../pages/EditTag";
 
 interface IRoute{
 	path: string;
@@ -39,5 +40,6 @@ export const router: IRoute[] = [
 	{path: '/chat', component: <Chat/>},
 	{path: '/404', component: <Page404/>},
 	{path: '/admin', component: <Admin/>},
+	{path: '/tags/:id/edit', component: <EditTag/>},
 	{path: '*', component: <Navigate to='/404'/>},
 ];
