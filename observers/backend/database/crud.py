@@ -455,7 +455,7 @@ def fill_tags(db: Session, tags: list[str], question_db: models.Question) -> Non
 
     for tag in tags:
         tag = tag.lower()
-        if not tag.replace('.', '').isalnum():
+        if not tag.replace('.', '').replace('-', '').replace('_', '').isalnum():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Wrong tag title.'

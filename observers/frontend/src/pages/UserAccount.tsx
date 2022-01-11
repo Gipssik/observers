@@ -57,7 +57,7 @@ const UserAccount: FC = () => {
 					<div className="account-container">
 						<div className="account-img-block">
 							<img
-								src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : ''}
+								src={user?.profile_image === 'default.jpg' ? '/' + user?.profile_image : user?.profile_image}
 								className="account-img"
 								alt="Profile"/>
 						</div>

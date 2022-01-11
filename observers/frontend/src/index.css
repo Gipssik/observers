@@ -60,6 +60,11 @@
         @apply min-w-full min-h-full overflow-visible;
     }
 
+    .single-question-content p,
+    .preview-container p{
+        @apply my-3;
+    }
+
     .logo{
         @apply text-white text-3xl italic -translate-y-1 no-underline
         hover:cursor-pointer;
@@ -276,7 +281,7 @@
     .question-tag{
         @apply bg-primaryTxt border-2 border-primaryTxt
         rounded-md py-px px-2 text-secondaryBg text-sm
-        font-bold transition;
+        font-bold transition whitespace-nowrap;
     }
 
     .active-tag{
