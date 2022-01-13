@@ -4,7 +4,6 @@ from sqlalchemy.orm.session import Session
 
 from database import crud, models, schemas
 from dependencies import get_db, get_current_user
-from decorators import raise_403_if_no_access
 
 router = APIRouter(prefix='/questions', tags=['questions'])
 
