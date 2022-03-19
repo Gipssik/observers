@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const url = '192.168.0.102:8000/'
+export const url = `${process.env.REACT_APP_LOCAL_NETWORK_IP}:8000`
 
 export const instance = axios.create({
-	baseURL: `http://${url}api/`,
+	baseURL: `http://${url}/api/`,
 });
 
 instance.interceptors.request.use((config) => {

@@ -38,9 +38,11 @@ def startup():
         db.add_all([a, u])
 
     if 'admin' not in [user.username for user in db.query(models.User).all()]:
-        while not isemail(admin_email := input('Choose admin\'s email: ')):
-            print('Wrong email!')
-        admin_password = get_password_hash(input('Choose admin\'s password: '))
+        # while not isemail(admin_email := input('Choose admin\'s email: ')):
+        #     print('Wrong email!')
+        # admin_password = get_password_hash(input('Choose admin\'s password: '))
+        admin_email = 'admin@observers.com'
+        admin_password = get_password_hash('admin')
         admin = models.User(
             username='admin',
             email=admin_email,
