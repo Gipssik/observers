@@ -1,0 +1,4 @@
+build:
+  docker:
+    backend: ./observers/backend/Dockerfile
+    frontend: ./observers/frontend/Dockerfile
