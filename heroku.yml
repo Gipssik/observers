@@ -1,3 +1,7 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: postgres-db
 build:
   docker:
     backend: ./observers/backend/Dockerfile
