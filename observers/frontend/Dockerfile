@@ -8,6 +8,8 @@ RUN npm ci
 
 COPY . /code/frontend
 
+RUN npm run build
+
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "start", "build"]
