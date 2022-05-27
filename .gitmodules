@@ -1,0 +1,6 @@
+[submodule "observers/backend"]
+	path = observers/backend
+	url = https://github.com/Gipssik/observers-backend
+[submodule "observers/frontend"]
+	path = observers/frontend
+	url = https://github.com/Gipssik/observers-frontend
