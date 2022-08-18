@@ -4,3 +4,6 @@
 [submodule "observers/frontend"]
 	path = observers/frontend
 	url = https://github.com/Gipssik/observers-frontend
+[submodule "observers/backend-django"]
+	path = observers/backend-django
+	url = https://github.com/Gipssik/observers-backend-django
